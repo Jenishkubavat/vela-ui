@@ -38,6 +38,10 @@ dotnet test --filter "FullyQualifiedName~VelaCliTests.Version_is_a_semantic_vers
 The build treats warnings as errors and enforces the code style in
 `.editorconfig`, so fix a warning rather than suppressing it.
 
+NuGet package versions are managed centrally in `Directory.Packages.props`.
+To add a package, add a `PackageVersion` entry there and a
+`PackageReference` without a version in the project file.
+
 ## Repository layout
 
 | Path | Contents |
@@ -45,6 +49,7 @@ The build treats warnings as errors and enforces the code style in
 | `Vela.UI.Cli/` | The `vela` command-line tool |
 | `tests/Vela.UI.Cli.Tests/` | Tests for the CLI |
 | `Directory.Build.props` | Version number and settings shared by every project |
+| `Directory.Packages.props` | NuGet package versions for every project |
 
 ## Versioning
 
@@ -54,4 +59,4 @@ breaking changes. Every release gets an entry in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-A license hasn't been chosen yet.
+Vela UI is released under the [MIT License](LICENSE).
