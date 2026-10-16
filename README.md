@@ -49,6 +49,7 @@ To add a package, add a `PackageVersion` entry there and a
 | --- | --- |
 | `src/Core/` | The component registry: every component's source, compiled and tested but never published as a package |
 | `src/Core/Styles/vela.css` | Theme tokens (Tailwind v4 CSS variables, light and dark) |
+| `src/Primitives/` | `Vela.UI.Primitives`, headless behavior with no styles (like Radix for shadcn/ui), published as a NuGet package. Empty until Dialog. |
 | `src/Cli/` | The `vela` command-line tool |
 | `tests/Core/`, `tests/Cli/` | Tests, mirroring the `src/` folders |
 | `Directory.Build.props` | Version number and settings shared by every project |
