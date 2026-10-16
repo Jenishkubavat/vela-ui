@@ -26,7 +26,7 @@ You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 ```bash
 dotnet build
 dotnet test
-dotnet run --project Vela.UI.Cli -- --help
+dotnet run --project src/Vela.UI.Cli -- --help
 ```
 
 To run one test:
@@ -46,10 +46,11 @@ To add a package, add a `PackageVersion` entry there and a
 
 | Path | Contents |
 | --- | --- |
-| `Vela.UI.Cli/` | The `vela` command-line tool |
+| `src/Vela.UI.Cli/` | The `vela` command-line tool |
 | `tests/Vela.UI.Cli.Tests/` | Tests for the CLI |
 | `Directory.Build.props` | Version number and settings shared by every project |
 | `Directory.Packages.props` | NuGet package versions for every project |
+| `NuGet.config` | Restricts package restore to nuget.org |
 
 ## Versioning
 

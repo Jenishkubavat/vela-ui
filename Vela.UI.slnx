@@ -1,6 +1,18 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="CHANGELOG.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="NuGet.config" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Vela.UI.Cli/Vela.UI.Cli.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Vela.UI.Cli.Tests/Vela.UI.Cli.Tests.csproj" />
   </Folder>
-  <Project Path="Vela.UI.Cli/Vela.UI.Cli.csproj" />
 </Solution>
