@@ -1,0 +1,39 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Label_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Label>Email</Label>);
+
+        // Assert
+        var label = cut.Find("label");
+        Assert.Equal("label", label.GetAttribute("data-slot"));
+        Assert.Contains("select-none", label.ClassList);
+        Assert.False(label.HasAttribute("for"));
+        Assert.Equal("Email", label.TextContent.Trim());
+    }
+
+    [Fact]
+    public void Label_For()
+    {
+        // Arrange && Act
+        var cut = Render(@<Label for="email">Email</Label>);
+
+        // Assert
+        Assert.Equal("email", cut.Find("label").GetAttribute("for"));
+    }
+
+    [Fact]
+    public void Label_ClassAndAdditionalAttributes()
+    {
+        // Arrange && Act
+        var cut = Render(@<Label Class="text-xs" id="email-label">Email</Label>);
+
+        // Assert
+        var label = cut.Find("label");
+        Assert.Equal("text-xs", label.ClassList.Last());
+        Assert.Equal("email-label", label.GetAttribute("id"));
+    }
+}
