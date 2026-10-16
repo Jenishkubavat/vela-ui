@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Vela.UI.Cli\Vela.UI.Cli.csproj" />
+    <ProjectReference Include="..\..\src\Cli\Vela.UI.Cli.csproj" />
   </ItemGroup>
 
 </Project>

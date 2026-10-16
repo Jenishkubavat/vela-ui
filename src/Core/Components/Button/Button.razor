@@ -1,0 +1,12 @@
+@namespace Vela.UI.Components
+
+<button type="@Type"
+        class="@GetClasses(Variant, Size, Class)"
+        disabled="@Disabled"
+        data-slot="button"
+        data-variant="@VariantName(Variant)"
+        data-size="@SizeName(Size)"
+        @onclick="OnClick"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</button>
