@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>vela</AssemblyName>
+    <RootNamespace>Vela.UI.Cli</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Vela.UI.Cli.Tests" />
+  </ItemGroup>
+
+</Project>

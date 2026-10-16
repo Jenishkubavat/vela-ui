@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/Vela.UI.Cli.Tests/Vela.UI.Cli.Tests.csproj" />
+  </Folder>
+  <Project Path="Vela.UI.Cli/Vela.UI.Cli.csproj" />
+</Solution>
