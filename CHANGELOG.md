@@ -17,4 +17,7 @@ follow [Semantic Versioning](https://semver.org/).
   form posts. `Immediate` updates on every keystroke. `Input.GetClasses`
   styles `InputNumber`, `InputDate`, and `InputFile` to match.
 - Label component that links to a control through `for`.
-- Theme tokens for Tailwind CSS v4 with light and dark values.
+- Card component with Header, Title, Description, Action, Content, and Footer
+  parts, a small size, and spacing driven by the `--card-spacing` variable.
+- Theme tokens for Tailwind CSS v4 with light and dark values, including a
+  default border color so plain `border-t`/`border-b` dividers stay subtle.

@@ -1,0 +1,35 @@
+@namespace Vela.UI.Components
+@*
+    The card's title. It renders a <div>, as shadcn/ui does, because the right heading
+    level depends on the page. To make it a heading for screen readers, add
+    role="heading" aria-level="2" (or the level that fits), or put an <h2> inside.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="card-title"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "text-base leading-snug font-medium group-data-[size=sm]/card:text-sm";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>role</c> and <c>aria-level</c>, applied to the title's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

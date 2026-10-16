@@ -1,0 +1,38 @@
+@namespace Vela.UI.Components
+@* The top of a card: a CardTitle, an optional CardDescription, and an optional CardAction. *@
+
+<div class="@ClassNames.Join(LayoutClasses, ActionClasses, BorderClasses, Class)"
+     data-slot="card-header"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string LayoutClasses =
+        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing)";
+
+    // With a CardAction present, the header gets a second column on the right for it.
+    private const string ActionClasses =
+        "has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto]";
+
+    // Adds space above a divider when you give the header Class="border-b".
+    private const string BorderClasses = "[.border-b]:pb-(--card-spacing)";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The header's content, usually a CardTitle and CardDescription.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the header's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

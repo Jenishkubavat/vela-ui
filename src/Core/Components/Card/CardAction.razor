@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    A control in the top-right corner of a CardHeader, such as a Button or menu trigger.
+    Place it inside the CardHeader; the header makes room for it automatically.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="card-action"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes = "col-start-2 row-span-2 row-start-1 self-start justify-self-end";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The action, usually a Button.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the action's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

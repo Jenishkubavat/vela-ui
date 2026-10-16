@@ -81,6 +81,9 @@ CLI can copy one folder into an app. `Button` is the reference:
   logic, as a partial class. Each `.razor` file declares its own `@using`
   lines; `src/Core` has no shared `_Imports.razor`, because it wouldn't be
   copied into apps.
+- A component with logic gets a `.razor.cs` file. Simple parts that only wrap
+  an element with classes (such as `CardTitle`) are a single `.razor` file
+  with a short `@code` block.
 - Form controls such as `Input` inherit Blazor's `InputBase<T>` so binding,
   validation, and static form posts work the way they do for `InputText`.
 - Variant and size enums sit in the same folder, one type per file.

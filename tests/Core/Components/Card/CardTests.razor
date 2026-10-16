@@ -1,0 +1,110 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Card_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Card>Content</Card>);
+
+        // Assert
+        var card = cut.Find("[data-slot=card]");
+        Assert.Equal("DIV", card.TagName);
+        Assert.Equal("default", card.GetAttribute("data-size"));
+        Assert.Contains("bg-card", card.ClassList);
+        Assert.Contains("[--card-spacing:--spacing(4)]", card.ClassList);
+        Assert.Equal("Content", card.TextContent.Trim());
+    }
+
+    [Fact]
+    public void Card_SizeSmall()
+    {
+        // Arrange && Act
+        var cut = Render(@<Card Size="CardSize.Small">Content</Card>);
+
+        // Assert
+        Assert.Equal("sm", cut.Find("[data-slot=card]").GetAttribute("data-size"));
+    }
+
+    [Fact]
+    public void Card_EverySizeHasAName()
+    {
+        // Guards against adding a CardSize without a data-size value.
+        foreach (var size in Enum.GetValues<CardSize>())
+        {
+            // Arrange && Act
+            var cut = Render(@<Card Size="size">Content</Card>);
+
+            // Assert
+            Assert.False(string.IsNullOrEmpty(cut.Find("[data-slot=card]").GetAttribute("data-size")));
+        }
+    }
+
+    [Fact]
+    public void Card_Composition()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Card>
+                <CardHeader>
+                    <CardTitle>Notifications</CardTitle>
+                    <CardDescription>You have 3 unread messages.</CardDescription>
+                    <CardAction><Button Size="ButtonSize.Small">Mark all read</Button></CardAction>
+                </CardHeader>
+                <CardContent>Body</CardContent>
+                <CardFooter><Button Class="w-full">Open inbox</Button></CardFooter>
+            </Card>);
+
+        // Assert
+        Assert.Equal("Notifications", cut.Find("[data-slot=card-title]").TextContent.Trim());
+        Assert.Equal("You have 3 unread messages.", cut.Find("[data-slot=card-description]").TextContent.Trim());
+        Assert.Equal("Body", cut.Find("[data-slot=card-content]").TextContent.Trim());
+        Assert.NotNull(cut.Find("[data-slot=card-header] [data-slot=card-action] button"));
+        Assert.NotNull(cut.Find("[data-slot=card] > [data-slot=card-footer] button"));
+    }
+
+    [Fact]
+    public void Card_PartsUseCardSpacing()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Card>
+                <CardHeader>Header</CardHeader>
+                <CardContent>Body</CardContent>
+                <CardFooter>Footer</CardFooter>
+            </Card>);
+
+        // Assert
+        Assert.Contains("px-(--card-spacing)", cut.Find("[data-slot=card-header]").ClassList);
+        Assert.Contains("px-(--card-spacing)", cut.Find("[data-slot=card-content]").ClassList);
+        Assert.Contains("p-(--card-spacing)", cut.Find("[data-slot=card-footer]").ClassList);
+    }
+
+    [Fact]
+    public void Card_PartsAcceptClassAndAttributes()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Card Class="max-w-sm" id="inbox">
+                <CardHeader Class="border-b" id="inbox-header">
+                    <CardTitle role="heading" aria-level="2">Inbox</CardTitle>
+                </CardHeader>
+                <CardFooter Class="justify-end">Footer</CardFooter>
+            </Card>);
+
+        // Assert
+        var card = cut.Find("[data-slot=card]");
+        Assert.Equal("max-w-sm", card.ClassList.Last());
+        Assert.Equal("inbox", card.GetAttribute("id"));
+
+        var header = cut.Find("[data-slot=card-header]");
+        Assert.Equal("border-b", header.ClassList.Last());
+        Assert.Equal("inbox-header", header.GetAttribute("id"));
+
+        var title = cut.Find("[data-slot=card-title]");
+        Assert.Equal("heading", title.GetAttribute("role"));
+        Assert.Equal("2", title.GetAttribute("aria-level"));
+
+        Assert.Equal("justify-end", cut.Find("[data-slot=card-footer]").ClassList.Last());
+    }
+}

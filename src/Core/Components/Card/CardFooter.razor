@@ -1,0 +1,31 @@
+@namespace Vela.UI.Components
+@* The bottom of a card, set off by a border and a muted background. Usually holds buttons. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="card-footer"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes = "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults. Add <c>gap-2</c> or
+    /// <c>justify-end</c> to arrange several buttons.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The footer's content, usually one or more Buttons.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the footer's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}
