@@ -1,3 +1,7 @@
+// ------------------------------------------------------------------------
+// This file is licensed to you under the MIT License.
+// ------------------------------------------------------------------------
+
 using System.Text.RegularExpressions;
 
 namespace Vela.UI.Cli.Tests;
@@ -8,29 +12,35 @@ public class VelaCliTests
     [InlineData]
     [InlineData("--help")]
     [InlineData("-h")]
-    public void Help_is_printed_to_output_and_succeeds(params string[] args)
+    public void VelaCli_Help(params string[] args)
     {
+        // Arrange && Act
         var (exitCode, output, error) = Run(args);
 
+        // Assert
         Assert.Equal(VelaCli.Success, exitCode);
         Assert.Contains("Usage: vela", output);
         Assert.Empty(error);
     }
 
     [Fact]
-    public void Version_is_a_semantic_version_without_build_metadata()
+    public void VelaCli_Version()
     {
+        // Arrange && Act
         var (exitCode, output, _) = Run("--version");
 
+        // Assert
         Assert.Equal(VelaCli.Success, exitCode);
         Assert.Matches(new Regex(@"^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$"), output.Trim());
     }
 
     [Fact]
-    public void Unknown_argument_is_reported_on_error_with_usage_error_code()
+    public void VelaCli_UnknownArgument()
     {
+        // Arrange && Act
         var (exitCode, output, error) = Run("frobnicate");
 
+        // Assert
         Assert.Equal(VelaCli.UsageError, exitCode);
         Assert.Empty(output);
         Assert.Contains("frobnicate", error);

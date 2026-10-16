@@ -10,9 +10,11 @@
     <File Path="NuGet.config" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/Vela.UI.Cli/Vela.UI.Cli.csproj" />
+    <Project Path="src/Cli/Vela.UI.Cli.csproj" />
+    <Project Path="src/Core/Vela.UI.Components.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Vela.UI.Cli.Tests/Vela.UI.Cli.Tests.csproj" />
+    <Project Path="tests/Cli/Vela.UI.Cli.Tests.csproj" />
+    <Project Path="tests/Core/Vela.UI.Components.Tests.csproj" />
   </Folder>
 </Solution>

@@ -11,8 +11,9 @@ independent Blazor implementation, not a port.
 
 ## Status
 
-Vela UI is in early development and there is nothing to install yet. The
-CLI currently prints its help and version, and nothing more.
+Vela UI is in early development and there is nothing to install yet. Button
+exists in the component registry (`src/Core`) and is covered by tests, but
+the CLI can't copy it into an app yet: it only prints its help and version.
 
 The first milestone is `vela init` and `vela add` for Button, Input, Label,
 and Card, with light and dark themes driven by CSS variables. Dialog,
@@ -26,13 +27,13 @@ You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 ```bash
 dotnet build
 dotnet test
-dotnet run --project src/Vela.UI.Cli -- --help
+dotnet run --project src/Cli -- --help
 ```
 
 To run one test:
 
 ```bash
-dotnet test --filter "FullyQualifiedName~VelaCliTests.Version_is_a_semantic_version_without_build_metadata"
+dotnet test --filter "FullyQualifiedName~ButtonTests.Button_Disabled"
 ```
 
 The build treats warnings as errors and enforces the code style in
@@ -46,11 +47,34 @@ To add a package, add a `PackageVersion` entry there and a
 
 | Path | Contents |
 | --- | --- |
-| `src/Vela.UI.Cli/` | The `vela` command-line tool |
-| `tests/Vela.UI.Cli.Tests/` | Tests for the CLI |
+| `src/Core/` | The component registry: every component's source, compiled and tested but never published as a package |
+| `src/Core/Styles/vela.css` | Theme tokens (Tailwind v4 CSS variables, light and dark) |
+| `src/Cli/` | The `vela` command-line tool |
+| `tests/Core/`, `tests/Cli/` | Tests, mirroring the `src/` folders |
 | `Directory.Build.props` | Version number and settings shared by every project |
 | `Directory.Packages.props` | NuGet package versions for every project |
 | `NuGet.config` | Restricts package restore to nuget.org |
+
+## Writing a component
+
+Each component lives in its own folder under `src/Core/Components/`, so the
+CLI can copy one folder into an app. `Button` is the reference:
+
+- `Button.razor` holds the markup and `Button.razor.cs` the parameters and
+  logic, as a partial class.
+- Variant and size enums sit in the same folder, one type per file.
+- Classes are combined with `ClassNames.Join`, which is the only shared helper.
+  It appends without resolving conflicts, so each kind of utility (rounding,
+  border color, focus ring color, icon size) is set in exactly one place: the
+  base, the variant, or the size. A test enforces this for Button.
+- Components take a `Class` parameter, pass other attributes through to the
+  root element, and set `data-slot` (plus `data-variant`/`data-size` where
+  they apply) with shadcn/ui's names.
+- Components use Tailwind utilities that refer to theme tokens (`bg-primary`,
+  not `bg-neutral-900`), so restyling means editing `vela.css`, not the
+  component.
+- Tests are bUnit tests written in Razor under `tests/Core/Components/`,
+  named `Component_Scenario`.
 
 ## Versioning
 
@@ -60,4 +84,5 @@ breaking changes. Every release gets an entry in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-Vela UI is released under the [MIT License](LICENSE).
+Vela UI is released under the [MIT License](LICENSE). The component design is
+adapted from shadcn/ui; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

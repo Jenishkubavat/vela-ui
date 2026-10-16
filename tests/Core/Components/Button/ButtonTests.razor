@@ -1,0 +1,165 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Button_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button>Save</Button>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("button", button.GetAttribute("type"));
+        Assert.False(button.HasAttribute("disabled"));
+        Assert.Equal("button", button.GetAttribute("data-slot"));
+        Assert.Equal("default", button.GetAttribute("data-variant"));
+        Assert.Equal("default", button.GetAttribute("data-size"));
+        Assert.Contains("bg-primary", button.ClassList);
+        Assert.Contains("h-8", button.ClassList);
+        Assert.Equal("Save", button.TextContent.Trim());
+    }
+
+    [Theory]
+    [InlineData(ButtonVariant.Default, "default", "bg-primary")]
+    [InlineData(ButtonVariant.Destructive, "destructive", "text-destructive")]
+    [InlineData(ButtonVariant.Outline, "outline", "border-border")]
+    [InlineData(ButtonVariant.Secondary, "secondary", "bg-secondary")]
+    [InlineData(ButtonVariant.Ghost, "ghost", "hover:bg-muted")]
+    [InlineData(ButtonVariant.Link, "link", "hover:underline")]
+    public void Button_Variant(ButtonVariant variant, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Variant="variant">Save</Button>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal(expectedName, button.GetAttribute("data-variant"));
+        Assert.Contains(expectedClass, button.ClassList);
+    }
+
+    [Theory]
+    [InlineData(ButtonSize.Default, "default", "h-8")]
+    [InlineData(ButtonSize.ExtraSmall, "xs", "h-6")]
+    [InlineData(ButtonSize.Small, "sm", "h-7")]
+    [InlineData(ButtonSize.Large, "lg", "h-9")]
+    [InlineData(ButtonSize.Icon, "icon", "size-8")]
+    [InlineData(ButtonSize.IconExtraSmall, "icon-xs", "size-6")]
+    [InlineData(ButtonSize.IconSmall, "icon-sm", "size-7")]
+    [InlineData(ButtonSize.IconLarge, "icon-lg", "size-9")]
+    public void Button_Size(ButtonSize size, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Size="size">Save</Button>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal(expectedName, button.GetAttribute("data-size"));
+        Assert.Contains(expectedClass, button.ClassList);
+    }
+
+    [Fact]
+    public void Button_DefaultClassesDoNotConflict()
+    {
+        // ClassNames.Join doesn't resolve conflicts, so each of these groups may be set
+        // only once. Two rounding classes, for example, would leave the result up to
+        // Tailwind's stylesheet order.
+        foreach (var variant in Enum.GetValues<ButtonVariant>())
+        {
+            foreach (var size in Enum.GetValues<ButtonSize>())
+            {
+                // Arrange && Act
+                var classes = Button.GetClasses(variant, size).Split(' ');
+
+                // Assert
+                Assert.Single(classes, c => c.StartsWith("rounded-", StringComparison.Ordinal));
+                Assert.Single(classes, c => c.StartsWith("[&_svg:not([class*='size-'])]:size-", StringComparison.Ordinal));
+                Assert.Single(classes, c => c.StartsWith("border-", StringComparison.Ordinal));
+                Assert.Single(classes, c => c.StartsWith("focus-visible:ring-", StringComparison.Ordinal) && c.Contains('/'));
+            }
+        }
+    }
+
+    [Fact]
+    public void Button_Disabled()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Disabled="true">Save</Button>);
+
+        // Assert
+        Assert.True(cut.Find("button").HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public void Button_TypeSubmit()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Type="submit">Save</Button>);
+
+        // Assert
+        Assert.Equal("submit", cut.Find("button").GetAttribute("type"));
+    }
+
+    [Fact]
+    public void Button_ClassIsAddedAfterDefaults()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Class="w-full">Save</Button>);
+
+        // Assert
+        var classes = cut.Find("button").ClassList;
+        Assert.Equal("w-full", classes.Last());
+        Assert.Contains("bg-primary", classes);
+    }
+
+    [Fact]
+    public void Button_AdditionalAttributes()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button aria-label="Close dialog" aria-invalid="true" id="close" Size="ButtonSize.Icon">×</Button>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("Close dialog", button.GetAttribute("aria-label"));
+        Assert.Equal("true", button.GetAttribute("aria-invalid"));
+        Assert.Equal("close", button.GetAttribute("id"));
+    }
+
+    [Fact]
+    public void Button_OnClick()
+    {
+        // Arrange
+        var clicks = 0;
+        var cut = Render(@<Button OnClick="() => clicks++">Save</Button>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.Equal(1, clicks);
+    }
+
+    [Fact]
+    public void Button_GetClassesMatchesRenderedButton()
+    {
+        // Arrange
+        var cut = Render(@<Button Variant="ButtonVariant.Outline" Size="ButtonSize.Small" Class="w-full">Save</Button>);
+
+        // Act
+        var classes = Button.GetClasses(ButtonVariant.Outline, ButtonSize.Small, "w-full");
+
+        // Assert
+        Assert.Equal(cut.Find("button").GetAttribute("class"), classes);
+    }
+
+    [Fact]
+    public void Button_GetClassesStylesALink()
+    {
+        // Arrange && Act
+        var cut = Render(@<a href="/login" class="@Button.GetClasses(ButtonVariant.Outline)">Log in</a>);
+
+        // Assert
+        var link = cut.Find("a");
+        Assert.Equal("/login", link.GetAttribute("href"));
+        Assert.Contains("border-border", link.ClassList);
+    }
+}

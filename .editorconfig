@@ -15,6 +15,8 @@ indent_size = 2
 trim_trailing_whitespace = false
 
 [*.cs]
+file_header_template = ------------------------------------------------------------------------\nThis file is licensed to you under the MIT License.\n------------------------------------------------------------------------
+dotnet_diagnostic.IDE0073.severity = warning
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_using_directive_placement = outside_namespace:warning
 csharp_prefer_braces = true:warning
@@ -26,6 +28,6 @@ dotnet_style_qualification_for_property = false:warning
 dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_event = false:warning
 
-# Test names read as sentences, e.g. Help_is_printed_to_output_and_succeeds.
+# Test names follow Component_Scenario, e.g. Button_Disabled.
 [tests/**.cs]
 dotnet_diagnostic.CA1707.severity = none

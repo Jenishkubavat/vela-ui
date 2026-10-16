@@ -9,3 +9,7 @@ follow [Semantic Versioning](https://semver.org/).
 ### Added
 
 - `vela` CLI with `--help` and `--version`.
+- Button component matching shadcn/ui: six variants, eight sizes, icon spacing
+  through `data-icon`, `aria-invalid` and `aria-expanded` styles, and
+  `Button.GetClasses` for styling links as buttons.
+- Theme tokens for Tailwind CSS v4 with light and dark values.
