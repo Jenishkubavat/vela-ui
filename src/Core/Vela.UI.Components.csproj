@@ -2,12 +2,9 @@
 
   <!--
     This project is the component registry. It is compiled and tested so every
-    component is known to build, but it is never published: the vela CLI copies
-    these source files into the user's application instead.
+    component is known to build, but it is never published as a package: the vela
+    CLI copies these source files into the user's application instead.
   -->
-  <PropertyGroup>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />

@@ -5,9 +5,14 @@
     <VersionPrefix>0.1.0</VersionPrefix>
   </PropertyGroup>
 
+  <!-- Only projects that ship as NuGet packages set IsPackable to true. -->
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <Authors>Jenish Kubavat</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Jenishkubavat/vela-ui</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Jenishkubavat/vela-ui</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup>

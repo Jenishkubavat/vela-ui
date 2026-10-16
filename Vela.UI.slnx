@@ -12,6 +12,7 @@
   <Folder Name="/src/">
     <Project Path="src/Cli/Vela.UI.Cli.csproj" />
     <Project Path="src/Core/Vela.UI.Components.csproj" />
+    <Project Path="src/Primitives/Vela.UI.Primitives.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Cli/Vela.UI.Cli.Tests.csproj" />
