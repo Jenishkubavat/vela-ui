@@ -1,0 +1,8 @@
+@namespace Vela.UI.Components
+
+<div class="@ClassNames.Join(LayoutClasses, ColorClasses, SpacingClasses, FooterClasses, ImageClasses, Class)"
+     data-slot="card"
+     data-size="@SizeName(Size)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
