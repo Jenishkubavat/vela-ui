@@ -9,6 +9,22 @@ behavior without waiting on a release or working around an API.
 The idea comes from [shadcn/ui](https://ui.shadcn.com/). This is an
 independent Blazor implementation, not a port.
 
+## Two ways to use it
+
+You can pick either layer, or mix them:
+
+- **Styled components.** `vela add dialog` copies a ready-to-use component,
+  styled with Tailwind CSS and the theme tokens in `vela.css`. This is the
+  shadcn/ui experience.
+- **Headless primitives.** The `Vela.UI.Primitives` NuGet package provides
+  the behavior alone: focus management, keyboard navigation, ARIA, and
+  open/close state. It renders no CSS classes, so you style it however you
+  like, with or without Tailwind. This is the Radix experience.
+
+The styled components are built on the primitives, so both behave the
+same way. Simple components such as Button have no behavior worth sharing
+and exist only in the styled layer; the primitives start with Dialog.
+
 ## Status
 
 Vela UI is in early development and there is nothing to install yet. Button
