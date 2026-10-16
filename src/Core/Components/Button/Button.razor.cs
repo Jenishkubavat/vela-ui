@@ -25,20 +25,34 @@ namespace Vela.UI.Components;
 /// </remarks>
 public partial class Button
 {
-    // Rounding, icon size, focus colors, and border colors are deliberately left to the
-    // variant and size groups. ClassNames.Join doesn't resolve conflicts, so each of
-    // those may be set in exactly one group.
-    private const string BaseClasses =
-        "group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap " +
-        "border bg-clip-padding text-sm font-medium select-none outline-none " +
-        "transition-all motion-reduce:transition-none " +
-        "focus-visible:ring-3 active:not-aria-[haspopup]:translate-y-px " +
+    // The groups below apply to every button. Rounding, icon size, focus colors, and
+    // border colors are deliberately left to the variant and size groups further down:
+    // ClassNames.Join doesn't resolve conflicts, so each may be set in exactly one place.
+
+    // group/button lets content react to the button's state, e.g. group-hover/button:.
+    private const string LayoutClasses =
+        "group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap select-none " +
+        "border bg-clip-padding text-sm font-medium";
+
+    // The press nudge is skipped for buttons that open a menu (aria-haspopup).
+    private const string MotionClasses =
+        "transition-all motion-reduce:transition-none active:not-aria-[haspopup]:translate-y-px";
+
+    private const string FocusClasses =
+        "outline-none focus-visible:ring-3";
+
+    private const string InvalidClasses =
         "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 " +
-        "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 " +
-        "disabled:pointer-events-none disabled:opacity-50 " +
+        "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40";
+
+    private const string DisabledClasses =
+        "disabled:pointer-events-none disabled:opacity-50";
+
+    private const string IconClasses =
         "[&_svg]:pointer-events-none [&_svg]:shrink-0";
 
-    private const string StandardFocus = "focus-visible:border-ring focus-visible:ring-ring/50";
+    // Focus border and ring color for every variant except Destructive, which uses red.
+    private const string FocusColorClasses = "focus-visible:border-ring focus-visible:ring-ring/50";
 
     private const string IconSize3 = "[&_svg:not([class*='size-'])]:size-3";
     private const string IconSize3_5 = "[&_svg:not([class*='size-'])]:size-3.5";
@@ -113,12 +127,21 @@ public partial class Button
         ButtonVariant variant = ButtonVariant.Default,
         ButtonSize size = ButtonSize.Default,
         string? additionalClasses = null) =>
-        ClassNames.Join(BaseClasses, VariantClasses(variant), SizeClasses(size), additionalClasses);
+        ClassNames.Join(
+            LayoutClasses,
+            MotionClasses,
+            FocusClasses,
+            InvalidClasses,
+            DisabledClasses,
+            IconClasses,
+            VariantClasses(variant),
+            SizeClasses(size),
+            additionalClasses);
 
     private static string VariantClasses(ButtonVariant variant) => variant switch
     {
         ButtonVariant.Default =>
-            $"border-transparent bg-primary text-primary-foreground hover:bg-primary/80 {StandardFocus}",
+            $"border-transparent bg-primary text-primary-foreground hover:bg-primary/80 {FocusColorClasses}",
         ButtonVariant.Destructive =>
             "border-transparent bg-destructive/10 text-destructive hover:bg-destructive/20 " +
             "focus-visible:border-destructive/40 focus-visible:ring-destructive/20 " +
@@ -126,15 +149,15 @@ public partial class Button
         ButtonVariant.Outline =>
             "border-border bg-background hover:bg-muted hover:text-foreground " +
             "aria-expanded:bg-muted aria-expanded:text-foreground " +
-            $"dark:border-input dark:bg-input/30 dark:hover:bg-input/50 {StandardFocus}",
+            $"dark:border-input dark:bg-input/30 dark:hover:bg-input/50 {FocusColorClasses}",
         ButtonVariant.Secondary =>
             "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 " +
-            $"aria-expanded:bg-secondary aria-expanded:text-secondary-foreground {StandardFocus}",
+            $"aria-expanded:bg-secondary aria-expanded:text-secondary-foreground {FocusColorClasses}",
         ButtonVariant.Ghost =>
             "border-transparent hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 " +
-            $"aria-expanded:bg-muted aria-expanded:text-foreground {StandardFocus}",
+            $"aria-expanded:bg-muted aria-expanded:text-foreground {FocusColorClasses}",
         ButtonVariant.Link =>
-            $"border-transparent text-primary underline-offset-4 hover:underline {StandardFocus}",
+            $"border-transparent text-primary underline-offset-4 hover:underline {FocusColorClasses}",
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 

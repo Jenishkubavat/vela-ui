@@ -1,0 +1,165 @@
+@inherits BunitContext
+@code
+{
+    private sealed class SignUp
+    {
+        public string? Email { get; set; }
+        public int Age { get; set; }
+    }
+
+    [Fact]
+    public void Input_Default()
+    {
+        // Arrange
+        var model = new SignUp { Email = "ada@example.com" };
+
+        // Act
+        var cut = Render(@<Input @bind-Value="model.Email" />);
+
+        // Assert
+        var input = cut.Find("input");
+        Assert.Equal("text", input.GetAttribute("type"));
+        Assert.Equal("input", input.GetAttribute("data-slot"));
+        Assert.Equal("ada@example.com", input.GetAttribute("value"));
+        Assert.False(input.HasAttribute("aria-invalid"));
+        Assert.False(input.HasAttribute("disabled"));
+        Assert.Contains("h-8", input.ClassList);
+    }
+
+    [Fact]
+    public void Input_ChangeUpdatesBoundValue()
+    {
+        // Arrange
+        var model = new SignUp();
+        var cut = Render(@<Input @bind-Value="model.Email" />);
+
+        // Act
+        cut.Find("input").Change("grace@example.com");
+
+        // Assert
+        Assert.Equal("grace@example.com", model.Email);
+    }
+
+    [Fact]
+    public void Input_DefaultIgnoresKeystrokes()
+    {
+        // Arrange
+        var model = new SignUp();
+        var cut = Render(@<Input @bind-Value="model.Email" />);
+
+        // Act && Assert
+        // Without Immediate, no oninput handler is attached, so typing doesn't
+        // cause a server round trip per keystroke.
+        Assert.Throws<MissingEventHandlerException>(() => cut.Find("input").Input("g"));
+        Assert.Null(model.Email);
+    }
+
+    [Fact]
+    public void Input_ImmediateUpdatesOnKeystroke()
+    {
+        // Arrange
+        var model = new SignUp();
+        var cut = Render(@<Input @bind-Value="model.Email" Immediate="true" />);
+
+        // Act
+        cut.Find("input").Input("g");
+
+        // Assert
+        Assert.Equal("g", model.Email);
+        Assert.Throws<MissingEventHandlerException>(() => cut.Find("input").Change("gr"));
+    }
+
+    [Fact]
+    public void Input_Type()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act
+        var cut = Render(@<Input @bind-Value="model.Email" Type="email" />);
+
+        // Assert
+        Assert.Equal("email", cut.Find("input").GetAttribute("type"));
+    }
+
+    [Fact]
+    public void Input_Disabled()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act
+        var cut = Render(@<Input @bind-Value="model.Email" Disabled="true" />);
+
+        // Assert
+        Assert.True(cut.Find("input").HasAttribute("disabled"));
+    }
+
+    [Fact]
+    public void Input_ValidationErrorsSetAriaInvalid()
+    {
+        // Arrange
+        var model = new SignUp();
+        var editContext = new EditContext(model);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(@<EditForm EditContext="editContext"><Input @bind-Value="model.Email" /></EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(SignUp.Email)), "Email is required.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Equal("true", cut.Find("input").GetAttribute("aria-invalid"));
+
+        // Act
+        messages.Clear();
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.False(cut.Find("input").HasAttribute("aria-invalid"));
+    }
+
+    [Fact]
+    public void Input_AriaInvalidCanBeSetDirectly()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act
+        var cut = Render(@<Input @bind-Value="model.Email" aria-invalid="true" />);
+
+        // Assert
+        Assert.Equal("true", cut.Find("input").GetAttribute("aria-invalid"));
+    }
+
+    [Fact]
+    public void Input_ClassAndAdditionalAttributes()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act
+        var cut = Render(@<Input @bind-Value="model.Email" id="email" placeholder="you@example.com" Class="max-w-sm" />);
+
+        // Assert
+        var input = cut.Find("input");
+        Assert.Equal("email", input.GetAttribute("id"));
+        Assert.Equal("you@example.com", input.GetAttribute("placeholder"));
+        Assert.Equal("max-w-sm", input.ClassList.Last());
+    }
+
+    [Fact]
+    public void Input_GetClassesStylesInputNumber()
+    {
+        // Arrange
+        var model = new SignUp { Age = 36 };
+
+        // Act
+        var cut = Render(@<InputNumber class="@Input.GetClasses()" @bind-Value="model.Age" />);
+
+        // Assert
+        var input = cut.Find("input");
+        Assert.Equal("number", input.GetAttribute("type"));
+        Assert.Contains("h-8", input.ClassList);
+    }
+}

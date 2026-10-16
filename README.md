@@ -78,8 +78,15 @@ Each component lives in its own folder under `src/Core/Components/`, so the
 CLI can copy one folder into an app. `Button` is the reference:
 
 - `Button.razor` holds the markup and `Button.razor.cs` the parameters and
-  logic, as a partial class.
+  logic, as a partial class. Each `.razor` file declares its own `@using`
+  lines; `src/Core` has no shared `_Imports.razor`, because it wouldn't be
+  copied into apps.
+- Form controls such as `Input` inherit Blazor's `InputBase<T>` so binding,
+  validation, and static form posts work the way they do for `InputText`.
 - Variant and size enums sit in the same folder, one type per file.
+- Classes stay inline as Tailwind utilities, grouped into named constants by
+  purpose (`LayoutClasses`, `FocusClasses`, `InvalidClasses`, `DisabledClasses`,
+  ...) so you can find the line to change.
 - Classes are combined with `ClassNames.Join`, which is the only shared helper.
   It appends without resolving conflicts, so each kind of utility (rounding,
   border color, focus ring color, icon size) is set in exactly one place: the
