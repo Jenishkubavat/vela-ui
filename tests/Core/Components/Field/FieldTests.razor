@@ -1,0 +1,222 @@
+@inherits BunitContext
+@code
+{
+    private sealed class SignUp
+    {
+        public string? Email { get; set; }
+        public int Age { get; set; }
+    }
+
+    [Fact]
+    public void Field_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Field>Content</Field>);
+
+        // Assert
+        var field = cut.Find("[data-slot=field]");
+        Assert.Equal("group", field.GetAttribute("role"));
+        Assert.Equal("vertical", field.GetAttribute("data-orientation"));
+        Assert.Contains("flex-col", field.ClassList);
+    }
+
+    [Theory]
+    [InlineData(FieldOrientation.Vertical, "vertical")]
+    [InlineData(FieldOrientation.Horizontal, "horizontal")]
+    [InlineData(FieldOrientation.Responsive, "responsive")]
+    public void Field_Orientation(FieldOrientation orientation, string expectedName)
+    {
+        // Arrange && Act
+        var cut = Render(@<Field Orientation="orientation">Content</Field>);
+
+        // Assert
+        Assert.Equal(expectedName, cut.Find("[data-slot=field]").GetAttribute("data-orientation"));
+    }
+
+    [Fact]
+    public void Field_ManualWiringConnectsLabelHintAndError()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act
+        var cut = Render(
+            @<Field>
+                <FieldLabel for="email">Email</FieldLabel>
+                <Input id="email" aria-describedby="email-hint email-error" @bind-Value="model.Email" />
+                <FieldDescription id="email-hint">We'll never share it.</FieldDescription>
+                <FieldError id="email-error">Email is required.</FieldError>
+            </Field>);
+
+        // Assert
+        var label = cut.Find("label");
+        var input = cut.Find("input");
+        Assert.Equal("field-label", label.GetAttribute("data-slot"));
+        Assert.Equal(input.GetAttribute("id"), label.GetAttribute("for"));
+        foreach (var id in input.GetAttribute("aria-describedby")!.Split(' '))
+        {
+            Assert.NotNull(cut.Find($"#{id}"));
+        }
+    }
+
+    [Fact]
+    public void FieldError_RendersNothingWithoutAnError()
+    {
+        // Arrange && Act
+        var cut = Render(@<FieldError Errors="Array.Empty<string>()" />);
+
+        // Assert
+        Assert.Empty(cut.FindAll("[data-slot=field-error]"));
+    }
+
+    [Fact]
+    public void FieldError_SingleErrorIsAnnounced()
+    {
+        // Arrange && Act
+        var cut = Render(@<FieldError Errors="@(new[] { "Email is required." })" />);
+
+        // Assert
+        var error = cut.Find("[data-slot=field-error]");
+        Assert.Equal("alert", error.GetAttribute("role"));
+        Assert.Equal("Email is required.", error.TextContent.Trim());
+        Assert.Empty(error.QuerySelectorAll("li"));
+    }
+
+    [Fact]
+    public void FieldError_SeveralErrorsBecomeAListWithoutRepeats()
+    {
+        // Arrange && Act
+        var cut = Render(@<FieldError Errors="@(new[] { "Too short.", "Needs a digit.", "Too short." })" />);
+
+        // Assert
+        var items = cut.FindAll("[data-slot=field-error] li");
+        Assert.Equal(["Too short.", "Needs a digit."], items.Select(item => item.TextContent));
+    }
+
+    [Fact]
+    public void FieldError_ChildContentWinsOverErrors()
+    {
+        // Arrange && Act
+        var cut = Render(@<FieldError Errors="@(new[] { "From the list." })">Custom message.</FieldError>);
+
+        // Assert
+        Assert.Equal("Custom message.", cut.Find("[data-slot=field-error]").TextContent.Trim());
+    }
+
+    [Fact]
+    public void FieldError_ForFollowsValidation()
+    {
+        // Arrange
+        var model = new SignUp();
+        var editContext = new EditContext(model);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(
+            @<EditForm EditContext="editContext">
+                <Input id="email" @bind-Value="model.Email" />
+                <FieldError id="email-error" For="() => model.Email" />
+            </EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(SignUp.Email)), "Email is required.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Equal("Email is required.", cut.Find("#email-error").TextContent.Trim());
+
+        // Act
+        messages.Clear();
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Empty(cut.FindAll("[data-slot=field-error]"));
+    }
+
+    [Fact]
+    public void FieldError_ForWorksWithValueTypes()
+    {
+        // Arrange
+        var model = new SignUp();
+        var editContext = new EditContext(model);
+        var messages = new ValidationMessageStore(editContext);
+        messages.Add(editContext.Field(nameof(SignUp.Age)), "Enter an age from 18 to 120.");
+
+        // Act
+        var cut = Render(
+            @<EditForm EditContext="editContext">
+                <FieldError For="() => model.Age" />
+            </EditForm>);
+
+        // Assert
+        Assert.Equal("Enter an age from 18 to 120.", cut.Find("[data-slot=field-error]").TextContent.Trim());
+    }
+
+    [Fact]
+    public void FieldError_ForOutsideEditFormThrows()
+    {
+        // Arrange
+        var model = new SignUp();
+
+        // Act && Assert
+        Assert.Throws<InvalidOperationException>(() => Render(@<FieldError For="() => model.Email" />));
+    }
+
+    [Fact]
+    public void FieldSet_WithLegendAndGroup()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<FieldSet>
+                <FieldLegend Variant="FieldLegendVariant.Label">Notifications</FieldLegend>
+                <FieldDescription>Choose what we email you about.</FieldDescription>
+                <FieldGroup>
+                    <Field Orientation="FieldOrientation.Horizontal">
+                        <FieldContent>
+                            <FieldTitle>Comments</FieldTitle>
+                            <FieldDescription>When someone replies to you.</FieldDescription>
+                        </FieldContent>
+                    </Field>
+                </FieldGroup>
+            </FieldSet>);
+
+        // Assert
+        var fieldset = cut.Find("fieldset");
+        Assert.Equal("field-set", fieldset.GetAttribute("data-slot"));
+        var legend = fieldset.FirstElementChild!;
+        Assert.Equal("LEGEND", legend.TagName);
+        Assert.Equal("label", legend.GetAttribute("data-variant"));
+        Assert.NotNull(cut.Find("[data-slot=field-group] [data-slot=field-content] [data-slot=field-label]"));
+    }
+
+    [Fact]
+    public void FieldSeparator_WithAndWithoutText()
+    {
+        // Arrange && Act
+        var plain = Render(@<FieldSeparator />);
+        var withText = Render(@<FieldSeparator>Or continue with</FieldSeparator>);
+
+        // Assert
+        Assert.Equal("false", plain.Find("[data-slot=field-separator]").GetAttribute("data-content"));
+        Assert.Empty(plain.FindAll("[data-slot=field-separator-content]"));
+        Assert.Equal("true", withText.Find("[data-slot=field-separator]").GetAttribute("data-content"));
+        Assert.Equal("Or continue with", withText.Find("[data-slot=field-separator-content]").TextContent.Trim());
+    }
+
+    [Fact]
+    public void Field_PartsAcceptClassAndAttributes()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Field Class="max-w-sm" data-disabled="true">
+                <FieldLabel for="name" Class="text-xs">Name</FieldLabel>
+                <FieldDescription id="name-hint" Class="italic">As on your ID.</FieldDescription>
+            </Field>);
+
+        // Assert
+        var field = cut.Find("[data-slot=field]");
+        Assert.Equal("max-w-sm", field.ClassList.Last());
+        Assert.Equal("true", field.GetAttribute("data-disabled"));
+        Assert.Equal("text-xs", cut.Find("label").ClassList.Last());
+        Assert.Equal("name", cut.Find("label").GetAttribute("for"));
+        Assert.Equal("italic", cut.Find("#name-hint").ClassList.Last());
+    }
+}

@@ -1,0 +1,43 @@
+@namespace Vela.UI.Components
+@*
+    The label of a Field. Set for="..." to the control's id. It can also wrap a whole
+    Field (a checkbox with its title and description) to make one large, clickable choice;
+    that choice gets a hairline edge and is highlighted when its control is checked.
+*@
+
+<Label Class="@ClassNames.Join(LayoutClasses, ChoiceClasses, Class)"
+       data-slot="field-label"
+       @attributes="AdditionalAttributes">
+    @ChildContent
+</Label>
+
+@code {
+    private const string LayoutClasses =
+        "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:text-fg-faint";
+
+    // Checked states use the text colour, not the flame, as the design system asks.
+    private const string ChoiceClasses =
+        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-lg " +
+        "has-[>[data-slot=field]]:shadow-hairline-strong *:data-[slot=field]:p-2.5 " +
+        "has-[>[data-slot=field]]:not-has-[:disabled]:hover:bg-hover " +
+        "has-[>[data-slot=field]]:has-[:focus-visible]:shadow-control-focus " +
+        "has-checked:bg-hover has-checked:shadow-control-hover";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The label text, or a whole Field for a large clickable choice.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, most importantly <c>for</c> (the control's <c>id</c>), passed to the label.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

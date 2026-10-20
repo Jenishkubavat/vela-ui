@@ -47,7 +47,7 @@ are not styled by any of this.
 ## Status
 
 Vela UI is in early development and there is nothing to install yet.
-Button, Input, Label, Card, Kbd, and Spinner exist in the component registry
+Button, Input, Label, Field, Card, Kbd, and Spinner exist in the component registry
 (`src/Core`) and are covered by tests, but the CLI can't copy them into an
 app yet: it only prints its help and version.
 

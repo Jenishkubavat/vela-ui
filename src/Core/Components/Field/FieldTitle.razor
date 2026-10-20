@@ -1,0 +1,34 @@
+@namespace Vela.UI.Components
+@*
+    A label-styled heading inside FieldContent, for a field whose real label wraps the
+    whole choice. Unlike FieldLabel it isn't a <label> element.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="field-label"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex w-fit items-center gap-2 text-label text-fg group-data-[disabled=true]/field:text-fg-faint";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the title's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

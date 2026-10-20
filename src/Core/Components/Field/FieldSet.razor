@@ -1,0 +1,35 @@
+@namespace Vela.UI.Components
+@*
+    A native <fieldset> for related fields, such as an address or a group of checkboxes.
+    Start it with a FieldLegend: screen readers announce the legend with each control
+    inside. Set disabled="true" to disable every control in it at once.
+*@
+
+<fieldset class="@ClassNames.Join(Classes, Class)"
+          data-slot="field-set"
+          @attributes="AdditionalAttributes">
+    @ChildContent
+</fieldset>
+
+@code {
+    private const string Classes =
+        "flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// A FieldLegend, an optional FieldDescription, and the fields.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>disabled</c>, applied to the <c>&lt;fieldset&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -21,6 +21,10 @@ follow [Semantic Versioning](https://semver.org/).
   parts, a small size, and spacing driven by the `--card-spacing` variable.
 - Kbd and KbdGroup for showing keyboard shortcuts, and Spinner for loading
   states.
+- Field component with shadcn/ui's parts (Field, FieldLabel, FieldTitle,
+  FieldDescription, FieldError, FieldContent, FieldGroup, FieldSet,
+  FieldLegend, FieldSeparator) and vertical, horizontal, and responsive
+  layouts. FieldError shows EditForm validation messages through `For`.
 - The Vela design system as a Tailwind CSS v4 theme (`vela.css`): Night and
   Day tokens, type roles, machined radii, hairline-ring shadows, and the
   Host Grotesk and Spline Sans Mono fonts. Night is the default.

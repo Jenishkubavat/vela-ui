@@ -1,0 +1,39 @@
+@namespace Vela.UI.Components
+@*
+    A hint under the control, in muted 12px text. Give it an id and list that id in the
+    control's aria-describedby so screen readers read the hint with the control.
+*@
+
+<p class="@ClassNames.Join(LayoutClasses, ColorClasses, Class)"
+   data-slot="field-description"
+   @attributes="AdditionalAttributes">
+    @ChildContent
+</p>
+
+@code {
+    // Tightens the gap above an error that follows it, and below a legend it follows.
+    private const string LayoutClasses =
+        "m-0 text-start text-caption group-data-[orientation=horizontal]/field:text-balance " +
+        "last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5";
+
+    private const string ColorClasses =
+        "text-fg-muted [&>a]:underline [&>a]:underline-offset-[0.2em] [&>a:hover]:text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The hint text. Say what's expected, not just what's allowed.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, most importantly <c>id</c>, applied to the <c>&lt;p&gt;</c> element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

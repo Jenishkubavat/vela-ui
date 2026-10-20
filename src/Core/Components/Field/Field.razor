@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="@ClassNames.Join(LayoutClasses, OrientationClasses(Orientation), Class)"
+     role="group"
+     data-slot="field"
+     data-orientation="@OrientationName(Orientation)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

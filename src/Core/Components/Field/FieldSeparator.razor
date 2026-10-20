@@ -1,0 +1,41 @@
+@namespace Vela.UI.Components
+@*
+    A hairline between parts of a form, optionally with text on it ("Or continue with").
+    The text sits on the work-surface colour so the line seems to pass behind it; on
+    another background, change it with Class="[&>span]:bg-room".
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="field-separator"
+     data-content="@(ChildContent is null ? "false" : "true")"
+     @attributes="AdditionalAttributes">
+    <div class="absolute inset-x-0 top-1/2 border-t" data-slot="separator" aria-hidden="true"></div>
+    @if (ChildContent is not null)
+    {
+        <span class="relative mx-auto block w-fit bg-surface px-2 text-fg-muted" data-slot="field-separator-content">
+            @ChildContent
+        </span>
+    }
+</div>
+
+@code {
+    private const string Classes = "relative -my-2 h-5 text-body-sm group-data-[variant=outline]/field-group:-mb-2";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Optional text shown on the line, such as "Or continue with".
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the separator's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

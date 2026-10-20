@@ -1,0 +1,31 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+@{
+    var messages = GetMessages();
+}
+@if (ChildContent is not null || messages.Count > 0)
+{
+    <div class="@ClassNames.Join(Classes, Class)"
+         role="alert"
+         data-slot="field-error"
+         @attributes="AdditionalAttributes">
+        @if (ChildContent is not null)
+        {
+            @ChildContent
+        }
+        else if (messages.Count == 1)
+        {
+            @messages[0]
+        }
+        else
+        {
+            <ul class="ms-4 flex list-disc flex-col gap-1">
+                @foreach (var message in messages)
+                {
+                    <li>@message</li>
+                }
+            </ul>
+        }
+    </div>
+}

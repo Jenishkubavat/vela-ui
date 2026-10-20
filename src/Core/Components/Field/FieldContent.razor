@@ -1,0 +1,30 @@
+@namespace Vela.UI.Components
+@* Stacks a FieldTitle or FieldLabel with its FieldDescription next to a control in a horizontal Field. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="field-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes = "group/field-content flex flex-1 flex-col gap-0.5 leading-snug";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The label or title and its description.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the content's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}
