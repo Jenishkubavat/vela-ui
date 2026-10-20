@@ -1,8 +1,11 @@
 # Third-party notices
 
-Vela UI's component design, variant and size names, and Tailwind class
-lists are adapted from shadcn/ui (https://github.com/shadcn-ui/ui), which
-is distributed under the following license.
+## shadcn/ui
+
+Vela UI's component APIs (parameter, variant, size, and part names) and
+the structure of its components are adapted from shadcn/ui
+(https://github.com/shadcn-ui/ui), which is distributed under the
+following license.
 
 ```
 MIT License
@@ -27,3 +30,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Fonts
+
+`src/Core/Styles/fonts/` contains Latin subsets of two typefaces, each
+licensed under the SIL Open Font License, Version 1.1. The full licence
+text ships next to each font file.
+
+| File | Typeface | Copyright | Licence |
+| --- | --- | --- | --- |
+| `HostGrotesk-latin.woff2` | Host Grotesk | Copyright 2023 The Host Grotesk Project Authors (https://github.com/Element-Type/HostGrotesk) | `HostGrotesk-OFL.txt` |
+| `SplineSansMono-latin.woff2` | Spline Sans Mono | Copyright 2022 The Spline Sans Mono Project Authors (https://github.com/SorkinType/SplineSansMono) | `SplineSansMono-OFL.txt` |

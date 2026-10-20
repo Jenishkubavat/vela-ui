@@ -8,54 +8,53 @@ using Microsoft.AspNetCore.Components.Web;
 namespace Vela.UI.Components;
 
 /// <summary>
-/// A native <c>&lt;button&gt;</c> styled with the Vela UI theme tokens.
+/// A native <c>&lt;button&gt;</c> styled with the Vela design system.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Keyboard activation (Enter and Space), focus, and the disabled state come from the
-/// browser. The button renders correctly under static server rendering; only
-/// <see cref="OnClick"/> needs an interactive render mode.
+/// <see cref="ButtonVariant.Default"/> is the primary action and the only variant that uses
+/// the flame, so a view should have one. Keyboard activation (Enter and Space), focus, and
+/// the disabled state come from the browser. The button renders correctly under static
+/// server rendering; only <see cref="OnClick"/> needs an interactive render mode.
 /// </para>
 /// <para>
-/// Mark an icon with <c>data-icon="inline-start"</c> or <c>data-icon="inline-end"</c> to
-/// tighten the padding on that side. Setting <c>aria-invalid</c> or <c>aria-expanded</c>
-/// through <see cref="AdditionalAttributes"/> applies the matching styles. To make a link
-/// or <c>NavLink</c> look like a button, use <see cref="GetClasses"/>.
+/// Show a shortcut with a <see cref="Kbd"/> inside the button, and a loading state with a
+/// <see cref="Spinner"/> plus <see cref="Disabled"/>, keeping the label ("Saving"). Mark an
+/// icon with <c>data-icon="inline-start"</c> or <c>data-icon="inline-end"</c> to tighten the
+/// padding on that side. To make a link or <c>NavLink</c> look like a button, use
+/// <see cref="GetClasses"/>.
 /// </para>
 /// </remarks>
 public partial class Button
 {
-    // The groups below apply to every button. Rounding, icon size, focus colors, and
-    // border colors are deliberately left to the variant and size groups further down:
+    // The groups below apply to every button. Rounding, icon size, text size, background,
+    // and edge (box-shadow) are left to the variant and size groups further down:
     // ClassNames.Join doesn't resolve conflicts, so each may be set in exactly one place.
 
     // group/button lets content react to the button's state, e.g. group-hover/button:.
     private const string LayoutClasses =
-        "group/button inline-flex shrink-0 items-center justify-center whitespace-nowrap select-none " +
-        "border bg-clip-padding text-sm font-medium";
+        "group/button inline-flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap select-none " +
+        "font-semibold leading-none no-underline";
 
-    // The press nudge is skipped for buttons that open a menu (aria-haspopup).
+    // Hover and press are written not-disabled: so a disabled button never lights up. Unlike
+    // enabled:, that also works when GetClasses styles a link.
     private const string MotionClasses =
-        "transition-all motion-reduce:transition-none active:not-aria-[haspopup]:translate-y-px";
+        "transition-[background-color,box-shadow,transform,color] duration-(--vela-quick) ease-vela " +
+        "motion-reduce:transition-none not-disabled:active:scale-97";
 
     private const string FocusClasses =
-        "outline-none focus-visible:ring-3";
+        "outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
 
     private const string InvalidClasses =
-        "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 " +
-        "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40";
+        "not-disabled:aria-invalid:shadow-control-invalid";
 
     private const string DisabledClasses =
-        "disabled:pointer-events-none disabled:opacity-50";
+        "disabled:cursor-not-allowed disabled:bg-transparent disabled:text-fg-faint disabled:shadow-hairline";
 
     private const string IconClasses =
         "[&_svg]:pointer-events-none [&_svg]:shrink-0";
 
-    // Focus border and ring color for every variant except Destructive, which uses red.
-    private const string FocusColorClasses = "focus-visible:border-ring focus-visible:ring-ring/50";
-
     private const string IconSize3 = "[&_svg:not([class*='size-'])]:size-3";
-    private const string IconSize3_5 = "[&_svg:not([class*='size-'])]:size-3.5";
     private const string IconSize4 = "[&_svg:not([class*='size-'])]:size-4";
 
     /// <summary>
@@ -141,23 +140,21 @@ public partial class Button
     private static string VariantClasses(ButtonVariant variant) => variant switch
     {
         ButtonVariant.Default =>
-            $"border-transparent bg-primary text-primary-foreground hover:bg-primary/80 {FocusColorClasses}",
+            "bg-flame text-on-flame shadow-button-primary not-disabled:hover:bg-flame-hover",
         ButtonVariant.Destructive =>
-            "border-transparent bg-destructive/10 text-destructive hover:bg-destructive/20 " +
-            "focus-visible:border-destructive/40 focus-visible:ring-destructive/20 " +
-            "dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+            "bg-transparent text-danger shadow-hairline-strong " +
+            "not-disabled:hover:bg-danger not-disabled:hover:text-on-danger not-disabled:hover:shadow-none",
         ButtonVariant.Outline =>
-            "border-border bg-background hover:bg-muted hover:text-foreground " +
-            "aria-expanded:bg-muted aria-expanded:text-foreground " +
-            $"dark:border-input dark:bg-input/30 dark:hover:bg-input/50 {FocusColorClasses}",
+            "bg-transparent text-fg shadow-hairline-strong not-disabled:hover:bg-hover aria-expanded:bg-hover",
         ButtonVariant.Secondary =>
-            "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80 " +
-            $"aria-expanded:bg-secondary aria-expanded:text-secondary-foreground {FocusColorClasses}",
+            "bg-surface-raised text-fg shadow-button-secondary " +
+            "not-disabled:hover:bg-secondary-hover aria-expanded:bg-secondary-hover",
         ButtonVariant.Ghost =>
-            "border-transparent hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 " +
-            $"aria-expanded:bg-muted aria-expanded:text-foreground {FocusColorClasses}",
+            "bg-transparent text-fg-muted not-disabled:hover:bg-hover not-disabled:hover:text-fg " +
+            "aria-expanded:bg-hover aria-expanded:text-fg",
         ButtonVariant.Link =>
-            $"border-transparent text-primary underline-offset-4 hover:underline {FocusColorClasses}",
+            "bg-transparent text-fg underline decoration-border-control decoration-1 underline-offset-[0.2em] " +
+            "not-disabled:hover:decoration-fg",
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 
@@ -165,25 +162,21 @@ public partial class Button
     private static string SizeClasses(ButtonSize size) => size switch
     {
         ButtonSize.Default =>
-            $"h-8 gap-1.5 rounded-lg px-2.5 has-data-[icon=inline-start]:ps-2 has-data-[icon=inline-end]:pe-2 {IconSize4}",
+            $"h-8 gap-2 rounded-md px-3.5 text-label has-data-[icon=inline-start]:ps-3 has-data-[icon=inline-end]:pe-3 {IconSize4}",
         ButtonSize.ExtraSmall =>
-            "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs " +
-            "has-data-[icon=inline-start]:ps-1.5 has-data-[icon=inline-end]:pe-1.5 " +
-            $"in-data-[slot=button-group]:rounded-lg {IconSize3}",
+            $"h-6 gap-1 rounded-sm px-2 text-xs has-data-[icon=inline-start]:ps-1.5 has-data-[icon=inline-end]:pe-1.5 {IconSize3}",
         ButtonSize.Small =>
-            "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] " +
-            "has-data-[icon=inline-start]:ps-1.5 has-data-[icon=inline-end]:pe-1.5 " +
-            $"in-data-[slot=button-group]:rounded-lg {IconSize3_5}",
+            $"h-7 gap-1.5 rounded-md px-2.5 text-xs has-data-[icon=inline-start]:ps-2 has-data-[icon=inline-end]:pe-2 {IconSize4}",
         ButtonSize.Large =>
-            $"h-9 gap-1.5 rounded-lg px-2.5 has-data-[icon=inline-start]:ps-2 has-data-[icon=inline-end]:pe-2 {IconSize4}",
+            $"h-10 gap-2 rounded-md px-4.5 text-sm has-data-[icon=inline-start]:ps-3.5 has-data-[icon=inline-end]:pe-3.5 {IconSize4}",
         ButtonSize.Icon =>
-            $"size-8 rounded-lg {IconSize4}",
+            $"size-8 rounded-md {IconSize4}",
         ButtonSize.IconExtraSmall =>
-            $"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg {IconSize3}",
+            $"size-6 rounded-sm {IconSize3}",
         ButtonSize.IconSmall =>
-            $"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg {IconSize4}",
+            $"size-7 rounded-md {IconSize4}",
         ButtonSize.IconLarge =>
-            $"size-9 rounded-lg {IconSize4}",
+            $"size-10 rounded-md {IconSize4}",
         _ => throw new ArgumentOutOfRangeException(nameof(size), size, null),
     };
 

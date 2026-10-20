@@ -1,125 +1,382 @@
 /*
-  Vela UI theme tokens for Tailwind CSS v4.
+  Vela theme for Tailwind CSS v4: "one flame on a neutral scale".
 
   Import this file after Tailwind in your app's stylesheet:
 
     @import "tailwindcss";
     @import "./vela.css";
 
-  Change the values under :root and .dark to restyle every component.
-  Components refer to tokens by name only (bg-primary, ring-ring, ...),
-  so you never need to edit component source to change colors.
+  The font URLs below are not rewritten by Tailwind, so put the fonts/
+  folder next to the compiled CSS file that the browser loads (for
+  example wwwroot/app.css and wwwroot/fonts/).
+
+  Night (dark) is the default. Set data-theme="light" on <html>, or on any
+  element, for Day. Both themes share every token name.
+
+  The --vela-* values are copied from the Vela design system's tokens.css
+  (generated from tokens.json, which also checks contrast). Change them
+  there first, then copy them here.
 */
 
-/* Dark mode follows a .dark class on any ancestor, usually <html>. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* ---------- Fonts: self-hosted Latin subsets, SIL Open Font License 1.1 (see fonts/) ---------- */
+@font-face {
+  font-family: "Host Grotesk";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("fonts/HostGrotesk-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Spline Sans Mono";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("fonts/SplineSansMono-latin.woff2") format("woff2");
+}
 
+/* ---------- Night (default) ---------- */
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --vela-gray-1: #0b0a09;
+  --vela-gray-2: #111010;
+  --vela-gray-3: #171615;
+  --vela-gray-4: #1f1e1c;
+  --vela-gray-5: #272523;
+  --vela-gray-6: #2e2c29;
+  --vela-gray-7: #3b3936;
+  --vela-gray-8: #6f6a63;
+  --vela-gray-9: #938d84;
+  --vela-gray-10: #aba59c;
+  --vela-gray-11: #d6d1c8;
+  --vela-gray-12: #f0ece5;
+  --vela-bg: #111010;
+  --vela-surface: #171615;
+  --vela-surface-raised: #1f1e1c;
+  --vela-surface-sunken: #0b0a09;
+  --vela-border: #2e2c29;
+  --vela-border-strong: #3b3936;
+  --vela-border-control: #6f6a63;
+  --vela-text: #f0ece5;
+  --vela-text-muted: #aba59c;
+  --vela-text-faint: #938d84;
+  --vela-flame: #ff9d3d;
+  --vela-flame-hover: #ffb061;
+  --vela-on-flame: #1f1100;
+  --vela-flame-text: #ffa64d;
+  --vela-focus: #ff9d3d;
+  --vela-glow: rgba(255, 157, 61, 0.30);
+  --vela-selection: rgba(255, 157, 61, 0.08);
+  --vela-hover: rgba(240, 236, 229, 0.045);
+  --vela-success: #62c98c;
+  --vela-warning: #e6c450;
+  --vela-danger: #f36d63;
+  --vela-info: #82a8f5;
+  --vela-on-danger: #1c0605;
+  --vela-scrim: rgba(6, 5, 4, 0.66);
+  --vela-highlight: rgba(255, 255, 255, 0.05);
+  --vela-shadow-raised: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 0 1px #2e2c29, 0 8px 20px -8px rgba(0, 0, 0, 0.6);
+  --vela-shadow-overlay: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px #3b3936, 0 28px 56px -14px rgba(0, 0, 0, 0.75);
+  --vela-shadow-glow: 0 0 0 1px #ff9d3d, 0 8px 20px -10px rgba(0, 0, 0, 0.6);
+  --vela-shadow-ember: 0 0 0 3px rgba(255, 157, 61, 0.45), 0 10px 30px -6px rgba(255, 157, 61, 0.55);
+
+  /* Not in tokens.json: the design system's skin hovers the secondary button one graphite step up. */
+  --vela-secondary-hover: var(--vela-gray-5);
+}
+
+/* ---------- Day ---------- */
+[data-theme="light"] {
+  color-scheme: light;
+  --vela-gray-1: #ffffff;
+  --vela-gray-2: #f6f5f2;
+  --vela-gray-3: #eeede8;
+  --vela-gray-4: #e7e5e0;
+  --vela-gray-5: #e1ded8;
+  --vela-gray-6: #d3d0c9;
+  --vela-gray-7: #b5b0a8;
+  --vela-gray-8: #8a847b;
+  --vela-gray-9: #6b665f;
+  --vela-gray-10: #5d5852;
+  --vela-gray-11: #3a3733;
+  --vela-gray-12: #1b1a18;
+  --vela-bg: #f6f5f2;
+  --vela-surface: #ffffff;
+  --vela-surface-raised: #ffffff;
+  --vela-surface-sunken: #eeede8;
+  --vela-border: #e1ded8;
+  --vela-border-strong: #d3d0c9;
+  --vela-border-control: #8a847b;
+  --vela-text: #1b1a18;
+  --vela-text-muted: #5d5852;
+  --vela-text-faint: #6b665f;
+  --vela-flame: #f7922b;
+  --vela-flame-hover: #e9821a;
+  --vela-on-flame: #1f1100;
+  --vela-flame-text: #9a4b00;
+  --vela-focus: #b35a00;
+  --vela-glow: rgba(247, 146, 43, 0.32);
+  --vela-selection: rgba(247, 146, 43, 0.10);
+  --vela-hover: rgba(27, 26, 24, 0.04);
+  --vela-success: #1f7a48;
+  --vela-warning: #8a6400;
+  --vela-danger: #c0302a;
+  --vela-info: #2b5fc0;
+  --vela-on-danger: #ffffff;
+  --vela-scrim: rgba(27, 26, 24, 0.30);
+  --vela-highlight: rgba(255, 255, 255, 0);
+  --vela-shadow-raised: 0 0 0 1px #e1ded8, 0 6px 16px -8px rgba(27, 26, 24, 0.18);
+  --vela-shadow-overlay: 0 0 0 1px #d3d0c9, 0 28px 56px -18px rgba(27, 26, 24, 0.3);
+  --vela-shadow-glow: 0 0 0 1px #b35a00, 0 8px 20px -10px rgba(27, 26, 24, 0.2);
+  --vela-shadow-ember: 0 0 0 3px rgba(247, 146, 43, 0.45), 0 10px 28px -6px rgba(247, 146, 43, 0.5);
+
+  --vela-secondary-hover: var(--vela-gray-2);
+}
+
+/* ---------- Theme-independent tokens ---------- */
 :root {
-  --radius: 0.625rem;
-
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.15 0 0);
-
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
-
-  --primary: oklch(0.21 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.21 0 0);
-
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-
-  --accent: oklch(0.96 0 0);
-  --accent-foreground: oklch(0.21 0 0);
-
-  --destructive: oklch(0.58 0.22 27);
-
-  --border: oklch(0.92 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.70 0 0);
-}
-
-.dark {
-  --background: oklch(0.15 0 0);
-  --foreground: oklch(0.98 0 0);
-
-  --card: oklch(0.2 0 0);
-  --card-foreground: oklch(0.98 0 0);
-
-  --primary: oklch(0.92 0 0);
-  --primary-foreground: oklch(0.21 0 0);
-
-  --secondary: oklch(0.27 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-
-  --muted: oklch(0.27 0 0);
-  --muted-foreground: oklch(0.71 0 0);
-
-  --accent: oklch(0.27 0 0);
-  --accent-foreground: oklch(0.98 0 0);
-
-  --destructive: oklch(0.70 0.19 22);
-
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.55 0 0);
-}
-
-/* Expose the variables to Tailwind so utilities like bg-primary exist. */
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --vela-radius-sm: 0.25rem;
+  --vela-radius-md: 0.375rem;
+  --vela-radius-lg: 0.5rem;
+  --vela-radius-xl: 0.75rem;
+  --vela-radius-full: 999px;
+  --vela-control-sm: 1.75rem;
+  --vela-control-md: 2rem;
+  --vela-control-lg: 2.5rem;
+  --vela-icon: 1rem;
+  --vela-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --vela-quick: 120ms;
+  --vela-settle: 240ms;
+  --vela-ember: 900ms;
 }
 
 /*
-  Tailwind v4 draws borders in the text color unless a color is given.
-  Default them to the border token instead, so a plain border-t or
-  border-b (as in CardFooter) is a subtle divider. Also give the page the
-  theme's background and text colors.
+  Expose the tokens to Tailwind. Text colours are named fg, fg-muted and
+  fg-faint (Bone, Muted and Faint Text in the design system) so the
+  utilities read text-fg-muted rather than text-text-muted.
 */
+@theme inline {
+  --color-room: var(--vela-bg);
+  --color-surface: var(--vela-surface);
+  --color-surface-raised: var(--vela-surface-raised);
+  --color-surface-sunken: var(--vela-surface-sunken);
+  --color-border: var(--vela-border);
+  --color-border-strong: var(--vela-border-strong);
+  --color-border-control: var(--vela-border-control);
+  --color-fg: var(--vela-text);
+  --color-fg-muted: var(--vela-text-muted);
+  --color-fg-faint: var(--vela-text-faint);
+  --color-flame: var(--vela-flame);
+  --color-flame-hover: var(--vela-flame-hover);
+  --color-on-flame: var(--vela-on-flame);
+  --color-flame-text: var(--vela-flame-text);
+  --color-focus: var(--vela-focus);
+  --color-glow: var(--vela-glow);
+  --color-selection: var(--vela-selection);
+  --color-hover: var(--vela-hover);
+  --color-secondary-hover: var(--vela-secondary-hover);
+  --color-success: var(--vela-success);
+  --color-warning: var(--vela-warning);
+  --color-danger: var(--vela-danger);
+  --color-on-danger: var(--vela-on-danger);
+  --color-info: var(--vela-info);
+  --color-scrim: var(--vela-scrim);
+
+  --font-sans: "Host Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Spline Sans Mono", "Cascadia Mono", Consolas, monospace;
+
+  /* Machined radii: 4px small marks, 6px controls, 8px cards and menus, 12px dialogs. */
+  --radius-sm: var(--vela-radius-sm);
+  --radius-md: var(--vela-radius-md);
+  --radius-lg: var(--vela-radius-lg);
+  --radius-xl: var(--vela-radius-xl);
+
+  /* Edges are 1px box-shadow rings, not borders, so they never change layout. */
+  --shadow-hairline: inset 0 0 0 1px var(--vela-border);
+  --shadow-hairline-strong: inset 0 0 0 1px var(--vela-border-strong);
+  --shadow-control: inset 0 0 0 1px var(--vela-border-strong);
+  --shadow-control-hover: inset 0 0 0 1px var(--vela-border-control);
+  --shadow-control-focus: inset 0 0 0 1px var(--vela-focus);
+  --shadow-control-invalid: inset 0 0 0 1px var(--vela-danger);
+  --shadow-button-primary: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 10px -4px rgba(0, 0, 0, 0.35);
+  --shadow-button-secondary: inset 0 1px 0 var(--vela-highlight), 0 0 0 1px var(--vela-border-strong), 0 1px 2px rgba(0, 0, 0, 0.12);
+  --shadow-card: inset 0 1px 0 var(--vela-highlight), 0 0 0 1px var(--vela-border);
+  --shadow-card-hover: inset 0 1px 0 var(--vela-highlight), 0 0 0 1px var(--vela-border-control), 0 8px 20px -12px rgba(0, 0, 0, 0.5);
+  --shadow-kbd: inset 0 0 0 1px var(--vela-border-strong), inset 0 -1px 0 var(--vela-border-strong);
+  --shadow-raised: var(--vela-shadow-raised);
+  --shadow-overlay: var(--vela-shadow-overlay);
+  --shadow-glow: var(--vela-shadow-glow);
+  --shadow-ember: var(--vela-shadow-ember);
+
+  /* One curve, exponential out, no bounce. Durations: --vela-quick, --vela-settle, --vela-ember. */
+  --ease-vela: var(--vela-ease);
+}
+
+/* Type roles. Size and weight step together; Host Grotesk runs at 450 and 600 only. */
+@theme {
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-caption--font-weight: 450;
+  --text-body-sm: 0.8125rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-body-sm--font-weight: 450;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.375rem;
+  --text-body--font-weight: 450;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.625rem;
+  --text-body-lg--font-weight: 450;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.25rem;
+  --text-label--font-weight: 600;
+  --text-title-sm: 0.9375rem;
+  --text-title-sm--line-height: 1.375rem;
+  --text-title-sm--font-weight: 600;
+  --text-title-sm--letter-spacing: -0.005em;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.625rem;
+  --text-title--font-weight: 600;
+  --text-title--letter-spacing: -0.01em;
+  --text-headline: 1.625rem;
+  --text-headline--line-height: 2rem;
+  --text-headline--font-weight: 600;
+  --text-headline--letter-spacing: -0.02em;
+  --text-display: 2.75rem;
+  --text-display--line-height: 3rem;
+  --text-display--font-weight: 600;
+  --text-display--letter-spacing: -0.035em;
+  --text-code: 0.8125rem;
+  --text-code--line-height: 1.25rem;
+  --text-code--font-weight: 450;
+  --text-kbd: 0.6875rem;
+  --text-kbd--line-height: 1rem;
+  --text-kbd--font-weight: 500;
+}
+
 @layer base {
+  /* Tailwind v4 draws borders in the text colour unless told otherwise; default them to the hairline. */
   *,
   ::before,
   ::after {
-    border-color: var(--border);
+    border-color: var(--vela-border);
+  }
+
+  html {
+    scrollbar-color: var(--vela-border-control) transparent;
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: var(--vela-bg);
+    color: var(--vela-text);
+    font-weight: 450;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--vela-glow);
+    color: var(--vela-text);
+  }
+
+  /* Figures that can change line up. */
+  kbd,
+  [data-roll] {
+    font-variant-numeric: tabular-nums;
   }
 }
 
 /*
-  Tailwind v4 gives buttons the default arrow cursor. To show a pointer
-  instead, as most sites do, uncomment this block.
+  ---------- The motion layer (used with vela-light.js) ----------
+  Kept outside any @layer on purpose: these rules must beat component
+  utilities, which live in Tailwind's utilities layer.
+*/
 
-@layer base {
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
+/* The ember: a 900ms flare when the person finishes something, settling into the element's resting shadow. */
+@keyframes vela-ember {
+  from {
+    box-shadow: var(--vela-shadow-ember);
   }
 }
-*/
+[data-ember] {
+  animation: vela-ember var(--vela-ember) var(--vela-ease) backwards;
+}
+
+/* Rolling figures: text inside [data-roll] turns over in place when it changes. */
+[data-roll] {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+/* With vela-light.js running, one ring travels between targets instead of each component drawing its own. */
+html[data-vela-light] [data-slot]:focus-visible {
+  outline-color: transparent;
+}
+.vela-focus-light {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: var(--vela-radius-md);
+  box-shadow: 0 0 0 2px var(--vela-focus);
+  transition:
+    transform var(--vela-settle) var(--vela-ease),
+    width var(--vela-settle) var(--vela-ease),
+    height var(--vela-settle) var(--vela-ease),
+    border-radius var(--vela-settle) var(--vela-ease),
+    opacity var(--vela-quick);
+}
+.vela-focus-light[data-state="on"] {
+  opacity: 1;
+}
+.vela-focus-light[data-jump] {
+  transition: opacity var(--vela-quick);
+}
+
+/* The ember's flight from a finished item to the progress wick. */
+.vela-ember-spark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483001;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: -0.25rem 0 0 -0.25rem;
+  border-radius: var(--vela-radius-full);
+  background: var(--vela-flame);
+  box-shadow: 0 0 10px 2px var(--vela-glow);
+  pointer-events: none;
+}
+
+/* Overlays that open out of their trigger, through view transitions. */
+::view-transition-group(vela-morph) {
+  animation-duration: var(--vela-settle);
+  animation-timing-function: var(--vela-ease);
+}
+::view-transition-old(vela-morph),
+::view-transition-new(vela-morph) {
+  height: 100%;
+}
+
+@media (forced-colors: active) {
+  /* The system draws focus; a painted ring or spark would be invisible or wrong. */
+  .vela-focus-light,
+  .vela-ember-spark {
+    display: none;
+  }
+  html[data-vela-light] [data-slot]:focus-visible {
+    outline-color: CanvasText;
+  }
+}
+
+/* Reduced motion keeps every state and drops the movement. */
+@media (prefers-reduced-motion: reduce) {
+  [data-ember] {
+    animation-duration: 1ms;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -10,32 +10,35 @@ namespace Vela.UI.Components;
 public enum ButtonVariant
 {
     /// <summary>
-    /// Solid primary color. Use for the main action on a page or in a dialog.
+    /// The primary action, filled with the flame. Use one per view: if two buttons compete
+    /// for the flame, one of them isn't primary.
     /// </summary>
     Default,
 
     /// <summary>
-    /// Solid destructive color. Use for actions that delete data or can't be undone.
+    /// Quiet red text until hovered, then fills red. For actions that delete data or can't
+    /// be undone, so they never shout before you reach for them.
     /// </summary>
     Destructive,
 
     /// <summary>
-    /// Bordered, with the page background.
+    /// A neutral edge on a transparent background, lighter than <see cref="Secondary"/>.
     /// </summary>
     Outline,
 
     /// <summary>
-    /// Muted solid color, for actions that sit next to a primary button.
+    /// A raised graphite key with a hairline edge. The usual choice for actions that
+    /// aren't the primary one.
     /// </summary>
     Secondary,
 
     /// <summary>
-    /// No background until hovered. Use in toolbars and dense layouts.
+    /// Muted text until hovered. For the many small actions in toolbars and rows.
     /// </summary>
     Ghost,
 
     /// <summary>
-    /// Looks like a text link but keeps button semantics.
+    /// Underlined text that keeps button semantics.
     /// </summary>
     Link,
 }

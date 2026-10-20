@@ -14,18 +14,18 @@
         Assert.Equal("button", button.GetAttribute("data-slot"));
         Assert.Equal("default", button.GetAttribute("data-variant"));
         Assert.Equal("default", button.GetAttribute("data-size"));
-        Assert.Contains("bg-primary", button.ClassList);
+        Assert.Contains("bg-flame", button.ClassList);
         Assert.Contains("h-8", button.ClassList);
         Assert.Equal("Save", button.TextContent.Trim());
     }
 
     [Theory]
-    [InlineData(ButtonVariant.Default, "default", "bg-primary")]
-    [InlineData(ButtonVariant.Destructive, "destructive", "text-destructive")]
-    [InlineData(ButtonVariant.Outline, "outline", "border-border")]
-    [InlineData(ButtonVariant.Secondary, "secondary", "bg-secondary")]
-    [InlineData(ButtonVariant.Ghost, "ghost", "hover:bg-muted")]
-    [InlineData(ButtonVariant.Link, "link", "hover:underline")]
+    [InlineData(ButtonVariant.Default, "default", "bg-flame")]
+    [InlineData(ButtonVariant.Destructive, "destructive", "text-danger")]
+    [InlineData(ButtonVariant.Outline, "outline", "shadow-hairline-strong")]
+    [InlineData(ButtonVariant.Secondary, "secondary", "bg-surface-raised")]
+    [InlineData(ButtonVariant.Ghost, "ghost", "text-fg-muted")]
+    [InlineData(ButtonVariant.Link, "link", "underline")]
     public void Button_Variant(ButtonVariant variant, string expectedName, string expectedClass)
     {
         // Arrange && Act
@@ -41,11 +41,11 @@
     [InlineData(ButtonSize.Default, "default", "h-8")]
     [InlineData(ButtonSize.ExtraSmall, "xs", "h-6")]
     [InlineData(ButtonSize.Small, "sm", "h-7")]
-    [InlineData(ButtonSize.Large, "lg", "h-9")]
+    [InlineData(ButtonSize.Large, "lg", "h-10")]
     [InlineData(ButtonSize.Icon, "icon", "size-8")]
     [InlineData(ButtonSize.IconExtraSmall, "icon-xs", "size-6")]
     [InlineData(ButtonSize.IconSmall, "icon-sm", "size-7")]
-    [InlineData(ButtonSize.IconLarge, "icon-lg", "size-9")]
+    [InlineData(ButtonSize.IconLarge, "icon-lg", "size-10")]
     public void Button_Size(ButtonSize size, string expectedName, string expectedClass)
     {
         // Arrange && Act
@@ -73,9 +73,24 @@
                 // Assert
                 Assert.Single(classes, c => c.StartsWith("rounded-", StringComparison.Ordinal));
                 Assert.Single(classes, c => c.StartsWith("[&_svg:not([class*='size-'])]:size-", StringComparison.Ordinal));
-                Assert.Single(classes, c => c.StartsWith("border-", StringComparison.Ordinal));
-                Assert.Single(classes, c => c.StartsWith("focus-visible:ring-", StringComparison.Ordinal) && c.Contains('/'));
+                Assert.True(classes.Count(c => c.StartsWith("bg-", StringComparison.Ordinal)) <= 1);
+                Assert.True(classes.Count(c => c.StartsWith("shadow-", StringComparison.Ordinal)) <= 1);
             }
+        }
+    }
+
+    [Fact]
+    public void Button_OnlyDefaultUsesTheFlame()
+    {
+        // The design system budgets the flame to the primary action (plus focus). Any other
+        // variant that reaches for it would compete with the one primary button in a view.
+        foreach (var variant in Enum.GetValues<ButtonVariant>().Where(v => v != ButtonVariant.Default))
+        {
+            // Arrange && Act
+            var classes = Button.GetClasses(variant).Split(' ');
+
+            // Assert
+            Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
         }
     }
 
@@ -108,7 +123,7 @@
         // Assert
         var classes = cut.Find("button").ClassList;
         Assert.Equal("w-full", classes.Last());
-        Assert.Contains("bg-primary", classes);
+        Assert.Contains("bg-flame", classes);
     }
 
     [Fact]
@@ -160,6 +175,6 @@
         // Assert
         var link = cut.Find("a");
         Assert.Equal("/login", link.GetAttribute("href"));
-        Assert.Contains("border-border", link.ClassList);
+        Assert.Contains("shadow-hairline-strong", link.ClassList);
     }
 }

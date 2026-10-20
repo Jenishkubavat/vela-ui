@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Components.Forms;
 namespace Vela.UI.Components;
 
 /// <summary>
-/// A text input styled with the Vela UI theme tokens. Bind it with <c>@bind-Value</c>,
-/// inside or outside an <see cref="EditForm"/>.
+/// A text input styled as a Vela sunken well. Bind it with <c>@bind-Value</c>, inside or
+/// outside an <see cref="EditForm"/>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -29,29 +29,37 @@ namespace Vela.UI.Components;
 /// </remarks>
 public partial class Input : InputBase<string?>
 {
+    // 16px text on small screens stops iOS from zooming into the field; 14px from md up.
     private const string LayoutClasses =
-        "h-8 w-full min-w-0 rounded-lg border px-2.5 py-1 text-base md:text-sm";
+        "h-8 w-full min-w-0 rounded-md px-3 text-base md:text-body";
 
+    // A sunken well with a strong hairline ring and a flame-coloured caret.
     private const string ColorClasses =
-        "border-input bg-transparent placeholder:text-muted-foreground dark:bg-input/30";
+        "bg-surface-sunken text-fg shadow-control caret-flame-text placeholder:text-fg-faint " +
+        "not-read-only:hover:shadow-control-hover";
 
     private const string MotionClasses =
-        "transition-colors motion-reduce:transition-none";
+        "transition-shadow duration-(--vela-quick) ease-vela motion-reduce:transition-none";
 
     // Styles the "Choose file" button that browsers draw inside type="file" inputs.
     private const string FileButtonClasses =
-        "file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground";
+        "file:me-3 file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-label file:text-fg";
 
+    // The edge turns to the focus colour and the 2px ring sits just outside it.
     private const string FocusClasses =
-        "outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+        "outline-none focus-visible:shadow-control-focus " +
+        "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus";
 
     private const string InvalidClasses =
-        "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 " +
-        "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40";
+        "not-disabled:aria-invalid:shadow-control-invalid";
+
+    // read-only: alone also matches disabled inputs, so pair it with enabled:.
+    private const string ReadOnlyClasses =
+        "read-only:enabled:bg-transparent read-only:enabled:shadow-hairline " +
+        "read-only:enabled:font-mono read-only:enabled:text-code read-only:enabled:text-fg-muted";
 
     private const string DisabledClasses =
-        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 " +
-        "dark:disabled:bg-input/80";
+        "disabled:cursor-not-allowed disabled:bg-transparent disabled:text-fg-faint disabled:shadow-hairline";
 
     /// <summary>
     /// The HTML <c>type</c> attribute, such as <c>text</c>, <c>email</c>, <c>password</c>,
@@ -98,6 +106,7 @@ public partial class Input : InputBase<string?>
             FileButtonClasses,
             FocusClasses,
             InvalidClasses,
+            ReadOnlyClasses,
             DisabledClasses,
             additionalClasses);
 

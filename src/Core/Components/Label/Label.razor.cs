@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 namespace Vela.UI.Components;
 
 /// <summary>
-/// A native <c>&lt;label&gt;</c> for naming a form control, styled with the Vela UI theme tokens.
+/// A native <c>&lt;label&gt;</c> for naming a form control, set as a Vela field label.
 /// </summary>
 /// <remarks>
 /// Clicking the label focuses or toggles its control, and screen readers announce the
@@ -18,14 +18,14 @@ namespace Vela.UI.Components;
 public partial class Label
 {
     private const string LayoutClasses =
-        "flex items-center gap-2 text-sm leading-none font-medium select-none";
+        "flex items-center gap-2 text-label text-fg select-none";
 
     // The label can't see its control's disabled state, so it reads it from the markup
     // around it: either a wrapper with class="group" data-disabled="true", or a disabled
     // control with class="peer" placed before the label.
     private const string DisabledClasses =
-        "group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 " +
-        "peer-disabled:cursor-not-allowed peer-disabled:opacity-50";
+        "group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:text-fg-faint " +
+        "peer-disabled:cursor-not-allowed peer-disabled:text-fg-faint";
 
     /// <summary>
     /// The <c>id</c> of the control this label names. Written as <c>for="email"</c>.
