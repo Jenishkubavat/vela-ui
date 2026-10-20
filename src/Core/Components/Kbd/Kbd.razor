@@ -1,0 +1,49 @@
+@namespace Vela.UI.Components
+@*
+    A key cap for showing a keyboard shortcut, such as <Kbd>C</Kbd> or <Kbd>⌘</Kbd>.
+    Group several keys with KbdGroup. Inside a Button the shortcut is visible but also
+    becomes part of the button's name ("New task C"), so add aria-hidden="true" here and
+    aria-keyshortcuts="C" on the Button to give screen readers the name and the shortcut
+    separately.
+*@
+
+<kbd class="@ClassNames.Join(LayoutClasses, ColorClasses, InButtonClasses, Class)"
+     data-slot="kbd"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</kbd>
+
+@code {
+    private const string LayoutClasses =
+        "inline-flex h-5 min-w-5 items-center justify-center gap-1 px-[0.3125rem] font-mono text-kbd leading-none " +
+        "select-none [&_svg:not([class*='size-'])]:size-3";
+
+    // A sunken well with a strong hairline and a 1px lip along the bottom.
+    private const string ColorClasses = "rounded-sm bg-surface-sunken text-fg-muted shadow-kbd";
+
+    // Inside a button the key sits at the end; on the flame it turns into a translucent ink tint.
+    private const string InButtonClasses =
+        "in-data-[slot=button]:-me-1.5 " +
+        "in-[[data-slot=button][data-variant=default]]:bg-on-flame/15 " +
+        "in-[[data-slot=button][data-variant=default]]:text-on-flame " +
+        "in-[[data-slot=button][data-variant=default]]:shadow-none " +
+        "in-[[data-slot=button]:disabled]:opacity-60";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The key, as text (<c>⌘</c>, <c>Ctrl</c>, <c>K</c>) or an icon.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>aria-hidden</c>, applied to the <c>&lt;kbd&gt;</c> element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

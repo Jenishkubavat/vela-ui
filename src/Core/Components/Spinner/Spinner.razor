@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    A small spinning ring that shows something is in progress. It inherits the text
+    colour, so it matches the button or text around it. In a loading button, keep the
+    label ("Saving") next to it and disable the button:
+    <Button Disabled="true"><Spinner data-icon="inline-start" />Saving</Button>.
+    Screen readers hear "Loading"; set aria-label to say something more specific.
+    With reduced motion the ring stays still.
+*@
+
+<span class="@ClassNames.Join(Classes, Class)"
+      role="status"
+      aria-label="Loading"
+      data-slot="spinner"
+      @attributes="AdditionalAttributes"></span>
+
+@code {
+    private const string Classes =
+        "inline-block size-3.5 shrink-0 rounded-full border-[1.5px] border-current border-r-transparent " +
+        "animate-[spin_700ms_linear_infinite] motion-reduce:animate-none";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults. Change the size with <c>size-*</c>.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as a more specific <c>aria-label</c>, applied to the spinner.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}
