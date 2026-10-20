@@ -1,0 +1,49 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Spinner_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Spinner />);
+
+        // Assert
+        var spinner = cut.Find("[data-slot=spinner]");
+        Assert.Equal("status", spinner.GetAttribute("role"));
+        Assert.Equal("Loading", spinner.GetAttribute("aria-label"));
+        Assert.Contains("motion-reduce:animate-none", spinner.ClassList);
+    }
+
+    [Fact]
+    public void Spinner_CustomLabel()
+    {
+        // Arrange && Act
+        var cut = Render(@<Spinner aria-label="Saving changes" />);
+
+        // Assert
+        Assert.Equal("Saving changes", cut.Find("[data-slot=spinner]").GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void Spinner_InLoadingButton()
+    {
+        // Arrange && Act
+        var cut = Render(@<Button Disabled="true"><Spinner data-icon="inline-start" />Saving</Button>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.True(button.HasAttribute("disabled"));
+        Assert.Equal("inline-start", button.QuerySelector("[data-slot=spinner]")!.GetAttribute("data-icon"));
+        Assert.Contains("Saving", button.TextContent);
+    }
+
+    [Fact]
+    public void Spinner_Class()
+    {
+        // Arrange && Act
+        var cut = Render(@<Spinner Class="size-5" />);
+
+        // Assert
+        Assert.Equal("size-5", cut.Find("[data-slot=spinner]").ClassList.Last());
+    }
+}

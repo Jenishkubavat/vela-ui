@@ -1,0 +1,30 @@
+@namespace Vela.UI.Components
+@* Keys pressed together, such as <KbdGroup><Kbd>Ctrl</Kbd><Kbd>K</Kbd></KbdGroup>. *@
+
+<kbd class="@ClassNames.Join(Classes, Class)"
+     data-slot="kbd-group"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</kbd>
+
+@code {
+    private const string Classes = "inline-flex items-center gap-0.5";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The keys, usually two or more <see cref="Kbd"/> components.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the group's <c>&lt;kbd&gt;</c> element.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

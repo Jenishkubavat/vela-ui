@@ -1,0 +1,55 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Kbd_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Kbd>K</Kbd>);
+
+        // Assert
+        var kbd = cut.Find("kbd");
+        Assert.Equal("kbd", kbd.GetAttribute("data-slot"));
+        Assert.Contains("font-mono", kbd.ClassList);
+        Assert.Contains("bg-surface-sunken", kbd.ClassList);
+        Assert.Equal("K", kbd.TextContent.Trim());
+    }
+
+    [Fact]
+    public void Kbd_Group()
+    {
+        // Arrange && Act
+        var cut = Render(@<KbdGroup><Kbd>Ctrl</Kbd><Kbd>K</Kbd></KbdGroup>);
+
+        // Assert
+        var group = cut.Find("[data-slot=kbd-group]");
+        Assert.Equal("KBD", group.TagName);
+        Assert.Equal(2, group.QuerySelectorAll("[data-slot=kbd]").Length);
+    }
+
+    [Fact]
+    public void Kbd_InsideButtonCanBeHiddenFromItsName()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Button aria-keyshortcuts="C">
+                New task <Kbd aria-hidden="true">C</Kbd>
+            </Button>);
+
+        // Assert
+        Assert.Equal("C", cut.Find("button").GetAttribute("aria-keyshortcuts"));
+        Assert.Equal("true", cut.Find("[data-slot=kbd]").GetAttribute("aria-hidden"));
+    }
+
+    [Fact]
+    public void Kbd_ClassAndAdditionalAttributes()
+    {
+        // Arrange && Act
+        var cut = Render(@<Kbd Class="ms-auto" title="Command">⌘</Kbd>);
+
+        // Assert
+        var kbd = cut.Find("kbd");
+        Assert.Equal("ms-auto", kbd.ClassList.Last());
+        Assert.Equal("Command", kbd.GetAttribute("title"));
+    }
+}
