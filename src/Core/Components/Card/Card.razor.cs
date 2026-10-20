@@ -22,25 +22,37 @@ namespace Vela.UI.Components;
 /// rounded corners. Cards render no interactive behavior, so they work under static
 /// server rendering.
 /// </para>
+/// <para>
+/// Add <c>data-interactive</c> to a card that opens something: it lifts 1px on hover and
+/// draws the focus ring. Keep a single link or button inside it as the real target. Add
+/// <c>data-state="selected"</c> to mark the selected card with a 1px flame edge.
+/// </para>
 /// </remarks>
 public partial class Card
 {
     private const string LayoutClasses =
-        "group/card flex flex-col gap-(--card-spacing) overflow-hidden py-(--card-spacing) text-sm";
+        "group/card flex flex-col gap-(--card-spacing) overflow-hidden py-(--card-spacing) text-body-sm";
 
+    // The work surface with a hairline ring and, in Night, a 1px top highlight. No drop shadow at rest.
     private const string ColorClasses =
-        "rounded-xl bg-card text-card-foreground ring-1 ring-foreground/10";
+        "rounded-lg bg-surface text-fg shadow-card";
 
     // Sets the spacing every card part uses. Small is chosen through data-size.
     private const string SpacingClasses =
-        "[--card-spacing:--spacing(4)] data-[size=sm]:[--card-spacing:--spacing(3)]";
+        "[--card-spacing:--spacing(5)] data-[size=sm]:[--card-spacing:--spacing(3)]";
+
+    private const string StateClasses =
+        "outline-none transition-[box-shadow,transform] duration-(--vela-settle) ease-vela motion-reduce:transition-none " +
+        "data-interactive:cursor-pointer data-interactive:hover:-translate-y-px data-interactive:hover:shadow-card-hover " +
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus " +
+        "data-[state=selected]:shadow-glow data-[state=selected]:hover:shadow-glow";
 
     // A CardFooter brings its own padding and background, so drop the card's bottom padding.
     private const string FooterClasses =
         "has-data-[slot=card-footer]:pb-0 data-[size=sm]:has-data-[slot=card-footer]:pb-0";
 
     private const string ImageClasses =
-        "has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl";
+        "has-[>img:first-child]:pt-0 *:[img:first-child]:rounded-t-lg *:[img:last-child]:rounded-b-lg";
 
     /// <summary>
     /// The spacing inside the card. Defaults to <see cref="CardSize.Default"/>.

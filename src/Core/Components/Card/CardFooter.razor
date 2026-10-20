@@ -1,5 +1,5 @@
 @namespace Vela.UI.Components
-@* The bottom of a card, set off by a border and a muted background. Usually holds buttons. *@
+@* The bottom of a card, divided by a hairline: meta text in muted 12px, or buttons. *@
 
 <div class="@ClassNames.Join(Classes, Class)"
      data-slot="card-footer"
@@ -8,11 +8,13 @@
 </div>
 
 @code {
-    private const string Classes = "flex items-center rounded-b-xl border-t bg-muted/50 p-(--card-spacing)";
+    private const string Classes =
+        "flex items-center gap-2 rounded-b-lg border-t px-(--card-spacing) py-3 text-caption text-fg-muted " +
+        "group-data-[size=sm]/card:py-2 [&_svg:not([class*='size-'])]:size-3.5";
 
     /// <summary>
-    /// Extra CSS classes, added after the defaults. Add <c>gap-2</c> or
-    /// <c>justify-end</c> to arrange several buttons.
+    /// Extra CSS classes, added after the defaults. Add <c>justify-end</c> to put
+    /// buttons on the end side.
     /// </summary>
     [Parameter]
     public string? Class { get; set; }

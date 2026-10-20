@@ -11,8 +11,8 @@
         var card = cut.Find("[data-slot=card]");
         Assert.Equal("DIV", card.TagName);
         Assert.Equal("default", card.GetAttribute("data-size"));
-        Assert.Contains("bg-card", card.ClassList);
-        Assert.Contains("[--card-spacing:--spacing(4)]", card.ClassList);
+        Assert.Contains("bg-surface", card.ClassList);
+        Assert.Contains("[--card-spacing:--spacing(5)]", card.ClassList);
         Assert.Equal("Content", card.TextContent.Trim());
     }
 
@@ -77,7 +77,7 @@
         // Assert
         Assert.Contains("px-(--card-spacing)", cut.Find("[data-slot=card-header]").ClassList);
         Assert.Contains("px-(--card-spacing)", cut.Find("[data-slot=card-content]").ClassList);
-        Assert.Contains("p-(--card-spacing)", cut.Find("[data-slot=card-footer]").ClassList);
+        Assert.Contains("px-(--card-spacing)", cut.Find("[data-slot=card-footer]").ClassList);
     }
 
     [Fact]

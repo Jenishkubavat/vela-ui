@@ -12,22 +12,22 @@ namespace Vela.UI.Components;
 public enum ButtonSize
 {
     /// <summary>
-    /// Standard height for forms and page actions.
+    /// 32px, the compact default for forms, toolbars, and page actions.
     /// </summary>
     Default,
 
     /// <summary>
-    /// Smallest text button, for tight spaces such as table rows and badges.
+    /// 24px, for tight spaces such as table rows.
     /// </summary>
     ExtraSmall,
 
     /// <summary>
-    /// Compact height for dense layouts.
+    /// 28px, for dense layouts.
     /// </summary>
     Small,
 
     /// <summary>
-    /// Taller button for prominent actions.
+    /// 40px, for empty states and onboarding.
     /// </summary>
     Large,
 
