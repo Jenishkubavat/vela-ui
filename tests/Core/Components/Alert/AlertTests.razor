@@ -1,0 +1,58 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Alert_DefaultHasNoRole()
+    {
+        // A static alert shouldn't interrupt screen reader users on page load.
+        // Arrange && Act
+        var cut = Render(@<Alert><AlertTitle>Heads up</AlertTitle></Alert>);
+
+        // Assert
+        var alert = cut.Find("[data-slot=alert]");
+        Assert.False(alert.HasAttribute("role"));
+        Assert.Equal("default", alert.GetAttribute("data-variant"));
+        Assert.Contains("shadow-hairline", alert.ClassList);
+    }
+
+    [Fact]
+    public void Alert_RoleCanBeAddedForDynamicAlerts()
+    {
+        // Arrange && Act
+        var cut = Render(@<Alert role="alert">Couldn't publish.</Alert>);
+
+        // Assert
+        Assert.Equal("alert", cut.Find("[data-slot=alert]").GetAttribute("role"));
+    }
+
+    [Fact]
+    public void Alert_DestructiveGetsARedEdge()
+    {
+        // Arrange && Act
+        var cut = Render(@<Alert Variant="AlertVariant.Destructive">Couldn't publish.</Alert>);
+
+        // Assert
+        var alert = cut.Find("[data-slot=alert]");
+        Assert.Equal("destructive", alert.GetAttribute("data-variant"));
+        Assert.Contains("shadow-control-invalid", alert.ClassList);
+        Assert.Contains("text-fg", alert.ClassList);
+    }
+
+    [Fact]
+    public void Alert_Composition()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Alert>
+                <svg viewBox="0 0 24 24"></svg>
+                <AlertTitle>Couldn't publish</AlertTitle>
+                <AlertDescription>The page is missing a title. Add one and publish again.</AlertDescription>
+                <AlertAction><Button Size="ButtonSize.Small" Variant="ButtonVariant.Ghost">Dismiss</Button></AlertAction>
+            </Alert>);
+
+        // Assert
+        Assert.Equal("Couldn't publish", cut.Find("[data-slot=alert-title]").TextContent.Trim());
+        Assert.Contains("Add one and publish again", cut.Find("[data-slot=alert-description]").TextContent);
+        Assert.NotNull(cut.Find("[data-slot=alert] > [data-slot=alert-action] button"));
+    }
+}

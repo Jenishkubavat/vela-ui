@@ -1,0 +1,39 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Message_Composition()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<MessageGroup role="log">
+                <Message>
+                    <MessageAvatar>AL</MessageAvatar>
+                    <MessageContent>
+                        <MessageHeader>Ada</MessageHeader>
+                        <Bubble Variant="BubbleVariant.Secondary"><BubbleContent>Shipped the fix.</BubbleContent></Bubble>
+                        <MessageFooter>09:41</MessageFooter>
+                    </MessageContent>
+                </Message>
+            </MessageGroup>);
+
+        // Assert
+        Assert.Equal("log", cut.Find("[data-slot=message-group]").GetAttribute("role"));
+        var message = cut.Find("[data-slot=message]");
+        Assert.Equal("start", message.GetAttribute("data-align"));
+        Assert.NotNull(message.QuerySelector("[data-slot=message-content] [data-slot=bubble]"));
+        Assert.Equal("09:41", cut.Find("[data-slot=message-footer]").TextContent.Trim());
+    }
+
+    [Fact]
+    public void Message_AlignEnd()
+    {
+        // Arrange && Act
+        var cut = Render(@<Message Align="MessageAlign.End"><MessageContent>Hi</MessageContent></Message>);
+
+        // Assert
+        var message = cut.Find("[data-slot=message]");
+        Assert.Equal("end", message.GetAttribute("data-align"));
+        Assert.Contains("data-[align=end]:flex-row-reverse", message.ClassList);
+    }
+}

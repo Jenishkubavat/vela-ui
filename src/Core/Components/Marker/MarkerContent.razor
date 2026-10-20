@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@* The text of a Marker. *@
+
+<span class="@ClassNames.Join(Classes, Class)"
+      data-slot="marker-content"
+      @attributes="AdditionalAttributes">
+    @ChildContent
+</span>
+
+@code {
+    private const string Classes =
+        "min-w-0 wrap-break-word group-data-[variant=separator]/marker:flex-none " +
+        "group-data-[variant=separator]/marker:text-center *:[a]:underline *:[a]:underline-offset-[0.2em] " +
+        "*:[a]:hover:text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The marker text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

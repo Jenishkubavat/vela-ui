@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="@ClassNames.Join(LayoutClasses, SideClasses, AlignClasses, Class)"
+     data-slot="bubble-reactions"
+     data-side="@(Side == BubbleReactionsSide.Top ? "top" : "bottom")"
+     data-align="@(Align == BubbleAlign.End ? "end" : "start")"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

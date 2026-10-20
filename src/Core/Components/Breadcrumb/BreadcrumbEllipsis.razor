@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    Stands in for steps collapsed out of a long trail. It's decorative; if it opens a menu
+    of the hidden steps, put it inside a Button with aria-label="Show more".
+*@
+
+<span class="@ClassNames.Join(Classes, Class)"
+      role="presentation"
+      aria-hidden="true"
+      data-slot="breadcrumb-ellipsis"
+      @attributes="AdditionalAttributes">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="5" cy="12" r="1.75" />
+        <circle cx="12" cy="12" r="1.75" />
+        <circle cx="19" cy="12" r="1.75" />
+    </svg>
+</span>
+
+@code {
+    private const string Classes = "flex size-5 items-center justify-center [&>svg]:size-4";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

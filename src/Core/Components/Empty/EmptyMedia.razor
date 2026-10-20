@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="@ClassNames.Join(LayoutClasses, VariantClasses(Variant), Class)"
+     aria-hidden="true"
+     data-slot="empty-icon"
+     data-variant="@VariantName(Variant)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

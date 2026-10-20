@@ -1,0 +1,31 @@
+@namespace Vela.UI.Components
+@* The ordered list of steps, from the top of the hierarchy to the current page. *@
+
+<ol class="@ClassNames.Join(Classes, Class)"
+    data-slot="breadcrumb-list"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</ol>
+
+@code {
+    private const string Classes =
+        "m-0 flex list-none flex-wrap items-center gap-1.5 p-0 text-body-sm wrap-break-word text-fg-muted";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// BreadcrumbItem and BreadcrumbSeparator parts, in order.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;ol&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

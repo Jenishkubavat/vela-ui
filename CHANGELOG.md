@@ -25,6 +25,9 @@ follow [Semantic Versioning](https://semver.org/).
   FieldDescription, FieldError, FieldContent, FieldGroup, FieldSet,
   FieldLegend, FieldSeparator) and vertical, horizontal, and responsive
   layouts. FieldError shows EditForm validation messages through `For`.
+- Alert, AspectRatio, Badge, Breadcrumb, Bubble, DirectionProvider, Empty,
+  Marker, Message, Separator, and Skeleton, completing shadcn/ui's simplest
+  components in the Vela look.
 - The Vela design system as a Tailwind CSS v4 theme (`vela.css`): Night and
   Day tokens, type roles, machined radii, hairline-ring shadows, and the
   Host Grotesk and Spline Sans Mono fonts. Night is the default.

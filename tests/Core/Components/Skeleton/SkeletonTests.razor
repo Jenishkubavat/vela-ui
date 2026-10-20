@@ -1,0 +1,28 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Skeleton_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Skeleton />);
+
+        // Assert
+        var skeleton = cut.Find("[data-slot=skeleton]");
+        Assert.Contains("animate-pulse", skeleton.ClassList);
+        Assert.Contains("motion-reduce:animate-none", skeleton.ClassList);
+        Assert.Empty(skeleton.ChildNodes);
+    }
+
+    [Fact]
+    public void Skeleton_ClassSizesIt()
+    {
+        // Arrange && Act
+        var cut = Render(@<Skeleton Class="size-10 rounded-full!" />);
+
+        // Assert
+        var classes = cut.Find("[data-slot=skeleton]").ClassList;
+        Assert.Contains("size-10", classes);
+        Assert.Equal("rounded-full!", classes.Last());
+    }
+}

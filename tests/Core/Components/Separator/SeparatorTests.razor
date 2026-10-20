@@ -1,0 +1,52 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Separator_DefaultIsDecorative()
+    {
+        // Arrange && Act
+        var cut = Render(@<Separator />);
+
+        // Assert
+        var separator = cut.Find("[data-slot=separator]");
+        Assert.Equal("none", separator.GetAttribute("role"));
+        Assert.Equal("horizontal", separator.GetAttribute("data-orientation"));
+        Assert.False(separator.HasAttribute("aria-orientation"));
+    }
+
+    [Fact]
+    public void Separator_SemanticVertical()
+    {
+        // Arrange && Act
+        var cut = Render(@<Separator Orientation="SeparatorOrientation.Vertical" Decorative="false" />);
+
+        // Assert
+        var separator = cut.Find("[data-slot=separator]");
+        Assert.Equal("separator", separator.GetAttribute("role"));
+        Assert.Equal("vertical", separator.GetAttribute("aria-orientation"));
+        Assert.Equal("vertical", separator.GetAttribute("data-orientation"));
+    }
+
+    [Fact]
+    public void Separator_SemanticHorizontalNeedsNoAriaOrientation()
+    {
+        // Horizontal is the implicit orientation of role="separator".
+        // Arrange && Act
+        var cut = Render(@<Separator Decorative="false" />);
+
+        // Assert
+        var separator = cut.Find("[data-slot=separator]");
+        Assert.Equal("separator", separator.GetAttribute("role"));
+        Assert.False(separator.HasAttribute("aria-orientation"));
+    }
+
+    [Fact]
+    public void Separator_Class()
+    {
+        // Arrange && Act
+        var cut = Render(@<Separator Class="my-4" />);
+
+        // Assert
+        Assert.Equal("my-4", cut.Find("[data-slot=separator]").ClassList.Last());
+    }
+}

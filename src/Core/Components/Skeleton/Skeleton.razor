@@ -1,0 +1,29 @@
+@namespace Vela.UI.Components
+@*
+    A placeholder shape shown while content loads. Size it with classes, such as
+    Class="h-4 w-48" for a line of text or Class="size-10 rounded-full!" for an avatar
+    (the ! replaces the default rounding).
+    It says nothing to screen readers, so mark the loading region with aria-busy="true".
+    With reduced motion it stays still.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="skeleton"
+     @attributes="AdditionalAttributes"></div>
+
+@code {
+    // The strong hairline shows against every surface in both themes; surface colours vanish on one of them.
+    private const string Classes = "animate-pulse rounded-md bg-border-strong motion-reduce:animate-none";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the placeholder's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

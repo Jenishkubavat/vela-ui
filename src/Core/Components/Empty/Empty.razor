@@ -1,0 +1,36 @@
+@namespace Vela.UI.Components
+@*
+    The quiet state of a region with nothing in it yet: an EmptyHeader with media, title,
+    and description, then EmptyContent with the one useful next step. Add Class="border" for a
+    dashed outline. Say what will appear here, or for a finished queue, "You're all caught up."
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="empty"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-lg border-dashed p-6 " +
+        "text-center text-balance text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The header and content.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the empty state's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

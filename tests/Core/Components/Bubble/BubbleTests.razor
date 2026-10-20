@@ -1,0 +1,74 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Bubble_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Bubble><BubbleContent>Hi there</BubbleContent></Bubble>);
+
+        // Assert
+        var bubble = cut.Find("[data-slot=bubble]");
+        Assert.Equal("default", bubble.GetAttribute("data-variant"));
+        Assert.Equal("start", bubble.GetAttribute("data-align"));
+        Assert.Equal("Hi there", bubble.QuerySelector("[data-slot=bubble-content]")!.TextContent.Trim());
+    }
+
+    [Theory]
+    [InlineData(BubbleVariant.Default, "default")]
+    [InlineData(BubbleVariant.Secondary, "secondary")]
+    [InlineData(BubbleVariant.Muted, "muted")]
+    [InlineData(BubbleVariant.Tinted, "tinted")]
+    [InlineData(BubbleVariant.Outline, "outline")]
+    [InlineData(BubbleVariant.Ghost, "ghost")]
+    [InlineData(BubbleVariant.Destructive, "destructive")]
+    public void Bubble_VariantNeverUsesTheFlame(BubbleVariant variant, string expectedName)
+    {
+        // Arrange && Act
+        var cut = Render(@<Bubble Variant="variant"><BubbleContent>Hi</BubbleContent></Bubble>);
+
+        // Assert
+        var bubble = cut.Find("[data-slot=bubble]");
+        Assert.Equal(expectedName, bubble.GetAttribute("data-variant"));
+        Assert.DoesNotContain(bubble.ClassList, c => c.Contains("flame", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Bubble_AlignEnd()
+    {
+        // Arrange && Act
+        var cut = Render(@<Bubble Align="BubbleAlign.End"><BubbleContent>Hi</BubbleContent></Bubble>);
+
+        // Assert
+        Assert.Equal("end", cut.Find("[data-slot=bubble]").GetAttribute("data-align"));
+    }
+
+    [Theory]
+    [InlineData(BubbleReactionsSide.Top, BubbleAlign.Start, "top", "start", "start-3")]
+    [InlineData(BubbleReactionsSide.Bottom, BubbleAlign.End, "bottom", "end", "end-3")]
+    public void BubbleReactions_SideAndAlign(BubbleReactionsSide side, BubbleAlign align, string expectedSide, string expectedAlign, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<BubbleReactions Side="side" Align="align">👍 3</BubbleReactions>);
+
+        // Assert
+        var reactions = cut.Find("[data-slot=bubble-reactions]");
+        Assert.Equal(expectedSide, reactions.GetAttribute("data-side"));
+        Assert.Equal(expectedAlign, reactions.GetAttribute("data-align"));
+        Assert.Contains(expectedClass, reactions.ClassList);
+    }
+
+    [Fact]
+    public void BubbleContent_GetClassesMakesAButtonTheBubble()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Bubble Variant="BubbleVariant.Secondary">
+                <button type="button" data-slot="bubble-content" class="@BubbleContent.GetClasses()">Retry</button>
+            </Bubble>);
+
+        // Assert
+        var button = cut.Find("button[data-slot=bubble-content]");
+        Assert.Contains("[button,a]:focus-visible:outline-focus", button.ClassList);
+    }
+}

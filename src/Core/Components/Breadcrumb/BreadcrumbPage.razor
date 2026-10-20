@@ -1,0 +1,36 @@
+@namespace Vela.UI.Components
+@*
+    The current page, at the end of the trail. It isn't a link, but it's announced as the
+    current page (aria-current) so screen reader users know where they are.
+*@
+
+<span class="@ClassNames.Join(Classes, Class)"
+      role="link"
+      aria-disabled="true"
+      aria-current="page"
+      data-slot="breadcrumb-page"
+      @attributes="AdditionalAttributes">
+    @ChildContent
+</span>
+
+@code {
+    private const string Classes = "text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The current page's name.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    The empty state's title. It renders a <div>; add role="heading" aria-level="2" (or the
+    level that fits the region) so screen reader users can find it.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="empty-title"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes = "text-title text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>role</c> and <c>aria-level</c>, applied to the title's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

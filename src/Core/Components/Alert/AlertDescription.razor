@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@* Supporting text under an AlertTitle. End with the way forward. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="alert-description"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "text-fg-muted text-balance md:text-pretty [&_a]:underline [&_a]:underline-offset-[0.2em] " +
+        "[&_a]:hover:text-fg [&_p:not(:last-child)]:mb-4";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The description, as text or paragraphs.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the description's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

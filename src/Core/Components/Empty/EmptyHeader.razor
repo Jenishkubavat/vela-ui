@@ -1,0 +1,30 @@
+@namespace Vela.UI.Components
+@* Groups the EmptyMedia, EmptyTitle, and EmptyDescription. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="empty-header"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes = "flex max-w-sm flex-col items-center gap-2";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The media, title, and description.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the header's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

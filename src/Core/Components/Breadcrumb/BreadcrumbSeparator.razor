@@ -1,0 +1,45 @@
+@namespace Vela.UI.Components
+@*
+    The divider between steps: a chevron that points the other way in right-to-left
+    layouts. Hidden from screen readers, since the list already conveys the order.
+*@
+
+<li class="@ClassNames.Join(Classes, Class)"
+    role="presentation"
+    aria-hidden="true"
+    data-slot="breadcrumb-separator"
+    @attributes="AdditionalAttributes">
+    @if (ChildContent is null)
+    {
+        <svg class="rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m9 6 6 6-6 6" />
+        </svg>
+    }
+    else
+    {
+        @ChildContent
+    }
+</li>
+
+@code {
+    private const string Classes = "[&>svg]:size-3.5";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// A replacement divider, such as a slash. Defaults to a chevron.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;li&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,42 @@
+@namespace Vela.UI.Components
+@*
+    One message in a conversation: a MessageAvatar beside MessageContent, which holds an
+    optional MessageHeader, one or more Bubbles, and an optional MessageFooter. Align sets
+    the side; Bubbles inside follow it.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="message"
+     data-align="@(Align == MessageAlign.End ? "end" : "start")"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "group/message relative flex w-full min-w-0 gap-2 text-body-sm data-[align=end]:flex-row-reverse";
+
+    /// <summary>
+    /// Which side the message sits on. Defaults to <see cref="MessageAlign.Start"/>.
+    /// </summary>
+    [Parameter]
+    public MessageAlign Align { get; set; } = MessageAlign.Start;
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The avatar and content.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the message's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

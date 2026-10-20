@@ -1,0 +1,48 @@
+@namespace Vela.UI.Components
+@*
+    The visible bubble inside a Bubble. Its colour comes from the Bubble's variant.
+    To make the bubble a button or link, put class="@BubbleContent.GetClasses()" and
+    data-slot="bubble-content" on that element instead.
+*@
+
+<div class="@ClassNames.Join(LayoutClasses, InteractiveClasses, Class)"
+     data-slot="bubble-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string LayoutClasses =
+        "w-fit max-w-full min-w-0 overflow-hidden rounded-lg px-3 py-2 text-body-sm leading-relaxed " +
+        "wrap-break-word group-data-[align=end]/bubble:self-end";
+
+    // Only applies when the content is a button or link, styled through GetClasses.
+    private const string InteractiveClasses =
+        "[button]:text-start [button,a]:transition-colors [button,a]:outline-none " +
+        "[button,a]:focus-visible:outline-2 [button,a]:focus-visible:outline-offset-2 " +
+        "[button,a]:focus-visible:outline-focus";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The message text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the bubble's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Returns the classes a <see cref="BubbleContent"/> uses, so a button or link can be the bubble.
+    /// </summary>
+    public static string GetClasses(string? additionalClasses = null) =>
+        ClassNames.Join(LayoutClasses, InteractiveClasses, additionalClasses);
+}

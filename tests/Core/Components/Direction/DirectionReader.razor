@@ -1,0 +1,7 @@
+@* Test helper: renders the cascaded reading direction. *@
+<span data-direction="@Direction">x</span>
+
+@code {
+    [CascadingParameter]
+    public TextDirection Direction { get; set; }
+}

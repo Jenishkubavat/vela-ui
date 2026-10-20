@@ -1,0 +1,76 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Badge_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Badge>Beta</Badge>);
+
+        // Assert
+        var badge = cut.Find("span");
+        Assert.Equal("badge", badge.GetAttribute("data-slot"));
+        Assert.Equal("default", badge.GetAttribute("data-variant"));
+        Assert.Contains("rounded-full", badge.ClassList);
+        Assert.Equal("Beta", badge.TextContent.Trim());
+    }
+
+    [Theory]
+    [InlineData(BadgeVariant.Default, "default", "text-fg")]
+    [InlineData(BadgeVariant.Secondary, "secondary", "bg-surface-raised")]
+    [InlineData(BadgeVariant.Destructive, "destructive", "text-danger")]
+    [InlineData(BadgeVariant.Outline, "outline", "text-fg-muted")]
+    [InlineData(BadgeVariant.Ghost, "ghost", "hover:bg-hover")]
+    [InlineData(BadgeVariant.Link, "link", "underline")]
+    public void Badge_Variant(BadgeVariant variant, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Badge Variant="variant">Beta</Badge>);
+
+        // Assert
+        var badge = cut.Find("span");
+        Assert.Equal(expectedName, badge.GetAttribute("data-variant"));
+        Assert.Contains(expectedClass, badge.ClassList);
+    }
+
+    [Fact]
+    public void Badge_NoVariantUsesTheFlameOrConflicts()
+    {
+        foreach (var variant in Enum.GetValues<BadgeVariant>())
+        {
+            // Arrange && Act
+            var classes = Badge.GetClasses(variant).Split(' ');
+
+            // Assert
+            Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+            Assert.True(classes.Count(c => c.StartsWith("bg-", StringComparison.Ordinal)) <= 1);
+            Assert.True(classes.Count(c => c.StartsWith("shadow-", StringComparison.Ordinal)) <= 1);
+        }
+    }
+
+    [Fact]
+    public void Badge_GetClassesStylesALink()
+    {
+        // Arrange && Act
+        var cut = Render(@<a href="/changelog" class="@Badge.GetClasses(BadgeVariant.Outline)">New</a>);
+
+        // Assert
+        var link = cut.Find("a");
+        Assert.Equal("/changelog", link.GetAttribute("href"));
+        Assert.Contains("rounded-full", link.ClassList);
+    }
+
+    [Fact]
+    public void Badge_StatusDotAsIcon()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Badge Variant="BadgeVariant.Outline">
+                <span data-icon="inline-start" class="size-1.5 rounded-full bg-success"></span>Approved
+            </Badge>);
+
+        // Assert
+        Assert.Contains("has-data-[icon=inline-start]:ps-1.5", cut.Find("[data-slot=badge]").ClassList);
+        Assert.Contains("Approved", cut.Find("[data-slot=badge]").TextContent);
+    }
+}

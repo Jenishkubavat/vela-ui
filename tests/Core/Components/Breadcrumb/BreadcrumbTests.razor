@@ -1,0 +1,87 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Breadcrumb_Composition()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem><BreadcrumbPage>Settings</BreadcrumbPage></BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>);
+
+        // Assert
+        var nav = cut.Find("nav");
+        Assert.Equal("Breadcrumb", nav.GetAttribute("aria-label"));
+        Assert.Equal("OL", nav.FirstElementChild!.TagName);
+        Assert.Equal("/", cut.Find("[data-slot=breadcrumb-link]").GetAttribute("href"));
+        Assert.Equal(5, cut.FindAll("ol > li").Count);
+    }
+
+    [Fact]
+    public void BreadcrumbPage_IsTheCurrentPage()
+    {
+        // Arrange && Act
+        var cut = Render(@<BreadcrumbPage>Settings</BreadcrumbPage>);
+
+        // Assert
+        var page = cut.Find("[data-slot=breadcrumb-page]");
+        Assert.Equal("page", page.GetAttribute("aria-current"));
+        Assert.Equal("true", page.GetAttribute("aria-disabled"));
+    }
+
+    [Fact]
+    public void BreadcrumbSeparator_DefaultsToAHiddenChevron()
+    {
+        // Arrange && Act
+        var cut = Render(@<BreadcrumbSeparator />);
+
+        // Assert
+        var separator = cut.Find("[data-slot=breadcrumb-separator]");
+        Assert.Equal("true", separator.GetAttribute("aria-hidden"));
+        Assert.Contains("rtl:rotate-180", separator.QuerySelector("svg")!.ClassList);
+    }
+
+    [Fact]
+    public void BreadcrumbSeparator_CustomContent()
+    {
+        // Arrange && Act
+        var cut = Render(@<BreadcrumbSeparator>/</BreadcrumbSeparator>);
+
+        // Assert
+        var separator = cut.Find("[data-slot=breadcrumb-separator]");
+        Assert.Null(separator.QuerySelector("svg"));
+        Assert.Equal("/", separator.TextContent.Trim());
+    }
+
+    [Fact]
+    public void BreadcrumbEllipsis_IsDecorative()
+    {
+        // Arrange && Act
+        var cut = Render(@<BreadcrumbEllipsis />);
+
+        // Assert
+        var ellipsis = cut.Find("[data-slot=breadcrumb-ellipsis]");
+        Assert.Equal("true", ellipsis.GetAttribute("aria-hidden"));
+        Assert.NotNull(ellipsis.QuerySelector("svg"));
+    }
+
+    [Fact]
+    public void BreadcrumbLink_GetClassesMatchesTheComponent()
+    {
+        // Arrange
+        var cut = Render(@<BreadcrumbLink href="/">Home</BreadcrumbLink>);
+
+        // Act
+        var classes = BreadcrumbLink.GetClasses();
+
+        // Assert
+        Assert.Equal(classes, cut.Find("a").GetAttribute("class"));
+    }
+}

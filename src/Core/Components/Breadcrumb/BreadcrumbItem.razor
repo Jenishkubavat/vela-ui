@@ -1,0 +1,30 @@
+@namespace Vela.UI.Components
+@* One step in the trail: a BreadcrumbLink, or the BreadcrumbPage at the end. *@
+
+<li class="@ClassNames.Join(Classes, Class)"
+    data-slot="breadcrumb-item"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</li>
+
+@code {
+    private const string Classes = "inline-flex items-center gap-1";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The link or page.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;li&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

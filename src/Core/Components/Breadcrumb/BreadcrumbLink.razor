@@ -1,0 +1,42 @@
+@namespace Vela.UI.Components
+@*
+    A link to an earlier step. Set href. To use Blazor's NavLink instead, give it
+    class="@BreadcrumbLink.GetClasses()".
+*@
+
+<a class="@ClassNames.Join(Classes, Class)"
+   data-slot="breadcrumb-link"
+   @attributes="AdditionalAttributes">
+    @ChildContent
+</a>
+
+@code {
+    private const string Classes =
+        "rounded-sm transition-colors duration-(--vela-quick) ease-vela motion-reduce:transition-none " +
+        "hover:text-fg outline-none focus-visible:outline-2 focus-visible:outline-offset-2 " +
+        "focus-visible:outline-focus";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The step's name.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, most importantly <c>href</c>, applied to the <c>&lt;a&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Returns the classes a <see cref="BreadcrumbLink"/> uses, so a <c>NavLink</c> can match it.
+    /// </summary>
+    public static string GetClasses(string? additionalClasses = null) =>
+        ClassNames.Join(Classes, additionalClasses);
+}

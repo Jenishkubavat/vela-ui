@@ -1,0 +1,49 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Empty_Composition()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Empty>
+                <EmptyHeader>
+                    <EmptyMedia Variant="EmptyMediaVariant.Icon"><svg viewBox="0 0 24 24"></svg></EmptyMedia>
+                    <EmptyTitle role="heading" aria-level="2">You're all caught up</EmptyTitle>
+                    <EmptyDescription>New reviews will appear here.</EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent><Button>Open archive</Button></EmptyContent>
+            </Empty>);
+
+        // Assert
+        Assert.NotNull(cut.Find("[data-slot=empty] > [data-slot=empty-header] > [data-slot=empty-title]"));
+        var title = cut.Find("[data-slot=empty-title]");
+        Assert.Equal("heading", title.GetAttribute("role"));
+        Assert.Equal("2", title.GetAttribute("aria-level"));
+        Assert.NotNull(cut.Find("[data-slot=empty-content] button"));
+    }
+
+    [Theory]
+    [InlineData(EmptyMediaVariant.Default, "default", "bg-transparent")]
+    [InlineData(EmptyMediaVariant.Icon, "icon", "size-8")]
+    public void EmptyMedia_Variant(EmptyMediaVariant variant, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<EmptyMedia Variant="variant"><svg viewBox="0 0 24 24"></svg></EmptyMedia>);
+
+        // Assert
+        var media = cut.Find("[data-slot=empty-icon]");
+        Assert.Equal(expectedName, media.GetAttribute("data-variant"));
+        Assert.Contains(expectedClass, media.ClassList);
+    }
+
+    [Fact]
+    public void EmptyMedia_IsHiddenFromScreenReaders()
+    {
+        // Arrange && Act
+        var cut = Render(@<EmptyMedia><svg viewBox="0 0 24 24"></svg></EmptyMedia>);
+
+        // Assert
+        Assert.Equal("true", cut.Find("[data-slot=empty-icon]").GetAttribute("aria-hidden"));
+    }
+}

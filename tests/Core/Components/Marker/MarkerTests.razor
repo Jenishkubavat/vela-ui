@@ -1,0 +1,40 @@
+@inherits BunitContext
+@code
+{
+    [Theory]
+    [InlineData(MarkerVariant.Default, "default")]
+    [InlineData(MarkerVariant.Separator, "separator")]
+    [InlineData(MarkerVariant.Border, "border")]
+    public void Marker_Variant(MarkerVariant variant, string expectedName)
+    {
+        // Arrange && Act
+        var cut = Render(@<Marker Variant="variant"><MarkerContent>Today</MarkerContent></Marker>);
+
+        // Assert
+        var marker = cut.Find("[data-slot=marker]");
+        Assert.Equal(expectedName, marker.GetAttribute("data-variant"));
+        Assert.Equal("Today", marker.QuerySelector("[data-slot=marker-content]")!.TextContent.Trim());
+    }
+
+    [Fact]
+    public void Marker_SeparatorDrawsLinesWithoutExtraMarkup()
+    {
+        // Arrange && Act
+        var cut = Render(@<Marker Variant="MarkerVariant.Separator"><MarkerContent>Today</MarkerContent></Marker>);
+
+        // Assert
+        var marker = cut.Find("[data-slot=marker]");
+        Assert.Contains("before:bg-border", marker.ClassList);
+        Assert.Single(marker.Children);
+    }
+
+    [Fact]
+    public void MarkerIcon_IsHiddenFromScreenReaders()
+    {
+        // Arrange && Act
+        var cut = Render(@<Marker><MarkerIcon><svg viewBox="0 0 24 24"></svg></MarkerIcon><MarkerContent>Ada joined</MarkerContent></Marker>);
+
+        // Assert
+        Assert.Equal("true", cut.Find("[data-slot=marker-icon]").GetAttribute("aria-hidden"));
+    }
+}

@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@* Holds a message's header, bubbles, and footer. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="message-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex w-full min-w-0 flex-col gap-2.5 wrap-break-word " +
+        "group-data-[align=end]/message:*:data-slot:self-end";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The header, bubbles, and footer.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the content's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

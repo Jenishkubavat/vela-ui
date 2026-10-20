@@ -1,0 +1,31 @@
+@namespace Vela.UI.Components
+@* Holds the empty state's action, usually one Button. It's the first thing keyboard users reach. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="empty-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-body-sm text-balance";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The action and any small print.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the content's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

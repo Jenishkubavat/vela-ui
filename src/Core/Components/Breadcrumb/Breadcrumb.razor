@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@*
+    Shows where the current page sits in the site's hierarchy. Put a BreadcrumbList inside.
+    It's a <nav> named "Breadcrumb", so screen reader users can jump to it.
+*@
+
+<nav class="@Class"
+     aria-label="Breadcrumb"
+     data-slot="breadcrumb"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</nav>
+
+@code {
+    /// <summary>
+    /// CSS classes for the <c>&lt;nav&gt;</c>, which has none of its own.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// A <see cref="BreadcrumbList"/>.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as a translated <c>aria-label</c>, applied to the <c>&lt;nav&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

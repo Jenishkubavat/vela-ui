@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@* Small print below the bubbles, such as the time or "Read". *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="message-footer"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex max-w-full min-w-0 items-center px-3 text-caption text-fg-muted " +
+        "group-has-data-[variant=ghost]/message:px-0 group-data-[align=end]/message:justify-end";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The footer text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the footer's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

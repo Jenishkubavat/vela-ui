@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="@ClassNames.Join(LayoutClasses, VariantClasses(Variant), Class)"
+     data-slot="bubble"
+     data-variant="@VariantName(Variant)"
+     data-align="@(Align == BubbleAlign.End ? "end" : "start")"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

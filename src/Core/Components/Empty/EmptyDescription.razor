@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@* Explains the empty state and what to do next. *@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="empty-description"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "text-body text-fg-muted text-pretty [&>a]:underline [&>a]:underline-offset-[0.2em] " +
+        "[&>a:hover]:text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The description text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the description's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}
