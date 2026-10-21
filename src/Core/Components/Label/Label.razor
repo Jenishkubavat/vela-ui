@@ -1,8 +1,9 @@
 @namespace Vela.UI.Components
+@using Vela.UI.Primitives
 
-<label for="@For"
-       class="@ClassNames.Join(LayoutClasses, DisabledClasses, Class)"
-       data-slot="label"
-       @attributes="AdditionalAttributes">
+<LabelPrimitive For="@For"
+                class="@ClassNames.Join(LayoutClasses, DisabledClasses, Class)"
+                data-slot="label"
+                @attributes="AdditionalAttributes">
     @ChildContent
-</label>
+</LabelPrimitive>

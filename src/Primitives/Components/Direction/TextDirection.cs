@@ -2,10 +2,10 @@
 // This file is licensed to you under the MIT License.
 // ------------------------------------------------------------------------
 
-namespace Vela.UI.Components;
+namespace Vela.UI.Primitives;
 
 /// <summary>
-/// The reading direction that <see cref="DirectionProvider"/> passes to the components inside it.
+/// The reading direction that <see cref="DirectionPrimitive"/> passes to the components inside it.
 /// </summary>
 public enum TextDirection
 {

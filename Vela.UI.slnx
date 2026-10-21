@@ -17,5 +17,6 @@
   <Folder Name="/tests/">
     <Project Path="tests/Cli/Vela.UI.Cli.Tests.csproj" />
     <Project Path="tests/Core/Vela.UI.Components.Tests.csproj" />
+    <Project Path="tests/Primitives/Vela.UI.Primitives.Tests.csproj" />
   </Folder>
 </Solution>

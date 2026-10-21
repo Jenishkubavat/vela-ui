@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Components;
 namespace Vela.UI.Components;
 
 /// <summary>
-/// A native <c>&lt;label&gt;</c> for naming a form control, set as a Vela field label.
+/// A styled <c>LabelPrimitive</c> for naming a form control.
 /// </summary>
 /// <remarks>
 /// Clicking the label focuses or toggles its control, and screen readers announce the
 /// label as the control's name. Both need <see cref="For"/> to match the control's
-/// <c>id</c>, or the control nested inside the label. Double-clicking doesn't select the
-/// label's text (<c>select-none</c>), which is the behavior Radix's Label primitive adds.
+/// <c>id</c>, or the control nested inside the label. <c>select-none</c> stops a
+/// double-click from selecting the label's text.
 /// </remarks>
 public partial class Label
 {

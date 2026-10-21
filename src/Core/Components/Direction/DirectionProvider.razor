@@ -1,16 +1,16 @@
 @namespace Vela.UI.Components
+@using Vela.UI.Primitives
 @*
     Tells the components inside it which way text reads, so keyboard navigation follows
-    it: in right-to-left layouts the Left arrow means "next". It renders no element of
-    its own, so also set dir="rtl" on <html> (or a wrapper) for the browser and for
-    Tailwind's rtl: variants. Components read it with
-    [CascadingParameter] public TextDirection Direction { get; set; }.
-    None of the current components need it yet; Tabs and the menus will.
+    it: in right-to-left layouts the Left arrow means "next". It passes Direction to
+    DirectionPrimitive, which the keyboard primitives read. It renders no element of its
+    own, so also set dir="rtl" on <html> (or a wrapper) for the browser and for
+    Tailwind's rtl: variants.
 *@
 
-<CascadingValue Value="Direction" IsFixed="true">
+<DirectionPrimitive Direction="Direction">
     @ChildContent
-</CascadingValue>
+</DirectionPrimitive>
 
 @code {
     /// <summary>

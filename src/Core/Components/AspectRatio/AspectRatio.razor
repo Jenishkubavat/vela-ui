@@ -1,8 +1,9 @@
 @namespace Vela.UI.Components
+@using Vela.UI.Primitives
 
-<div class="@ClassNames.Join(Classes, Class)"
-     style="aspect-ratio: @RatioValue"
-     data-slot="aspect-ratio"
-     @attributes="AdditionalAttributes">
+<AspectRatioPrimitive Ratio="Ratio"
+                      class="@ClassNames.Join(Classes, Class)"
+                      data-slot="aspect-ratio"
+                      @attributes="AdditionalAttributes">
     @ChildContent
-</div>
+</AspectRatioPrimitive>

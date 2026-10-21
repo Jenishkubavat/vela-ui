@@ -3,11 +3,12 @@
 // ------------------------------------------------------------------------
 
 using Microsoft.AspNetCore.Components;
+using Vela.UI.Primitives;
 
 namespace Vela.UI.Components;
 
 /// <summary>
-/// A 1px hairline that divides content.
+/// A 1px hairline that divides content, styled on top of <see cref="SeparatorPrimitive"/>.
 /// </summary>
 /// <remarks>
 /// By default it's decorative: screen readers skip it, because the content on either side
@@ -44,12 +45,4 @@ public partial class Separator
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-
-    // Uses Radix's names so selectors written for shadcn/ui work unchanged.
-    private static string OrientationName(SeparatorOrientation orientation) => orientation switch
-    {
-        SeparatorOrientation.Horizontal => "horizontal",
-        SeparatorOrientation.Vertical => "vertical",
-        _ => throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null),
-    };
 }

@@ -2,18 +2,18 @@
 // This file is licensed to you under the MIT License.
 // ------------------------------------------------------------------------
 
-using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using Vela.UI.Primitives;
 
 namespace Vela.UI.Components;
 
 /// <summary>
 /// Keeps its content at a fixed width-to-height ratio as the width changes, such as a
-/// 16:9 video frame or a square thumbnail.
+/// 16:9 video frame or a square thumbnail. Styled on top of <see cref="AspectRatioPrimitive"/>.
 /// </summary>
 /// <remarks>
-/// It uses the CSS <c>aspect-ratio</c> property and fills the available width. Make the
-/// content fill it too, for example <c>&lt;img class="size-full object-cover"&gt;</c>.
+/// It fills the available width. Make the content fill it too, for example
+/// <c>&lt;img class="size-full object-cover"&gt;</c>.
 /// </remarks>
 public partial class AspectRatio
 {
@@ -42,7 +42,4 @@ public partial class AspectRatio
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
-
-    // Invariant culture: a comma decimal separator (1,7778) would make the CSS value invalid.
-    private string RatioValue => Ratio.ToString(CultureInfo.InvariantCulture);
 }

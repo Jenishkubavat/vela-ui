@@ -1,0 +1,6 @@
+@namespace Vela.UI.Primitives
+
+@* style comes after the captured attributes so the ratio isn't lost; StyleValue keeps the caller's own style. *@
+<div @attributes="AdditionalAttributes" style="@StyleValue">
+    @ChildContent
+</div>

@@ -1,0 +1,45 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void SeparatorPrimitive_DefaultIsDecorativeAndUnstyled()
+    {
+        // Arrange && Act
+        var cut = Render(@<SeparatorPrimitive />);
+
+        // Assert
+        var separator = cut.Find("div");
+        Assert.Equal("none", separator.GetAttribute("role"));
+        Assert.Equal("horizontal", separator.GetAttribute("data-orientation"));
+        Assert.False(separator.HasAttribute("aria-orientation"));
+        Assert.False(separator.HasAttribute("class"));
+    }
+
+    [Theory]
+    [InlineData(SeparatorOrientation.Horizontal, "horizontal", null)]
+    [InlineData(SeparatorOrientation.Vertical, "vertical", "vertical")]
+    public void SeparatorPrimitive_Semantic(SeparatorOrientation orientation, string expectedData, string? expectedAria)
+    {
+        // Arrange && Act
+        var cut = Render(@<SeparatorPrimitive Orientation="orientation" Decorative="false" />);
+
+        // Assert
+        var separator = cut.Find("div");
+        Assert.Equal("separator", separator.GetAttribute("role"));
+        Assert.Equal(expectedData, separator.GetAttribute("data-orientation"));
+        Assert.Equal(expectedAria, separator.GetAttribute("aria-orientation"));
+    }
+
+    [Fact]
+    public void SeparatorPrimitive_DecorativeVerticalHasNoAriaOrientation()
+    {
+        // Arrange && Act
+        var cut = Render(@<SeparatorPrimitive Orientation="SeparatorOrientation.Vertical" />);
+
+        // Assert
+        var separator = cut.Find("div");
+        Assert.Equal("none", separator.GetAttribute("role"));
+        Assert.Equal("vertical", separator.GetAttribute("data-orientation"));
+        Assert.False(separator.HasAttribute("aria-orientation"));
+    }
+}

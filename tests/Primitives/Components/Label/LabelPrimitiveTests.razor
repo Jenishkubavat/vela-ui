@@ -1,0 +1,29 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void LabelPrimitive_RendersAnUnstyledLabel()
+    {
+        // Arrange && Act
+        var cut = Render(@<LabelPrimitive For="email">Email</LabelPrimitive>);
+
+        // Assert
+        var label = cut.Find("label");
+        Assert.Equal("email", label.GetAttribute("for"));
+        Assert.False(label.HasAttribute("class"));
+        Assert.Equal("Email", label.TextContent);
+    }
+
+    [Fact]
+    public void LabelPrimitive_PassesThroughYourOwnStyling()
+    {
+        // Arrange && Act
+        var cut = Render(@<LabelPrimitive for="email" class="my-label" data-state="required">Email</LabelPrimitive>);
+
+        // Assert
+        var label = cut.Find("label");
+        Assert.Equal("email", label.GetAttribute("for"));
+        Assert.Equal("my-label", label.GetAttribute("class"));
+        Assert.Equal("required", label.GetAttribute("data-state"));
+    }
+}

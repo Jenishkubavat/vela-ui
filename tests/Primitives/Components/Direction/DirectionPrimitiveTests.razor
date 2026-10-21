@@ -1,0 +1,36 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void DirectionPrimitive_CascadesTheDirection()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<DirectionPrimitive Direction="TextDirection.RightToLeft">
+                <DirectionReader />
+            </DirectionPrimitive>);
+
+        // Assert
+        Assert.Equal("RightToLeft", cut.Find("span").GetAttribute("data-direction"));
+    }
+
+    [Fact]
+    public void DirectionPrimitive_WithoutAProviderReadersGetLeftToRight()
+    {
+        // Arrange && Act
+        var cut = Render(@<DirectionReader />);
+
+        // Assert
+        Assert.Equal("LeftToRight", cut.Find("span").GetAttribute("data-direction"));
+    }
+
+    [Fact]
+    public void DirectionPrimitive_RendersNoElementOfItsOwn()
+    {
+        // Arrange && Act
+        var cut = Render(@<DirectionPrimitive><DirectionReader /></DirectionPrimitive>);
+
+        // Assert
+        Assert.Equal("SPAN", cut.Nodes.OfType<AngleSharp.Dom.IElement>().Single().TagName);
+    }
+}

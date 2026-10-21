@@ -25,6 +25,9 @@ follow [Semantic Versioning](https://semver.org/).
   FieldDescription, FieldError, FieldContent, FieldGroup, FieldSet,
   FieldLegend, FieldSeparator) and vertical, horizontal, and responsive
   layouts. FieldError shows EditForm validation messages through `For`.
+- Headless primitives: LabelPrimitive, SeparatorPrimitive,
+  AspectRatioPrimitive, and DirectionPrimitive. Label, Separator,
+  AspectRatio, and DirectionProvider are now built on them.
 - Alert, AspectRatio, Badge, Breadcrumb, Bubble, DirectionProvider, Empty,
   Marker, Message, Separator, and Skeleton, completing shadcn/ui's simplest
   components in the Vela look.

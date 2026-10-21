@@ -22,8 +22,10 @@ You can pick either layer, or mix them:
   like, with or without Tailwind. This is the Radix experience.
 
 The styled components are built on the primitives, so both behave the
-same way. Simple components such as Button have no behavior worth sharing
-and exist only in the styled layer; the primitives start with Dialog.
+same way. Every component that Radix provides a primitive for has one here
+too, named like shadcn names Radix's (`LabelPrimitive` under the styled
+`Label`). Components with no behaviour of their own, such as Button and
+Card, exist only in the styled layer.
 
 ## The look
 
@@ -87,9 +89,9 @@ To add a package, add a `PackageVersion` entry there and a
 | `src/Core/Styles/vela.css` | The Vela theme for Tailwind v4: design-system tokens (Night and Day), type roles, radii, shadows, and the motion layer's CSS |
 | `src/Core/Styles/fonts/` | Host Grotesk and Spline Sans Mono (Latin subsets, SIL OFL 1.1) |
 | `src/Core/Scripts/vela-light.js` | The optional motion layer |
-| `src/Primitives/` | `Vela.UI.Primitives`, headless behavior with no styles (like Radix for shadcn/ui), published as a NuGet package. Empty until Dialog. |
+| `src/Primitives/` | `Vela.UI.Primitives`, headless behaviour with no styles (like Radix for shadcn/ui), published as a NuGet package |
 | `src/Cli/` | The `vela` command-line tool |
-| `tests/Core/`, `tests/Cli/` | Tests, mirroring the `src/` folders |
+| `tests/Core/`, `tests/Primitives/`, `tests/Cli/` | Tests, mirroring the `src/` folders; the primitive tests don't reference `src/Core` |
 | `Directory.Build.props` | Version number and settings shared by every project |
 | `Directory.Packages.props` | NuGet package versions for every project |
 | `NuGet.config` | Restricts package restore to nuget.org |

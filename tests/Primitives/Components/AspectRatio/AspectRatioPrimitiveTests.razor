@@ -1,0 +1,50 @@
+@using System.Globalization
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void AspectRatioPrimitive_DefaultIsSquareAndUnstyled()
+    {
+        // Arrange && Act
+        var cut = Render(@<AspectRatioPrimitive><img alt="" /></AspectRatioPrimitive>);
+
+        // Assert
+        var box = cut.Find("div");
+        Assert.Equal("aspect-ratio: 1", box.GetAttribute("style"));
+        Assert.False(box.HasAttribute("class"));
+        Assert.NotNull(box.QuerySelector("img"));
+    }
+
+    [Fact]
+    public void AspectRatioPrimitive_KeepsYourOwnStyle()
+    {
+        // Arrange && Act
+        var cut = Render(@<AspectRatioPrimitive Ratio="2" style="width: 320px" />);
+
+        // Assert
+        Assert.Equal("aspect-ratio: 2; width: 320px", cut.Find("div").GetAttribute("style"));
+    }
+
+    [Fact]
+    public void AspectRatioPrimitive_UsesAPointDecimalInEveryCulture()
+    {
+        // A German culture would otherwise write 1,7777..., which CSS rejects.
+        // Arrange
+        var original = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+        try
+        {
+            // Act
+            var cut = Render(@<AspectRatioPrimitive Ratio="16.0 / 9" />);
+
+            // Assert
+            var style = cut.Find("div").GetAttribute("style");
+            Assert.StartsWith("aspect-ratio: 1.77", style);
+            Assert.DoesNotContain(",", style);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = original;
+        }
+    }
+}

@@ -1,8 +1,8 @@
 @namespace Vela.UI.Components
+@using Vela.UI.Primitives
 
-<div class="@ClassNames.Join(Classes, Class)"
-     role="@(Decorative ? "none" : "separator")"
-     aria-orientation="@(!Decorative && Orientation == SeparatorOrientation.Vertical ? "vertical" : null)"
-     data-slot="separator"
-     data-orientation="@OrientationName(Orientation)"
-     @attributes="AdditionalAttributes"></div>
+<SeparatorPrimitive Orientation="Orientation"
+                    Decorative="Decorative"
+                    class="@ClassNames.Join(Classes, Class)"
+                    data-slot="separator"
+                    @attributes="AdditionalAttributes" />
