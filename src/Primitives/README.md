@@ -21,6 +21,9 @@ clash with the styled components in your app (`Label`).
 | `SwitchPrimitive` | A native checkbox with `role="switch"` over a track, with a thumb part |
 | `RadioGroupPrimitive` | Native radios sharing a name, so arrow keys work, with item and indicator parts |
 | `TogglePrimitive` | A `<button>` with `aria-pressed` and `@bind-Pressed` |
+| `CollapsiblePrimitive` | A trigger with `aria-expanded` and `aria-controls` that shows and hides its content |
+| `ProgressPrimitive` | `role="progressbar"` with checked values, `aria-valuetext`, and an indeterminate state |
+| `AvatarPrimitive` | A photo that's removed if it fails to load, over a fallback shown until it loads |
 
 Checkbox, Switch, and RadioGroup bind with `@bind-Value` and take part in
 `EditForm` validation, but also work unbound. Because they're native inputs,

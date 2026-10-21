@@ -311,6 +311,24 @@
   }
 }
 
+/* The wick: an indeterminate progress bar travels along its line. */
+@keyframes vela-wick {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(360%);
+  }
+}
+
+/* The flame at the wick's tip flares when an ember lands on it. */
+@keyframes vela-catch {
+  20% {
+    transform: scale(2.2);
+    box-shadow: 0 0 18px 4px var(--vela-glow);
+  }
+}
+
 /* Rolling figures: text inside [data-roll] turns over in place when it changes. */
 [data-roll] {
   display: inline-block;
@@ -319,7 +337,8 @@
 }
 
 /* With vela-light.js running, one ring travels between targets instead of each component drawing its own. */
-html[data-vela-light] [data-slot]:focus-visible {
+html[data-vela-light] [data-slot]:focus-visible,
+html[data-vela-light] [data-slot]:has(> [data-slot="input-group-control"]:focus-visible, > [data-slot="attachment-trigger"]:focus-visible) {
   outline-color: transparent;
 }
 .vela-focus-light {

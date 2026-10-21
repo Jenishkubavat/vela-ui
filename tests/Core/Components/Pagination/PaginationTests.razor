@@ -1,0 +1,70 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Pagination_IsANavigationListOfLinks()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Pagination>
+                <PaginationContent>
+                    <PaginationItem><PaginationPrevious href="/page/1" /></PaginationItem>
+                    <PaginationItem><PaginationLink href="/page/1">1</PaginationLink></PaginationItem>
+                    <PaginationItem><PaginationLink href="/page/2" IsActive="true">2</PaginationLink></PaginationItem>
+                    <PaginationItem><PaginationEllipsis /></PaginationItem>
+                    <PaginationItem><PaginationNext href="/page/3" /></PaginationItem>
+                </PaginationContent>
+            </Pagination>);
+
+        // Assert
+        var nav = cut.Find("nav");
+        Assert.Equal("pagination", nav.GetAttribute("aria-label"));
+        Assert.Equal("pagination", nav.GetAttribute("data-slot"));
+        Assert.Equal("pagination-content", cut.Find("ul").GetAttribute("data-slot"));
+        Assert.Equal(5, cut.FindAll("li[data-slot=pagination-item]").Count);
+        Assert.Equal("true", cut.Find("[data-slot=pagination-ellipsis]").GetAttribute("aria-hidden"));
+    }
+
+    [Fact]
+    public void PaginationLink_MarksTheCurrentPage()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<div>
+                <PaginationLink href="/page/1">1</PaginationLink>
+                <PaginationLink href="/page/2" IsActive="true">2</PaginationLink>
+            </div>);
+
+        // Assert
+        var links = cut.FindAll("a");
+        Assert.False(links[0].HasAttribute("aria-current"));
+        Assert.Equal("false", links[0].GetAttribute("data-active"));
+        Assert.Contains("text-fg-muted", links[0].ClassList);
+        Assert.Equal("page", links[1].GetAttribute("aria-current"));
+        Assert.Equal("true", links[1].GetAttribute("data-active"));
+        Assert.Contains("shadow-hairline-strong", links[1].ClassList);
+        Assert.Contains("size-8", links[1].ClassList);
+        Assert.DoesNotContain("flame", cut.Markup, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void PaginationPreviousAndNext_HaveLabelsYouCanTranslate()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<div>
+                <PaginationPrevious href="/page/1" />
+                <PaginationNext href="/page/3" Text="Weiter" aria-label="Zur nächsten Seite" />
+            </div>);
+
+        // Assert
+        var links = cut.FindAll("a");
+        Assert.Equal("Go to previous page", links[0].GetAttribute("aria-label"));
+        Assert.Equal("/page/1", links[0].GetAttribute("href"));
+        Assert.Equal("Previous", links[0].QuerySelector("span")!.TextContent);
+        Assert.Contains("ps-2!", links[0].ClassList);
+        Assert.Equal("Zur nächsten Seite", links[1].GetAttribute("aria-label"));
+        Assert.Equal("Weiter", links[1].QuerySelector("span")!.TextContent);
+        Assert.Equal("inline-end", links[1].QuerySelector("svg")!.GetAttribute("data-icon"));
+    }
+}

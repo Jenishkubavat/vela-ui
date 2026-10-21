@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="relative w-full overflow-x-auto" data-slot="table-container">
+    <table class="@ClassNames.Join(Classes, Class)"
+           data-slot="table"
+           @attributes="AdditionalAttributes">
+        @ChildContent
+    </table>
+</div>

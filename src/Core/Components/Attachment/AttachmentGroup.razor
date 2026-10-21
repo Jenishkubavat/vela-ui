@@ -1,0 +1,36 @@
+@namespace Vela.UI.Components
+@*
+    A row of Attachments that scrolls sideways when it overflows, snapping to each one.
+    The scrollbar is hidden, so make sure the row can also be scrolled from the
+    keyboard, for example by tabbing to a trigger or action in each attachment.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="attachment-group"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex min-w-0 snap-x snap-mandatory scroll-px-1 gap-3 overflow-x-auto overscroll-x-contain py-1 " +
+        "[scrollbar-width:none] *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The attachments.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

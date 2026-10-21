@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    A header cell (<th>). Add scope="col" and, on sorted columns, aria-sort.
+*@
+
+<th class="@ClassNames.Join(Classes, Class)"
+    data-slot="table-head"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</th>
+
+@code {
+    private const string Classes =
+        "h-8 px-3 text-start align-middle text-caption text-fg-faint whitespace-nowrap has-data-[slot=checkbox]:w-9 has-data-[slot=checkbox]:pe-0";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The column's name.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;th&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

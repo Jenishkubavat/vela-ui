@@ -1,0 +1,132 @@
+@inherits BunitContext
+@code
+{
+    private sealed class Search
+    {
+        public string? Query { get; set; }
+    }
+
+    [Fact]
+    public void InputGroup_DrawsTheEdgeForItsControl()
+    {
+        // Arrange
+        var search = new Search();
+
+        // Act
+        var cut = Render(
+            @<InputGroup>
+                <InputGroupInput @bind-Value="search.Query" aria-label="Search" />
+                <InputGroupAddon><InputGroupText>$</InputGroupText></InputGroupAddon>
+            </InputGroup>);
+
+        // Assert
+        var group = cut.Find("[data-slot=input-group]");
+        var input = cut.Find("input");
+        Assert.Equal("group", group.GetAttribute("role"));
+        Assert.Contains("shadow-control", group.ClassList);
+        Assert.Equal("input-group-control", input.GetAttribute("data-slot"));
+        Assert.Equal("text", input.GetAttribute("type"));
+        Assert.Contains("bg-transparent", input.ClassList);
+        Assert.DoesNotContain(input.ClassList, c => c.StartsWith("shadow-", StringComparison.Ordinal));
+        Assert.Equal("inline-start", cut.Find("[data-slot=input-group-addon]").GetAttribute("data-align"));
+    }
+
+    [Theory]
+    [InlineData(InputGroupAddonAlign.InlineStart, "inline-start", "order-first")]
+    [InlineData(InputGroupAddonAlign.InlineEnd, "inline-end", "order-last")]
+    [InlineData(InputGroupAddonAlign.BlockStart, "block-start", "w-full")]
+    [InlineData(InputGroupAddonAlign.BlockEnd, "block-end", "w-full")]
+    public void InputGroupAddon_Align(InputGroupAddonAlign align, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<InputGroupAddon Align="align">USD</InputGroupAddon>);
+
+        // Assert
+        var addon = cut.Find("[data-slot=input-group-addon]");
+        Assert.Equal(expectedName, addon.GetAttribute("data-align"));
+        Assert.Contains(expectedClass, addon.ClassList);
+    }
+
+    [Fact]
+    public void InputGroupInput_BindValue()
+    {
+        // Arrange
+        var search = new Search();
+        var cut = Render(@<InputGroupInput @bind-Value="search.Query" />);
+
+        // Act
+        cut.Find("input").Change("wick");
+
+        // Assert
+        Assert.Equal("wick", search.Query);
+    }
+
+    [Fact]
+    public void InputGroupInput_Immediate()
+    {
+        // Arrange
+        var search = new Search();
+        var cut = Render(@<InputGroupInput @bind-Value="search.Query" Immediate="true" />);
+
+        // Act
+        cut.Find("input").Input("wi");
+
+        // Assert
+        Assert.Equal("wi", search.Query);
+    }
+
+    [Fact]
+    public void InputGroupTextarea_ValidationErrorsMarkItInvalid()
+    {
+        // Arrange
+        var search = new Search();
+        var editContext = new EditContext(search);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(
+            @<EditForm EditContext="editContext">
+                <InputGroup><InputGroupTextarea @bind-Value="search.Query" /></InputGroup>
+            </EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(Search.Query)), "Ask something first.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        var textarea = cut.Find("textarea");
+        Assert.Equal("input-group-control", textarea.GetAttribute("data-slot"));
+        Assert.Equal("true", textarea.GetAttribute("aria-invalid"));
+        Assert.Contains("has-[[data-slot][aria-invalid=true]]:shadow-control-invalid", cut.Find("[data-slot=input-group]").ClassList);
+    }
+
+    [Theory]
+    [InlineData(InputGroupButtonSize.ExtraSmall, "xs", "h-6")]
+    [InlineData(InputGroupButtonSize.Small, "sm", "h-7")]
+    [InlineData(InputGroupButtonSize.IconExtraSmall, "icon-xs", "size-6")]
+    [InlineData(InputGroupButtonSize.IconSmall, "icon-sm", "size-7")]
+    public void InputGroupButton_Size(InputGroupButtonSize size, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<InputGroupButton Size="size" aria-label="Copy">C</InputGroupButton>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal(expectedName, button.GetAttribute("data-size"));
+        Assert.Equal("ghost", button.GetAttribute("data-variant"));
+        Assert.Equal("button", button.GetAttribute("type"));
+        Assert.Contains(expectedClass, button.ClassList);
+    }
+
+    [Fact]
+    public void InputGroupButton_OnClick()
+    {
+        // Arrange
+        var clicked = false;
+        var cut = Render(@<InputGroupButton OnClick="() => clicked = true">Copy</InputGroupButton>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.True(clicked);
+    }
+}

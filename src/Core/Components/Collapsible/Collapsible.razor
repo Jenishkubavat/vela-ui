@@ -1,0 +1,11 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<CollapsiblePrimitive Open="Open"
+                      OpenChanged="OnOpenChanged"
+                      Disabled="Disabled"
+                      class="@Class"
+                      data-slot="collapsible"
+                      @attributes="AdditionalAttributes">
+    @ChildContent
+</CollapsiblePrimitive>

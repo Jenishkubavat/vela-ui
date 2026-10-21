@@ -1,0 +1,15 @@
+@namespace Vela.UI.Primitives
+
+<div @attributes="AdditionalAttributes"
+     role="progressbar"
+     aria-valuemin="0"
+     aria-valuemax="@Format(CurrentMax)"
+     aria-valuenow="@(CurrentValue is { } value ? Format(value) : null)"
+     aria-valuetext="@ValueText"
+     data-state="@State"
+     data-value="@(CurrentValue is { } dataValue ? Format(dataValue) : null)"
+     data-max="@Format(CurrentMax)">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>

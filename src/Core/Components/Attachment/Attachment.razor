@@ -1,0 +1,10 @@
+@namespace Vela.UI.Components
+
+<div class="@GetClasses(Size, Orientation, Class)"
+     data-slot="attachment"
+     data-state="@StateName(State)"
+     data-size="@SizeName(Size)"
+     data-orientation="@OrientationName(Orientation)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

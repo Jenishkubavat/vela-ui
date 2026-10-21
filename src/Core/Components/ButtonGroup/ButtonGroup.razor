@@ -1,0 +1,10 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<div role="group"
+     class="@GetClasses(Orientation, Class)"
+     data-slot="button-group"
+     data-orientation="@OrientationName(Orientation)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

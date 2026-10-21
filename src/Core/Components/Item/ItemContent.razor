@@ -1,0 +1,35 @@
+@namespace Vela.UI.Components
+@*
+    The text column of an Item: an ItemTitle and an ItemDescription. A second
+    ItemContent (for a date or amount) shrinks to fit.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="item-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex flex-1 flex-col gap-1 group-data-[size=xs]/item:gap-0 " +
+        "[&+[data-slot=item-content]]:flex-none";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title and description.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    The text column of an Attachment: an AttachmentTitle and an AttachmentDescription.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="attachment-content"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title and description.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

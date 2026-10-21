@@ -1,0 +1,36 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    A hairline between buttons in a ButtonGroup that have no edge of their own. It runs
+    vertically by default, across a horizontal group, and stops 1px short of each end.
+*@
+
+<Separator Orientation="Orientation"
+           Class="@ClassNames.Join(Classes, Class)"
+           data-slot="button-group-separator"
+           @attributes="AdditionalAttributes" />
+
+@code {
+    // Separator sets w-full on horizontal lines; w-auto! lets the margins show.
+    private const string Classes =
+        "relative self-stretch data-[orientation=horizontal]:mx-px data-[orientation=horizontal]:w-auto! " +
+        "data-[orientation=vertical]:my-px data-[orientation=vertical]:h-auto";
+
+    /// <summary>
+    /// Which way the line runs. Defaults to <see cref="Orientation.Vertical"/>.
+    /// </summary>
+    [Parameter]
+    public Orientation Orientation { get; set; } = Orientation.Vertical;
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the separator's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,9 @@
+@namespace Vela.UI.Primitives
+
+<div @attributes="AdditionalAttributes"
+     data-state="@State"
+     data-disabled="@(Disabled ? "" : null)">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>

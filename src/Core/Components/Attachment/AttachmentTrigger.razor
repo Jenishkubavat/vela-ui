@@ -1,0 +1,53 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Web
+@*
+    An invisible button stretched over an Attachment, so the whole card opens or previews
+    the file. It has no text, so give it an aria-label ("Open report.pdf"). The card draws
+    its focus ring, and AttachmentActions stay clickable above it. To open the file as a
+    link instead, use <a href="..." class="@AttachmentTrigger.GetClasses()"
+    data-slot="attachment-trigger">. OnClick needs an interactive render mode.
+*@
+
+<button type="button"
+        class="@GetClasses(Class)"
+        data-slot="attachment-trigger"
+        @onclick="OnClick"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</button>
+
+@code {
+    private const string Classes = "absolute inset-0 z-10 rounded-[inherit] outline-none";
+
+    /// <summary>
+    /// Invoked when the card is clicked or the trigger is activated from the keyboard.
+    /// Requires an interactive render mode.
+    /// </summary>
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Optional content, usually none.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>aria-label</c>, applied to the <c>&lt;button&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Returns the classes an <see cref="AttachmentTrigger"/> uses, so a link can stretch
+    /// over an attachment the same way. This is the Blazor counterpart of shadcn/ui's <c>asChild</c>.
+    /// </summary>
+    public static string GetClasses(string? additionalClasses = null) =>
+        ClassNames.Join(Classes, additionalClasses);
+}

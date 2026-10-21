@@ -1,0 +1,101 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void AvatarPrimitive_ShowsTheFallbackUntilThePhotoLoads()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<AvatarPrimitive>
+                <AvatarPrimitiveImage Src="/ada.png" alt="Ada Lovelace" />
+                <AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>
+            </AvatarPrimitive>);
+
+        // Assert
+        var img = cut.Find("img");
+        Assert.Equal("/ada.png", img.GetAttribute("src"));
+        Assert.Equal("Ada Lovelace", img.GetAttribute("alt"));
+        Assert.Equal("AL", cut.Find("span > span").TextContent);
+        Assert.Empty(cut.FindAll("[class]"));
+    }
+
+    [Fact]
+    public void AvatarPrimitive_LoadedPhotoRemovesTheFallback()
+    {
+        // Arrange
+        var cut = Render(
+            @<AvatarPrimitive>
+                <AvatarPrimitiveImage Src="/ada.png" alt="" />
+                <AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>
+            </AvatarPrimitive>);
+
+        // Act
+        cut.Find("img").TriggerEvent("onload", new ProgressEventArgs());
+
+        // Assert
+        Assert.Single(cut.FindAll("img"));
+        Assert.Empty(cut.FindAll("span > span"));
+        Assert.Equal(AvatarImageStatus.Loaded, cut.FindComponent<AvatarPrimitive>().Instance.ImageStatus);
+    }
+
+    [Fact]
+    public void AvatarPrimitive_FailedPhotoIsRemoved()
+    {
+        // Arrange
+        var statuses = new List<AvatarImageStatus>();
+        var cut = Render(
+            @<AvatarPrimitive>
+                <AvatarPrimitiveImage Src="/missing.png" OnLoadingStatusChange="statuses.Add" />
+                <AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>
+            </AvatarPrimitive>);
+
+        // Act
+        cut.Find("img").TriggerEvent("onerror", new ErrorEventArgs());
+
+        // Assert
+        Assert.Empty(cut.FindAll("img"));
+        Assert.Equal("AL", cut.Find("span > span").TextContent);
+        Assert.Equal([AvatarImageStatus.Loading, AvatarImageStatus.Error], statuses);
+    }
+
+    [Fact]
+    public void AvatarPrimitive_NoSrcShowsOnlyTheFallback()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<AvatarPrimitive>
+                <AvatarPrimitiveImage Src="" />
+                <AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>
+            </AvatarPrimitive>);
+
+        // Assert
+        Assert.Empty(cut.FindAll("img"));
+        Assert.Equal("AL", cut.Find("span > span").TextContent);
+    }
+
+    [Fact]
+    public void AvatarPrimitive_NewSrcStartsLoadingAgain()
+    {
+        // Arrange
+        var cut = Render(
+            @<AvatarPrimitive>
+                <AvatarPrimitiveImage Src="/old.png" />
+                <AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>
+            </AvatarPrimitive>);
+        cut.Find("img").TriggerEvent("onerror", new ErrorEventArgs());
+
+        // Act
+        cut.FindComponent<AvatarPrimitiveImage>().Render(parameters => parameters.Add(p => p.Src, "/new.png"));
+
+        // Assert
+        Assert.Equal("/new.png", cut.Find("img").GetAttribute("src"));
+        Assert.Equal("AL", cut.Find("span > span").TextContent);
+    }
+
+    [Fact]
+    public void AvatarPrimitiveFallback_OutsideARootThrows()
+    {
+        // Act && Assert
+        Assert.Throws<InvalidOperationException>(() => Render(@<AvatarPrimitiveFallback>AL</AvatarPrimitiveFallback>));
+    }
+}

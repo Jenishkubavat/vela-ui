@@ -1,0 +1,97 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void ProgressPrimitive_ReportsItsValue()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="40" aria-label="Import"><ProgressPrimitiveIndicator /></ProgressPrimitive>);
+
+        // Assert
+        var bar = cut.Find("[role=progressbar]");
+        Assert.Equal("0", bar.GetAttribute("aria-valuemin"));
+        Assert.Equal("100", bar.GetAttribute("aria-valuemax"));
+        Assert.Equal("40", bar.GetAttribute("aria-valuenow"));
+        Assert.Equal("40%", bar.GetAttribute("aria-valuetext"));
+        Assert.Equal("loading", bar.GetAttribute("data-state"));
+        Assert.Equal("40", bar.GetAttribute("data-value"));
+        Assert.False(bar.HasAttribute("class"));
+        var indicator = cut.Find("[role=progressbar] > div");
+        Assert.Equal("loading", indicator.GetAttribute("data-state"));
+        Assert.Equal("40", indicator.GetAttribute("data-value"));
+        Assert.Equal("100", indicator.GetAttribute("data-max"));
+        Assert.False(indicator.HasAttribute("style"));
+    }
+
+    [Fact]
+    public void ProgressPrimitive_NoValueIsIndeterminate()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive><ProgressPrimitiveIndicator /></ProgressPrimitive>);
+
+        // Assert
+        var bar = cut.Find("[role=progressbar]");
+        Assert.Equal("indeterminate", bar.GetAttribute("data-state"));
+        Assert.False(bar.HasAttribute("aria-valuenow"));
+        Assert.False(bar.HasAttribute("aria-valuetext"));
+        Assert.False(bar.HasAttribute("data-value"));
+        Assert.Equal("indeterminate", cut.Find("[role=progressbar] > div").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void ProgressPrimitive_ValueAtMaxIsComplete()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="10" Max="10" />);
+
+        // Assert
+        Assert.Equal("complete", cut.Find("div").GetAttribute("data-state"));
+        Assert.Equal("100%", cut.Find("div").GetAttribute("aria-valuetext"));
+    }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(101)]
+    [InlineData(double.NaN)]
+    public void ProgressPrimitive_ValueOutOfRangeIsIndeterminate(double value)
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="value" />);
+
+        // Assert
+        Assert.Equal("indeterminate", cut.Find("div").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void ProgressPrimitive_InvalidMaxFallsBackTo100()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="50" Max="0" />);
+
+        // Assert
+        Assert.Equal("100", cut.Find("div").GetAttribute("aria-valuemax"));
+        Assert.Equal("50%", cut.Find("div").GetAttribute("aria-valuetext"));
+    }
+
+    [Fact]
+    public void ProgressPrimitive_GetValueLabel()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="4" Max="10" GetValueLabel="@((value, max) => $"{value} of {max} done")" />);
+
+        // Assert
+        Assert.Equal("4 of 10 done", cut.Find("div").GetAttribute("aria-valuetext"));
+        Assert.Equal("10", cut.Find("div").GetAttribute("aria-valuemax"));
+    }
+
+    [Fact]
+    public void ProgressPrimitive_PercentageFollowsMax()
+    {
+        // Arrange && Act
+        var cut = Render(@<ProgressPrimitive Value="1" Max="8" />);
+
+        // Assert
+        Assert.Equal(12.5, cut.FindComponent<ProgressPrimitive>().Instance.Percentage);
+        Assert.Equal("13%", cut.Find("div").GetAttribute("aria-valuetext"));
+    }
+}

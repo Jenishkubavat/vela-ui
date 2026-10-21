@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    The button that opens and closes a Collapsible. It carries aria-expanded and
+    aria-controls. Label it with what it reveals ("Show 3 more repositories"); an icon-only
+    trigger needs an aria-label.
+*@
+
+<CollapsiblePrimitiveTrigger class="@Class"
+                             data-slot="collapsible-trigger"
+                             @attributes="AdditionalAttributes">
+    @ChildContent
+</CollapsiblePrimitiveTrigger>
+
+@code {
+    /// <summary>
+    /// CSS classes for the <c>&lt;button&gt;</c>, such as <c>@Button.GetClasses(ButtonVariant.Ghost)</c>.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The button's label.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>aria-label</c>, applied to the <c>&lt;button&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

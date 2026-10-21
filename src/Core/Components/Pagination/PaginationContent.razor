@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@*
+    The list of page links in a Pagination.
+*@
+
+<ul class="@ClassNames.Join(Classes, Class)"
+    data-slot="pagination-content"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</ul>
+
+@code {
+    private const string Classes = "flex items-center gap-0.5";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The <see cref="PaginationItem"/> list items.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;ul&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

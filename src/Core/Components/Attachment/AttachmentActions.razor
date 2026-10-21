@@ -1,0 +1,37 @@
+@namespace Vela.UI.Components
+@*
+    The AttachmentAction buttons at the end of an Attachment, or over the corner of a
+    vertical one. They sit above an AttachmentTrigger, so both can be clicked.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="attachment-actions"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute " +
+        "group-data-[orientation=vertical]/attachment:end-3 " +
+        "group-data-[orientation=vertical]/attachment:top-3 " +
+        "group-data-[orientation=vertical]/attachment:gap-1";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The action buttons.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,37 @@
+@namespace Vela.UI.Components
+@*
+    An Attachment's file name, cut to one line. It pulses while the file uploads or
+    processes, unless the person prefers reduced motion; put the full name in a title
+    attribute if it may be cut.
+*@
+
+<span class="@ClassNames.Join(Classes, Class)"
+      data-slot="attachment-title"
+      @attributes="AdditionalAttributes">
+    @ChildContent
+</span>
+
+@code {
+    private const string Classes =
+        "block max-w-full min-w-0 truncate font-semibold " +
+        "motion-safe:group-data-[state=uploading]/attachment:animate-pulse " +
+        "motion-safe:group-data-[state=processing]/attachment:animate-pulse";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The file name.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,80 @@
+@using System.Globalization
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Progress_SizesTheWickFromTheValue()
+    {
+        // Arrange && Act
+        var cut = Render(@<Progress Value="40" aria-label="Today" Class="mt-2" />);
+
+        // Assert
+        var track = cut.Find("[data-slot=progress]");
+        var indicator = cut.Find("[data-slot=progress-indicator]");
+        Assert.Equal("progressbar", track.GetAttribute("role"));
+        Assert.Equal("Today", track.GetAttribute("aria-label"));
+        Assert.Equal("40", track.GetAttribute("aria-valuenow"));
+        Assert.Contains("bg-border-strong", track.ClassList);
+        Assert.Contains("mt-2", track.ClassList);
+        Assert.Equal("width: 40%", indicator.GetAttribute("style"));
+        Assert.Contains("bg-flame", indicator.ClassList);
+    }
+
+    [Fact]
+    public void Progress_WidthFollowsMaxInAnyCulture()
+    {
+        // Arrange
+        var culture = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+
+        try
+        {
+            // Act
+            var cut = Render(@<Progress Value="1" Max="8" />);
+
+            // Assert
+            Assert.Equal("width: 12.5%", cut.Find("[data-slot=progress-indicator]").GetAttribute("style"));
+            Assert.Equal("8", cut.Find("[data-slot=progress]").GetAttribute("aria-valuemax"));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = culture;
+        }
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(-5.0)]
+    [InlineData(120.0)]
+    public void Progress_UnknownValueIsIndeterminate(double? value)
+    {
+        // Arrange && Act
+        var cut = Render(@<Progress Value="value" />);
+
+        // Assert
+        Assert.Equal("indeterminate", cut.Find("[data-slot=progress]").GetAttribute("data-state"));
+        Assert.False(cut.Find("[data-slot=progress-indicator]").HasAttribute("style"));
+    }
+
+    [Fact]
+    public void Progress_IndeterminateWickRespectsReducedMotion()
+    {
+        // Arrange && Act
+        var cut = Render(@<Progress />);
+
+        // Assert
+        var classes = cut.Find("[data-slot=progress-indicator]").ClassList;
+        Assert.Contains(classes, c => c.StartsWith("motion-safe:", StringComparison.Ordinal) && c.Contains("animate-[vela-wick", StringComparison.Ordinal));
+        Assert.DoesNotContain(classes, c => !c.StartsWith("motion-safe:", StringComparison.Ordinal) && c.Contains("vela-wick", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Progress_GetValueLabel()
+    {
+        // Arrange && Act
+        var cut = Render(@<Progress Value="4" Max="10" GetValueLabel="@((value, max) => $"{value} of {max} done")" />);
+
+        // Assert
+        Assert.Equal("4 of 10 done", cut.Find("[data-slot=progress]").GetAttribute("aria-valuetext"));
+    }
+}

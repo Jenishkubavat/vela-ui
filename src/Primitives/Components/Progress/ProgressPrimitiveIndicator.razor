@@ -1,0 +1,6 @@
+@namespace Vela.UI.Primitives
+
+<div @attributes="AdditionalAttributes"
+     data-state="@Root.State"
+     data-value="@(Root.CurrentValue is { } value ? ProgressPrimitive.Format(value) : null)"
+     data-max="@ProgressPrimitive.Format(Root.CurrentMax)"></div>

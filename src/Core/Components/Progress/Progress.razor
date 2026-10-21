@@ -1,0 +1,13 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<ProgressPrimitive Value="Value"
+                   Max="Max"
+                   GetValueLabel="GetValueLabel"
+                   class="@ClassNames.Join(TrackClasses, Class)"
+                   data-slot="progress"
+                   @attributes="AdditionalAttributes">
+    <ProgressPrimitiveIndicator class="@IndicatorClasses"
+                                style="@IndicatorStyle"
+                                data-slot="progress-indicator" />
+</ProgressPrimitive>

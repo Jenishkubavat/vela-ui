@@ -43,6 +43,10 @@
     light.dataset.state = "on";
     if (light.hasAttribute("data-jump")) requestAnimationFrame(() => light.removeAttribute("data-jump"));
   };
+  // Some controls fill a container that draws their focus: an input in an input group, and the
+  // invisible button stretched over an attachment. The light goes around the container.
+  const ringOwner = el =>
+    (el.matches("[data-slot='input-group-control'], [data-slot='attachment-trigger']") && el.parentElement.closest("[data-slot]")) || el;
   const follow = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => place(true)); };
 
   document.addEventListener("focusin", e => {
@@ -50,7 +54,7 @@
     // Only keyboard focus, and only on or inside Vela components (they all carry data-slot).
     if (!el.matches || !el.matches(":focus-visible") || !el.closest("[data-slot]")) { target = null; place(); return; }
     const first = light.dataset.state !== "on";
-    target = el;
+    target = ringOwner(el);
     place(first);
   });
   document.addEventListener("focusout", () => setTimeout(() => {

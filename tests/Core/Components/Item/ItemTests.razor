@@ -1,0 +1,104 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Item_Defaults()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Item role="listitem">
+                <ItemMedia Variant="ItemMediaVariant.Icon"><svg /></ItemMedia>
+                <ItemContent>
+                    <ItemTitle>Two-factor authentication</ItemTitle>
+                    <ItemDescription>Verify with a code.</ItemDescription>
+                </ItemContent>
+                <ItemActions><Button>Enable</Button></ItemActions>
+            </Item>);
+
+        // Assert
+        var item = cut.Find("[data-slot=item]");
+        Assert.Equal("default", item.GetAttribute("data-variant"));
+        Assert.Equal("default", item.GetAttribute("data-size"));
+        Assert.Equal("listitem", item.GetAttribute("role"));
+        Assert.Equal("icon", cut.Find("[data-slot=item-media]").GetAttribute("data-variant"));
+        Assert.Equal("P", cut.Find("[data-slot=item-description]").TagName);
+        Assert.Single(cut.FindAll("[data-slot=item-title]"));
+        Assert.Single(cut.FindAll("[data-slot=item-actions]"));
+    }
+
+    [Theory]
+    [InlineData(ItemVariant.Outline, ItemSize.Default, "outline", "default", "shadow-hairline")]
+    [InlineData(ItemVariant.Muted, ItemSize.Small, "muted", "sm", "bg-hover")]
+    [InlineData(ItemVariant.Default, ItemSize.ExtraSmall, "default", "xs", "py-2")]
+    public void Item_VariantAndSize(ItemVariant variant, ItemSize size, string variantName, string sizeName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Item Variant="variant" Size="size">Row</Item>);
+
+        // Assert
+        var item = cut.Find("[data-slot=item]");
+        Assert.Equal(variantName, item.GetAttribute("data-variant"));
+        Assert.Equal(sizeName, item.GetAttribute("data-size"));
+        Assert.Contains(expectedClass, item.ClassList);
+    }
+
+    [Fact]
+    public void Item_NoVariantOrSizeUsesTheFlameOrConflicts()
+    {
+        foreach (var variant in Enum.GetValues<ItemVariant>())
+        {
+            foreach (var size in Enum.GetValues<ItemSize>())
+            {
+                // Arrange && Act
+                var classes = Item.GetClasses(variant, size).Split(' ');
+
+                // Assert
+                Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+                Assert.Equal(1, classes.Count(c => c.StartsWith("bg-", StringComparison.Ordinal)));
+                Assert.True(classes.Count(c => c.StartsWith("shadow-", StringComparison.Ordinal)) <= 1);
+            }
+        }
+    }
+
+    [Fact]
+    public void Item_GetClassesStylesALink()
+    {
+        // Arrange && Act
+        var cut = Render(@<a href="/settings" class="@Item.GetClasses(ItemVariant.Outline)">Settings</a>);
+
+        // Assert
+        Assert.Contains("[a&]:hover:bg-hover", cut.Find("a").ClassList);
+        Assert.Contains("focus-visible:outline-focus", cut.Find("a").ClassList);
+    }
+
+    [Fact]
+    public void ItemGroup_IsAListWithSeparators()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<ItemGroup>
+                <Item role="listitem">A</Item>
+                <ItemSeparator />
+                <Item role="listitem">B</Item>
+            </ItemGroup>);
+
+        // Assert
+        Assert.Equal("list", cut.Find("[data-slot=item-group]").GetAttribute("role"));
+        var separator = cut.Find("[data-slot=item-separator]");
+        Assert.Equal("horizontal", separator.GetAttribute("data-orientation"));
+        Assert.Contains("my-2", separator.ClassList);
+    }
+
+    [Fact]
+    public void ItemMedia_ImageFollowsTheItemSize()
+    {
+        // Arrange && Act
+        var cut = Render(@<ItemMedia Variant="ItemMediaVariant.Image"><img src="/a.png" alt="" /></ItemMedia>);
+
+        // Assert
+        var media = cut.Find("[data-slot=item-media]");
+        Assert.Equal("image", media.GetAttribute("data-variant"));
+        Assert.Contains("size-10", media.ClassList);
+        Assert.Contains("group-data-[size=xs]/item:size-6", media.ClassList);
+    }
+}

@@ -1,0 +1,63 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void ButtonGroup_Defaults()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<ButtonGroup aria-label="Text alignment">
+                <Button Variant="ButtonVariant.Outline">Left</Button>
+                <Button Variant="ButtonVariant.Outline">Right</Button>
+            </ButtonGroup>);
+
+        // Assert
+        var group = cut.Find("[data-slot=button-group]");
+        Assert.Equal("group", group.GetAttribute("role"));
+        Assert.Equal("Text alignment", group.GetAttribute("aria-label"));
+        Assert.Equal("horizontal", group.GetAttribute("data-orientation"));
+        Assert.Contains("[&>*:not(:first-child)]:rounded-s-none", group.ClassList);
+        Assert.DoesNotContain("flex-col", group.ClassList);
+    }
+
+    [Fact]
+    public void ButtonGroup_Vertical()
+    {
+        // Arrange && Act
+        var cut = Render(@<ButtonGroup Orientation="Orientation.Vertical"><Button>+</Button></ButtonGroup>);
+
+        // Assert
+        var group = cut.Find("[data-slot=button-group]");
+        Assert.Equal("vertical", group.GetAttribute("data-orientation"));
+        Assert.Contains("flex-col", group.ClassList);
+        Assert.Contains("[&>*:not(:first-child)]:rounded-t-none", group.ClassList);
+    }
+
+    [Fact]
+    public void ButtonGroupSeparator_RunsAcrossTheGroup()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<ButtonGroup>
+                <Button Variant="ButtonVariant.Secondary">Copy</Button>
+                <ButtonGroupSeparator />
+                <Button Variant="ButtonVariant.Secondary">Paste</Button>
+            </ButtonGroup>);
+
+        // Assert
+        var separator = cut.Find("[data-slot=button-group-separator]");
+        Assert.Equal("vertical", separator.GetAttribute("data-orientation"));
+        Assert.Empty(cut.FindAll("[data-slot=separator]"));
+        Assert.Contains("data-[orientation=vertical]:my-px", separator.ClassList);
+    }
+
+    [Fact]
+    public void ButtonGroupText_GetClassesMatchesTheComponent()
+    {
+        // Arrange && Act
+        var cut = Render(@<ButtonGroupText Class="extra">https://</ButtonGroupText>);
+
+        // Assert
+        Assert.Equal(ButtonGroupText.GetClasses("extra"), cut.Find("div").GetAttribute("class"));
+    }
+}

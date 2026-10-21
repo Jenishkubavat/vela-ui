@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<div class="@GetClasses(Variant, Size, Class)"
+     data-slot="item"
+     data-variant="@VariantName(Variant)"
+     data-size="@SizeName(Size)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>

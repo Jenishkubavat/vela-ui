@@ -1,0 +1,64 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Table_RendersEachPartWithItsSlot()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Table aria-describedby="hint">
+                <TableCaption>Open work</TableCaption>
+                <TableHeader><TableRow><TableHead scope="col">Task</TableHead></TableRow></TableHeader>
+                <TableBody><TableRow><TableCell>Port the wick</TableCell></TableRow></TableBody>
+                <TableFooter><TableRow><TableCell colspan="2">Total</TableCell></TableRow></TableFooter>
+            </Table>);
+
+        // Assert
+        var container = cut.Find("[data-slot=table-container]");
+        var table = cut.Find("table");
+        Assert.Contains("overflow-x-auto", container.ClassList);
+        Assert.Equal("table", table.GetAttribute("data-slot"));
+        Assert.Equal("hint", table.GetAttribute("aria-describedby"));
+        Assert.False(container.HasAttribute("aria-describedby"));
+        Assert.Equal("table-caption", cut.Find("caption").GetAttribute("data-slot"));
+        Assert.Equal("table-header", cut.Find("thead").GetAttribute("data-slot"));
+        Assert.Equal("table-body", cut.Find("tbody").GetAttribute("data-slot"));
+        Assert.Equal("table-footer", cut.Find("tfoot").GetAttribute("data-slot"));
+        Assert.Equal("col", cut.Find("th").GetAttribute("scope"));
+        Assert.Equal("table-head", cut.Find("th").GetAttribute("data-slot"));
+        Assert.Equal("2", cut.Find("tfoot td").GetAttribute("colspan"));
+    }
+
+    [Fact]
+    public void TableRow_StylesSelectedAndDoneRows()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Table>
+                <TableBody>
+                    <TableRow data-state="selected"><TableCell>VEL-13</TableCell></TableRow>
+                    <TableRow data-done><TableCell>VEL-9</TableCell></TableRow>
+                </TableBody>
+            </Table>);
+
+        // Assert
+        var rows = cut.FindAll("[data-slot=table-row]");
+        Assert.Equal("selected", rows[0].GetAttribute("data-state"));
+        Assert.Contains("data-[state=selected]:bg-selection", rows[0].ClassList);
+        Assert.True(rows[1].HasAttribute("data-done"));
+        Assert.Contains("data-done:*:grayscale", rows[1].ClassList);
+        Assert.Contains(cut.Find("td").ClassList, c => c.EndsWith("first:before:bg-flame", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void TableRow_OnlyBodyRowsHighlightOnHover()
+    {
+        // Arrange && Act
+        var cut = Render(@<Table><TableBody><TableRow><TableCell>A</TableCell></TableRow></TableBody></Table>);
+
+        // Assert
+        var classes = cut.Find("tr").ClassList;
+        Assert.Contains("in-data-[slot=table-body]:hover:bg-hover", classes);
+        Assert.DoesNotContain("hover:bg-hover", classes);
+    }
+}

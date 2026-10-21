@@ -1,0 +1,26 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    A hairline between Items in an ItemGroup. Screen readers skip it.
+*@
+
+<Separator Orientation="Orientation.Horizontal"
+           Class="@ClassNames.Join(Classes, Class)"
+           data-slot="item-separator"
+           @attributes="AdditionalAttributes" />
+
+@code {
+    private const string Classes = "my-2";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the separator's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

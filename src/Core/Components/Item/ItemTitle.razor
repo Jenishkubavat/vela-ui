@@ -1,0 +1,34 @@
+@namespace Vela.UI.Components
+@*
+    An Item's title, cut to one line. It renders a <div>; add role="heading" and aria-
+    level if items should be headings for screen readers.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="item-title"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "line-clamp-1 flex w-fit items-center gap-2 text-label text-fg underline-offset-4";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title text, and an optional icon or badge.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

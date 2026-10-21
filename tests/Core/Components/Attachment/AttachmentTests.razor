@@ -1,0 +1,129 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Attachment_Defaults()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Attachment>
+                <AttachmentMedia><svg aria-hidden="true" /></AttachmentMedia>
+                <AttachmentContent>
+                    <AttachmentTitle>report.pdf</AttachmentTitle>
+                    <AttachmentDescription>1.2 MB</AttachmentDescription>
+                </AttachmentContent>
+                <AttachmentActions><AttachmentAction aria-label="Remove report.pdf">x</AttachmentAction></AttachmentActions>
+                <AttachmentTrigger aria-label="Open report.pdf" />
+            </Attachment>);
+
+        // Assert
+        var attachment = cut.Find("[data-slot=attachment]");
+        Assert.Equal("done", attachment.GetAttribute("data-state"));
+        Assert.Equal("default", attachment.GetAttribute("data-size"));
+        Assert.Equal("horizontal", attachment.GetAttribute("data-orientation"));
+        Assert.Equal("icon", cut.Find("[data-slot=attachment-media]").GetAttribute("data-variant"));
+        Assert.Equal("SPAN", cut.Find("[data-slot=attachment-title]").TagName);
+        Assert.Single(cut.FindAll("[data-slot=attachment-description]"));
+        Assert.Single(cut.FindAll("[data-slot=attachment-content]"));
+        Assert.Single(cut.FindAll("[data-slot=attachment-actions]"));
+    }
+
+    [Theory]
+    [InlineData(AttachmentState.Idle, "idle")]
+    [InlineData(AttachmentState.Uploading, "uploading")]
+    [InlineData(AttachmentState.Processing, "processing")]
+    [InlineData(AttachmentState.Error, "error")]
+    [InlineData(AttachmentState.Done, "done")]
+    public void Attachment_State(AttachmentState state, string expectedName)
+    {
+        // Arrange && Act
+        var cut = Render(@<Attachment State="state">File</Attachment>);
+
+        // Assert
+        Assert.Equal(expectedName, cut.Find("[data-slot=attachment]").GetAttribute("data-state"));
+    }
+
+    [Theory]
+    [InlineData(AttachmentSize.Small, AttachmentOrientation.Horizontal, "sm", "horizontal", "min-w-40")]
+    [InlineData(AttachmentSize.ExtraSmall, AttachmentOrientation.Vertical, "xs", "vertical", "w-24")]
+    public void Attachment_SizeAndOrientation(AttachmentSize size, AttachmentOrientation orientation, string sizeName, string orientationName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Attachment Size="size" Orientation="orientation">File</Attachment>);
+
+        // Assert
+        var attachment = cut.Find("[data-slot=attachment]");
+        Assert.Equal(sizeName, attachment.GetAttribute("data-size"));
+        Assert.Equal(orientationName, attachment.GetAttribute("data-orientation"));
+        Assert.Contains(expectedClass, attachment.ClassList);
+    }
+
+    [Fact]
+    public void Attachment_NoSettingUsesTheFlameOrConflicts()
+    {
+        foreach (var size in Enum.GetValues<AttachmentSize>())
+        {
+            foreach (var orientation in Enum.GetValues<AttachmentOrientation>())
+            {
+                // Arrange && Act
+                var classes = Attachment.GetClasses(size, orientation).Split(' ');
+
+                // Assert
+                Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+                Assert.Equal(1, classes.Count(c => c.StartsWith("rounded-", StringComparison.Ordinal)));
+                Assert.Equal(1, classes.Count(c => c.StartsWith("bg-", StringComparison.Ordinal)));
+                Assert.Equal(1, classes.Count(c => c.StartsWith("shadow-", StringComparison.Ordinal)));
+            }
+        }
+    }
+
+    [Fact]
+    public void AttachmentAction_IsASmallGhostButton()
+    {
+        // Arrange
+        var removed = false;
+        var cut = Render(@<AttachmentAction aria-label="Remove report.pdf" OnClick="() => removed = true">x</AttachmentAction>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.True(removed);
+        Assert.Equal("attachment-action", button.GetAttribute("data-slot"));
+        Assert.Equal("ghost", button.GetAttribute("data-variant"));
+        Assert.Equal("icon-xs", button.GetAttribute("data-size"));
+    }
+
+    [Fact]
+    public void AttachmentTrigger_CoversTheCard()
+    {
+        // Arrange
+        var opened = false;
+        var cut = Render(@<AttachmentTrigger aria-label="Open report.pdf" OnClick="() => opened = true" />);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        var trigger = cut.Find("button");
+        Assert.True(opened);
+        Assert.Equal("button", trigger.GetAttribute("type"));
+        Assert.Equal("attachment-trigger", trigger.GetAttribute("data-slot"));
+        Assert.Equal(AttachmentTrigger.GetClasses(), trigger.GetAttribute("class"));
+        Assert.Contains("inset-0", trigger.ClassList);
+    }
+
+    [Fact]
+    public void AttachmentMedia_ImageDimsUntilDone()
+    {
+        // Arrange && Act
+        var cut = Render(@<AttachmentMedia Variant="AttachmentMediaVariant.Image"><img src="/a.png" alt="" /></AttachmentMedia>);
+
+        // Assert
+        var media = cut.Find("[data-slot=attachment-media]");
+        Assert.Equal("image", media.GetAttribute("data-variant"));
+        Assert.Contains("opacity-60", media.ClassList);
+        Assert.Contains("group-data-[state=done]/attachment:opacity-100", media.ClassList);
+    }
+}

@@ -1,0 +1,62 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Web
+@*
+    A small button in AttachmentActions, such as remove or retry: a ghost icon button by
+    default. Give it an aria-label that names the file ("Remove report.pdf"). OnClick needs
+    an interactive render mode.
+*@
+
+<Button Variant="Variant"
+        Size="Size"
+        Disabled="Disabled"
+        OnClick="OnClick"
+        Class="@Class"
+        data-slot="attachment-action"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</Button>
+
+@code {
+    /// <summary>
+    /// The visual style. Defaults to <see cref="ButtonVariant.Ghost"/>.
+    /// </summary>
+    [Parameter]
+    public ButtonVariant Variant { get; set; } = ButtonVariant.Ghost;
+
+    /// <summary>
+    /// The button's size. Defaults to <see cref="ButtonSize.IconExtraSmall"/>.
+    /// </summary>
+    [Parameter]
+    public ButtonSize Size { get; set; } = ButtonSize.IconExtraSmall;
+
+    /// <summary>
+    /// Prevents the button from being focused or activated.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    /// <summary>
+    /// Invoked when the button is clicked or activated from the keyboard.
+    /// Requires an interactive render mode.
+    /// </summary>
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    /// <summary>
+    /// Extra CSS classes, added after the button classes.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The button's icon.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>aria-label</c>, applied to the <c>&lt;button&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

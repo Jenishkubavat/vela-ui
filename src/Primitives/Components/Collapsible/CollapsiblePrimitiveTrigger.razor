@@ -1,0 +1,12 @@
+@namespace Vela.UI.Primitives
+
+<button type="button"
+        @attributes="AdditionalAttributes"
+        aria-controls="@Root.ContentId"
+        aria-expanded="@(Root.Open ? "true" : "false")"
+        data-state="@Root.State"
+        data-disabled="@(Root.Disabled ? "" : null)"
+        disabled="@Root.Disabled"
+        @onclick="Root.ToggleAsync">
+    @ChildContent
+</button>

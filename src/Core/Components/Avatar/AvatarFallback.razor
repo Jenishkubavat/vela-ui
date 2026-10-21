@@ -1,0 +1,41 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    What an Avatar shows until its photo loads, or instead of it: one or two initials.
+*@
+
+<AvatarPrimitiveFallback class="@ClassNames.Join(LayoutClasses, TypeClasses, ColorClasses, Class)"
+                         data-slot="avatar-fallback"
+                         @attributes="AdditionalAttributes">
+    @ChildContent
+</AvatarPrimitiveFallback>
+
+@code {
+    private const string LayoutClasses =
+        "flex size-full items-center justify-center rounded-full";
+
+    private const string TypeClasses =
+        "text-[0.5625rem] leading-none font-semibold tracking-[0.02em] " +
+        "group-data-[size=sm]/avatar:text-[0.5rem] group-data-[size=lg]/avatar:text-xs";
+
+    private const string ColorClasses =
+        "bg-surface-raised text-fg-muted group-data-current/avatar:text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The initials, or an icon.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the fallback's <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

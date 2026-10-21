@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@*
+    A Table's <caption>: it names the table for screen readers and shows below it.
+*@
+
+<caption class="@ClassNames.Join(Classes, Class)"
+         data-slot="table-caption"
+         @attributes="AdditionalAttributes">
+    @ChildContent
+</caption>
+
+@code {
+    private const string Classes =
+        "mt-4 text-body-sm text-fg-muted";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The caption text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;caption&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

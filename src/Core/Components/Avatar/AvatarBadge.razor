@@ -1,0 +1,44 @@
+@namespace Vela.UI.Components
+@*
+    A dot on an Avatar's corner, such as a presence marker. It's drawn in the text colour;
+    use Class="bg-success!" for a coloured status. It's a picture, so say the status in text
+    too (an aria-label on the avatar, or a tooltip).
+*@
+
+<span class="@ClassNames.Join(LayoutClasses, ColorClasses, SizeClasses, Class)"
+      data-slot="avatar-badge"
+      @attributes="AdditionalAttributes">
+    @ChildContent
+</span>
+
+@code {
+    private const string LayoutClasses =
+        "absolute end-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full select-none";
+
+    // The ring matches the surface, so the dot looks cut out of the avatar.
+    private const string ColorClasses =
+        "bg-fg text-room shadow-[0_0_0_2px_var(--vela-surface)]";
+
+    private const string SizeClasses =
+        "group-data-[size=sm]/avatar:size-1.5 group-data-[size=sm]/avatar:[&>svg]:hidden " +
+        "group-data-[size=default]/avatar:size-2 group-data-[size=default]/avatar:[&>svg]:size-1.5 " +
+        "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// An optional icon. Small avatars hide it.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the badge's <c>&lt;span&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,40 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    The part of a Collapsible that's shown when it's open. It isn't rendered while closed,
+    unless ForceMount keeps it in the page, hidden.
+*@
+
+<CollapsiblePrimitiveContent ForceMount="ForceMount"
+                             class="@Class"
+                             data-slot="collapsible-content"
+                             @attributes="AdditionalAttributes">
+    @ChildContent
+</CollapsiblePrimitiveContent>
+
+@code {
+    /// <summary>
+    /// Keeps the content in the page while closed, hidden, so find-in-page still sees it.
+    /// Defaults to <see langword="false"/>.
+    /// </summary>
+    [Parameter]
+    public bool ForceMount { get; set; }
+
+    /// <summary>
+    /// CSS classes for the content's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The content to show and hide.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the content's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

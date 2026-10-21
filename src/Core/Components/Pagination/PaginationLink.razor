@@ -1,0 +1,9 @@
+@namespace Vela.UI.Components
+
+<a class="@Button.GetClasses(IsActive ? ButtonVariant.Outline : ButtonVariant.Ghost, Size, Class)"
+   aria-current="@(IsActive ? "page" : null)"
+   data-slot="pagination-link"
+   data-active="@(IsActive ? "true" : "false")"
+   @attributes="AdditionalAttributes">
+    @ChildContent
+</a>

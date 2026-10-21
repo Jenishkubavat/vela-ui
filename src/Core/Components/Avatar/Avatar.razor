@@ -1,0 +1,10 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<AvatarPrimitive class="@ClassNames.Join(LayoutClasses, EdgeClasses, SizeClasses(Size), Class)"
+                 data-slot="avatar"
+                 data-size="@SizeName(Size)"
+                 data-current="@(Current ? "" : null)"
+                 @attributes="AdditionalAttributes">
+    @ChildContent
+</AvatarPrimitive>

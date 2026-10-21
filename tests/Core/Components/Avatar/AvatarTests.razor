@@ -1,0 +1,86 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Avatar_Defaults()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Avatar aria-hidden="true">
+                <AvatarImage Src="/ada.png" alt="" />
+                <AvatarFallback>AL</AvatarFallback>
+            </Avatar>);
+
+        // Assert
+        var avatar = cut.Find("[data-slot=avatar]");
+        Assert.Equal("default", avatar.GetAttribute("data-size"));
+        Assert.Equal("true", avatar.GetAttribute("aria-hidden"));
+        Assert.False(avatar.HasAttribute("data-current"));
+        Assert.Contains("size-5.5", avatar.ClassList);
+        Assert.Contains("absolute", cut.Find("[data-slot=avatar-image]").ClassList);
+        Assert.Equal("AL", cut.Find("[data-slot=avatar-fallback]").TextContent.Trim());
+    }
+
+    [Theory]
+    [InlineData(AvatarSize.Small, "sm", "size-4.5")]
+    [InlineData(AvatarSize.Large, "lg", "size-8")]
+    public void Avatar_Size(AvatarSize size, string expectedName, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Avatar Size="size"><AvatarFallback>AL</AvatarFallback></Avatar>);
+
+        // Assert
+        var avatar = cut.Find("[data-slot=avatar]");
+        Assert.Equal(expectedName, avatar.GetAttribute("data-size"));
+        Assert.Contains(expectedClass, avatar.ClassList);
+    }
+
+    [Fact]
+    public void Avatar_CurrentUsesTheTextColourNotTheFlame()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<AvatarGroup>
+                <Avatar Current="true"><AvatarFallback>JK</AvatarFallback><AvatarBadge /></Avatar>
+                <AvatarGroupCount>+3</AvatarGroupCount>
+            </AvatarGroup>);
+
+        // Assert
+        Assert.True(cut.Find("[data-slot=avatar]").HasAttribute("data-current"));
+        Assert.DoesNotContain("flame", cut.Markup, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Avatar_FailedPhotoLeavesTheFallback()
+    {
+        // Arrange
+        var cut = Render(
+            @<Avatar>
+                <AvatarImage Src="/missing.png" alt="" />
+                <AvatarFallback>AL</AvatarFallback>
+            </Avatar>);
+
+        // Act
+        cut.Find("img").TriggerEvent("onerror", new ErrorEventArgs());
+
+        // Assert
+        Assert.Empty(cut.FindAll("[data-slot=avatar-image]"));
+        Assert.Single(cut.FindAll("[data-slot=avatar-fallback]"));
+    }
+
+    [Fact]
+    public void AvatarGroup_PartsHaveSlots()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<AvatarGroup Class="extra">
+                <Avatar><AvatarFallback>AL</AvatarFallback><AvatarBadge Class="bg-success!" /></Avatar>
+                <AvatarGroupCount aria-label="3 more people">+3</AvatarGroupCount>
+            </AvatarGroup>);
+
+        // Assert
+        Assert.Contains("extra", cut.Find("[data-slot=avatar-group]").ClassList);
+        Assert.Contains("bg-success!", cut.Find("[data-slot=avatar-badge]").ClassList);
+        Assert.Equal("3 more people", cut.Find("[data-slot=avatar-group-count]").GetAttribute("aria-label"));
+    }
+}

@@ -1,0 +1,34 @@
+@namespace Vela.UI.Components
+@*
+    A row of overlapping Avatars, each cut out of the next with a ring in the surface
+    colour. End it with an AvatarGroupCount for the people not shown.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="avatar-group"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "group/avatar-group flex -space-x-1.5 *:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-surface";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The avatars, and an optional <see cref="AvatarGroupCount"/>.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the group's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

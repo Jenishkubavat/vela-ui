@@ -1,0 +1,40 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    The photo in an Avatar. It's positioned over the fallback, so the initials show until
+    it paints. Leave alt empty when the name is shown next to the avatar.
+*@
+
+<AvatarPrimitiveImage Src="@Src"
+                      OnLoadingStatusChange="OnLoadingStatusChange"
+                      class="@ClassNames.Join(Classes, Class)"
+                      data-slot="avatar-image"
+                      @attributes="AdditionalAttributes" />
+
+@code {
+    private const string Classes = "absolute inset-0 size-full rounded-full object-cover";
+
+    /// <summary>
+    /// The photo's URL. When it's empty, the fallback shows.
+    /// </summary>
+    [Parameter]
+    public string? Src { get; set; }
+
+    /// <summary>
+    /// Invoked when the photo starts loading, loads, or fails. Requires an interactive render mode.
+    /// </summary>
+    [Parameter]
+    public EventCallback<AvatarImageStatus> OnLoadingStatusChange { get; set; }
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>alt</c>, applied to the <c>&lt;img&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

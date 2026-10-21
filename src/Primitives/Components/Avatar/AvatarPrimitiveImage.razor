@@ -1,0 +1,9 @@
+@namespace Vela.UI.Primitives
+
+@if (Root.ImageStatus != AvatarImageStatus.Error)
+{
+    <img @attributes="AdditionalAttributes"
+         src="@Src"
+         @onload="() => SetStatusAsync(AvatarImageStatus.Loaded)"
+         @onerror="() => SetStatusAsync(AvatarImageStatus.Error)" />
+}

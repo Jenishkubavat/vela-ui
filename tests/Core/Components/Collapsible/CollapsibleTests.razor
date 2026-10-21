@@ -1,0 +1,81 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Collapsible_TriggerShowsTheContent()
+    {
+        // Arrange
+        var cut = Render(
+            @<Collapsible Class="flex flex-col gap-2">
+                <CollapsibleTrigger Class="trigger">Show more</CollapsibleTrigger>
+                <CollapsibleContent>Details</CollapsibleContent>
+            </Collapsible>);
+
+        // Act
+        cut.Find("[data-slot=collapsible-trigger]").Click();
+
+        // Assert
+        var root = cut.Find("[data-slot=collapsible]");
+        var trigger = cut.Find("[data-slot=collapsible-trigger]");
+        var content = cut.Find("[data-slot=collapsible-content]");
+        Assert.Equal("flex flex-col gap-2", root.GetAttribute("class"));
+        Assert.Equal("open", root.GetAttribute("data-state"));
+        Assert.Equal("trigger", trigger.GetAttribute("class"));
+        Assert.Equal("true", trigger.GetAttribute("aria-expanded"));
+        Assert.Equal(content.Id, trigger.GetAttribute("aria-controls"));
+        Assert.Equal("Details", content.TextContent);
+    }
+
+    [Fact]
+    public void Collapsible_BindOpen()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(
+            @<Collapsible @bind-Open="open">
+                <CollapsibleTrigger>Hide</CollapsibleTrigger>
+                <CollapsibleContent>Details</CollapsibleContent>
+            </Collapsible>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.False(open);
+        Assert.Empty(cut.FindAll("[data-slot=collapsible-content]"));
+    }
+
+    [Fact]
+    public void Collapsible_UnboundKeepsItsStateWhenTheParentRerenders()
+    {
+        // Arrange
+        var cut = Render(
+            @<RerenderHost>
+                <Collapsible>
+                    <CollapsibleTrigger>Show more</CollapsibleTrigger>
+                    <CollapsibleContent>Details</CollapsibleContent>
+                </Collapsible>
+            </RerenderHost>);
+        cut.Find("[data-slot=collapsible-trigger]").Click();
+
+        // Act
+        cut.Find("#rerender").Click();
+
+        // Assert
+        Assert.Equal("open", cut.Find("[data-slot=collapsible]").GetAttribute("data-state"));
+        Assert.Single(cut.FindAll("[data-slot=collapsible-content]"));
+    }
+
+    [Fact]
+    public void CollapsibleContent_ForceMount()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Collapsible>
+                <CollapsibleContent ForceMount="true">Details</CollapsibleContent>
+            </Collapsible>);
+
+        // Assert
+        Assert.True(cut.Find("[data-slot=collapsible-content]").HasAttribute("hidden"));
+    }
+}

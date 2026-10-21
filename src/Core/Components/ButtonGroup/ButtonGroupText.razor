@@ -1,0 +1,41 @@
+@namespace Vela.UI.Components
+@*
+    A fixed label inside a ButtonGroup, such as "https://" before an input, drawn as a raised
+    box like a secondary button. To make a <label> look like this, use GetClasses.
+*@
+
+<div class="@GetClasses(Class)"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex items-center gap-2 rounded-md bg-surface-raised px-2.5 text-label text-fg shadow-hairline-strong " +
+        "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The text, and an optional icon.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>
+    /// Returns the classes a <see cref="ButtonGroupText"/> uses, so another element, such as a
+    /// <c>&lt;label&gt;</c>, can look like one.
+    /// </summary>
+    public static string GetClasses(string? additionalClasses = null) =>
+        ClassNames.Join(Classes, additionalClasses);
+}

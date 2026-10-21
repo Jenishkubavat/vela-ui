@@ -1,0 +1,48 @@
+@namespace Vela.UI.Components
+@*
+    The last circle in an AvatarGroup, counting the people not shown ("+3"). It takes the
+    size of the avatars beside it. Screen readers read "+3", so add an aria-label such as
+    "3 more people" if the count needs context.
+*@
+
+<div class="@ClassNames.Join(LayoutClasses, TypeClasses, ColorClasses, SizeClasses, Class)"
+     data-slot="avatar-group-count"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string LayoutClasses =
+        "relative flex shrink-0 items-center justify-center rounded-full";
+
+    private const string TypeClasses =
+        "text-[0.5625rem] leading-none font-semibold";
+
+    private const string ColorClasses =
+        "bg-surface-raised text-fg-muted ring-2 ring-surface inset-ring inset-ring-border-strong";
+
+    private const string SizeClasses =
+        "size-5.5 [&>svg]:size-3 " +
+        "group-has-data-[size=sm]/avatar-group:size-4.5 group-has-data-[size=sm]/avatar-group:text-[0.5rem] " +
+        "group-has-data-[size=sm]/avatar-group:[&>svg]:size-2.5 " +
+        "group-has-data-[size=lg]/avatar-group:size-8 group-has-data-[size=lg]/avatar-group:text-xs " +
+        "group-has-data-[size=lg]/avatar-group:[&>svg]:size-4";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The count, such as <c>+3</c>, or an icon.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>aria-label</c>, applied to the count's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

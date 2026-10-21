@@ -1,0 +1,40 @@
+@namespace Vela.UI.Components
+@*
+    A Table cell (<td>). A cell holding a Checkbox shrinks to fit it.
+*@
+
+<td class="@ClassNames.Join(LayoutClasses, StopClasses, Class)"
+    data-slot="table-cell"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</td>
+
+@code {
+    private const string LayoutClasses =
+        "h-9 px-3 align-middle whitespace-nowrap has-data-[slot=checkbox]:pe-0";
+
+    // The selected row's first cell carries one small flame stop at its start.
+    private const string StopClasses =
+        "first:relative group-data-[state=selected]/table-row:first:before:absolute " +
+        "group-data-[state=selected]/table-row:first:before:start-1 group-data-[state=selected]/table-row:first:before:top-1/2 " +
+        "group-data-[state=selected]/table-row:first:before:-mt-0.75 group-data-[state=selected]/table-row:first:before:size-1.5 " +
+        "group-data-[state=selected]/table-row:first:before:rounded-full group-data-[state=selected]/table-row:first:before:bg-flame";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The cell's content.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>colspan</c>, applied to the <c>&lt;td&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

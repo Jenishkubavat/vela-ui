@@ -35,6 +35,10 @@ follow [Semantic Versioning](https://semver.org/).
 - Alert, AspectRatio, Badge, Breadcrumb, Bubble, DirectionProvider, Empty,
   Marker, Message, Separator, and Skeleton, completing shadcn/ui's simplest
   components in the Vela look.
+- Collapsible, Progress, and Avatar, built on new primitives
+  (CollapsiblePrimitive, ProgressPrimitive, AvatarPrimitive). Progress is
+  drawn as the design system's wick, with a flame at its leading edge.
+- Table, Pagination, ButtonGroup, InputGroup, Item, and Attachment.
 - The Vela design system as a Tailwind CSS v4 theme (`vela.css`): Night and
   Day tokens, type roles, machined radii, hairline-ring shadows, and the
   Host Grotesk and Spline Sans Mono fonts. Night is the default.

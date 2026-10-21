@@ -1,0 +1,104 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void CollapsiblePrimitive_StartsClosedWithNoContent()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<CollapsiblePrimitive>
+                <CollapsiblePrimitiveTrigger>Show more</CollapsiblePrimitiveTrigger>
+                <CollapsiblePrimitiveContent>Details</CollapsiblePrimitiveContent>
+            </CollapsiblePrimitive>);
+
+        // Assert
+        var trigger = cut.Find("button");
+        Assert.Equal("button", trigger.GetAttribute("type"));
+        Assert.Equal("false", trigger.GetAttribute("aria-expanded"));
+        Assert.Equal("closed", trigger.GetAttribute("data-state"));
+        Assert.Equal("closed", cut.Find("div").GetAttribute("data-state"));
+        Assert.DoesNotContain("Details", cut.Markup);
+        Assert.Empty(cut.FindAll("[class]"));
+    }
+
+    [Fact]
+    public void CollapsiblePrimitive_TriggerOpensTheContent()
+    {
+        // Arrange
+        var cut = Render(
+            @<CollapsiblePrimitive>
+                <CollapsiblePrimitiveTrigger>Show more</CollapsiblePrimitiveTrigger>
+                <CollapsiblePrimitiveContent>Details</CollapsiblePrimitiveContent>
+            </CollapsiblePrimitive>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        var trigger = cut.Find("button");
+        var content = cut.Find("div > div");
+        Assert.Equal("true", trigger.GetAttribute("aria-expanded"));
+        Assert.False(string.IsNullOrEmpty(content.Id));
+        Assert.Equal(content.Id, trigger.GetAttribute("aria-controls"));
+        Assert.Equal("open", content.GetAttribute("data-state"));
+        Assert.Equal("open", cut.Find("div").GetAttribute("data-state"));
+        Assert.False(content.HasAttribute("hidden"));
+        Assert.Equal("Details", content.TextContent);
+    }
+
+    [Fact]
+    public void CollapsiblePrimitive_BindOpen()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(
+            @<CollapsiblePrimitive @bind-Open="open">
+                <CollapsiblePrimitiveTrigger>Hide</CollapsiblePrimitiveTrigger>
+                <CollapsiblePrimitiveContent>Details</CollapsiblePrimitiveContent>
+            </CollapsiblePrimitive>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.False(open);
+        Assert.DoesNotContain("Details", cut.Markup);
+    }
+
+    [Fact]
+    public void CollapsiblePrimitiveContent_ForceMountKeepsItHidden()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<CollapsiblePrimitive>
+                <CollapsiblePrimitiveContent ForceMount="true">Details</CollapsiblePrimitiveContent>
+            </CollapsiblePrimitive>);
+
+        // Assert
+        var content = cut.Find("div > div");
+        Assert.True(content.HasAttribute("hidden"));
+        Assert.Equal("closed", content.GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void CollapsiblePrimitive_Disabled()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<CollapsiblePrimitive Disabled="true">
+                <CollapsiblePrimitiveTrigger>Show more</CollapsiblePrimitiveTrigger>
+            </CollapsiblePrimitive>);
+
+        // Assert
+        Assert.True(cut.Find("button").HasAttribute("disabled"));
+        Assert.True(cut.Find("button").HasAttribute("data-disabled"));
+        Assert.True(cut.Find("div").HasAttribute("data-disabled"));
+    }
+
+    [Fact]
+    public void CollapsiblePrimitiveTrigger_OutsideARootThrows()
+    {
+        // Act && Assert
+        Assert.Throws<InvalidOperationException>(() => Render(@<CollapsiblePrimitiveTrigger>Show</CollapsiblePrimitiveTrigger>));
+    }
+}

@@ -1,0 +1,43 @@
+@namespace Vela.UI.Components
+@*
+    A Table row (<tr>). Body rows highlight on hover. data-state="selected" marks the row
+    under the keyboard cursor, and data-done a finished one, which prints in greyscale.
+*@
+
+<tr class="@ClassNames.Join(LayoutClasses, ColorClasses, MotionClasses, DoneClasses, Class)"
+    data-slot="table-row"
+    @attributes="AdditionalAttributes">
+    @ChildContent
+</tr>
+
+@code {
+    // group/table-row lets the first cell draw the selected row's flame stop.
+    private const string LayoutClasses = "group/table-row border-b";
+
+    private const string ColorClasses =
+        "in-data-[slot=table-body]:hover:bg-hover has-aria-expanded:bg-hover data-[state=selected]:bg-selection";
+
+    private const string MotionClasses =
+        "transition-[background-color,opacity] duration-(--vela-quick) ease-vela motion-reduce:transition-none";
+
+    // Every hue drops, so the open work keeps the eye.
+    private const string DoneClasses = "data-done:text-fg-faint data-done:*:grayscale";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The row's cells.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, such as <c>data-state="selected"</c> or <c>data-done</c>, applied to the <c>&lt;tr&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

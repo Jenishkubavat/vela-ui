@@ -1,0 +1,12 @@
+@namespace Vela.UI.Primitives
+
+@if (Root.Open || ForceMount)
+{
+    <div @attributes="AdditionalAttributes"
+         id="@Root.ContentId"
+         data-state="@Root.State"
+         data-disabled="@(Root.Disabled ? "" : null)"
+         hidden="@(!Root.Open)">
+        @ChildContent
+    </div>
+}
