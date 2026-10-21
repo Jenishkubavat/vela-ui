@@ -1,0 +1,22 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<CheckboxPrimitive Value="@Value"
+                   ValueChanged="OnValueChanged"
+                   ValueExpression="ValueExpression"
+                   Indeterminate="Indeterminate"
+                   Disabled="Disabled"
+                   class="@ClassNames.Join(LayoutClasses, ColorClasses, MotionClasses, FocusClasses, InvalidClasses, DisabledClasses, Class)"
+                   data-slot="checkbox"
+                   @attributes="AdditionalAttributes">
+    <CheckboxPrimitiveIndicator class="@IndicatorClasses" data-slot="checkbox-indicator">
+        <svg class="@TickClasses" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m3.5 8.5 3 3 6-7" />
+        </svg>
+        <svg class="@DashClasses" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 8h8" />
+        </svg>
+    </CheckboxPrimitiveIndicator>
+</CheckboxPrimitive>

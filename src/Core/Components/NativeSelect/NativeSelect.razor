@@ -1,0 +1,26 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@typeparam TValue
+@inherits InputBase<TValue>
+
+<div class="@ClassNames.Join(WrapperClasses, Class)"
+     data-slot="native-select-wrapper"
+     data-size="@SizeName">
+    <select name="@NameAttributeValue"
+            class="@SelectClasses"
+            value="@CurrentValueAsString"
+            disabled="@Disabled"
+            data-slot="native-select"
+            data-size="@SizeName"
+            @onchange="SetValue"
+            @attributes="AdditionalAttributes"
+            @ref="Element">
+        @ChildContent
+    </select>
+    <svg class="@ChevronClasses" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true" data-slot="native-select-icon">
+        <path d="m6 9 6 6 6-6" />
+    </svg>
+</div>

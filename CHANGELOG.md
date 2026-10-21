@@ -25,6 +25,10 @@ follow [Semantic Versioning](https://semver.org/).
   FieldDescription, FieldError, FieldContent, FieldGroup, FieldSet,
   FieldLegend, FieldSeparator) and vertical, horizontal, and responsive
   layouts. FieldError shows EditForm validation messages through `For`.
+- Form controls: Checkbox, Switch, RadioGroup, and Toggle, each built on a new
+  primitive (CheckboxPrimitive, SwitchPrimitive, RadioGroupPrimitive,
+  TogglePrimitive), plus Textarea and NativeSelect. Checkbox, Switch, and
+  RadioGroup use native inputs, so they work in static server-rendered forms.
 - Headless primitives: LabelPrimitive, SeparatorPrimitive,
   AspectRatioPrimitive, and DirectionPrimitive. Label, Separator,
   AspectRatio, and DirectionProvider are now built on them.

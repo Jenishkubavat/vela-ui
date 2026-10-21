@@ -1,0 +1,14 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<RadioGroupPrimitive Value="@Value"
+                     ValueChanged="OnValueChanged"
+                     ValueExpression="ValueExpression"
+                     Orientation="Orientation"
+                     Disabled="Disabled"
+                     Required="Required"
+                     class="@ClassNames.Join(Classes, Class)"
+                     data-slot="radio-group"
+                     @attributes="AdditionalAttributes">
+    @ChildContent
+</RadioGroupPrimitive>

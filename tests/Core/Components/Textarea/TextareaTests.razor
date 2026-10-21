@@ -1,0 +1,55 @@
+@inherits BunitContext
+@code
+{
+    private sealed class Feedback
+    {
+        public string? Message { get; set; }
+    }
+
+    [Fact]
+    public void Textarea_BindValueOnChange()
+    {
+        // Arrange
+        var feedback = new Feedback { Message = "Hi" };
+        var cut = Render(@<Textarea @bind-Value="feedback.Message" />);
+
+        // Act
+        cut.Find("textarea").Change("Hello");
+
+        // Assert
+        Assert.Equal("Hello", feedback.Message);
+        Assert.Equal("textarea", cut.Find("textarea").GetAttribute("data-slot"));
+        Assert.Throws<MissingEventHandlerException>(() => cut.Find("textarea").Input("x"));
+    }
+
+    [Fact]
+    public void Textarea_ImmediateUpdatesOnInput()
+    {
+        // Arrange
+        var feedback = new Feedback();
+        var cut = Render(@<Textarea @bind-Value="feedback.Message" Immediate="true" />);
+
+        // Act
+        cut.Find("textarea").Input("H");
+
+        // Assert
+        Assert.Equal("H", feedback.Message);
+    }
+
+    [Fact]
+    public void Textarea_ValidationErrorsSetAriaInvalid()
+    {
+        // Arrange
+        var feedback = new Feedback();
+        var editContext = new EditContext(feedback);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(@<EditForm EditContext="editContext"><Textarea @bind-Value="feedback.Message" /></EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(Feedback.Message)), "Tell us what went wrong.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Equal("true", cut.Find("textarea").GetAttribute("aria-invalid"));
+    }
+}

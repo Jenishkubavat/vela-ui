@@ -1,0 +1,69 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void RadioGroup_BindValue()
+    {
+        // Arrange
+        string? plan = "free";
+        var cut = Render(
+            @<RadioGroup @bind-Value="plan" aria-label="Plan">
+                <RadioGroupItem Value="free" id="free" />
+                <RadioGroupItem Value="pro" id="pro" />
+            </RadioGroup>);
+
+        // Act
+        cut.Find("#pro").Change(true);
+
+        // Assert
+        Assert.Equal("pro", plan);
+        Assert.Equal("radio-group", cut.Find("[role=radiogroup]").GetAttribute("data-slot"));
+        var items = cut.FindAll("[data-slot=radio-group-item]");
+        Assert.Equal(2, items.Count);
+        Assert.Equal("checked", items[1].GetAttribute("data-state"));
+        Assert.NotNull(items[1].QuerySelector("[data-slot=radio-group-indicator]"));
+    }
+
+    [Fact]
+    public void RadioGroup_ItemsShareAName()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<RadioGroup>
+                <RadioGroupItem Value="a" />
+                <RadioGroupItem Value="b" />
+            </RadioGroup>);
+
+        // Assert
+        var names = cut.FindAll("input[type=radio]").Select(r => r.GetAttribute("name")).Distinct().ToList();
+        Assert.Single(names);
+        Assert.False(string.IsNullOrEmpty(names[0]));
+    }
+
+    [Fact]
+    public void RadioGroup_SelectedUsesTheTextColourNotTheFlame()
+    {
+        // Arrange && Act
+        var cut = Render(@<RadioGroup><RadioGroupItem Value="a" /></RadioGroup>);
+
+        // Assert
+        var classes = cut.Find("[data-slot=radio-group-item]").ClassList;
+        Assert.Contains("has-checked:bg-fg", classes);
+        Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void RadioGroup_DisabledItem()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<RadioGroup>
+                <RadioGroupItem Value="a" id="a" />
+                <RadioGroupItem Value="b" id="b" Disabled="true" />
+            </RadioGroup>);
+
+        // Assert
+        Assert.False(cut.Find("#a").HasAttribute("disabled"));
+        Assert.True(cut.Find("#b").HasAttribute("disabled"));
+    }
+}

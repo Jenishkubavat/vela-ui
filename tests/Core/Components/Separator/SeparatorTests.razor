@@ -18,7 +18,7 @@
     public void Separator_SemanticVertical()
     {
         // Arrange && Act
-        var cut = Render(@<Separator Orientation="SeparatorOrientation.Vertical" Decorative="false" />);
+        var cut = Render(@<Separator Orientation="Orientation.Vertical" Decorative="false" />);
 
         // Assert
         var separator = cut.Find("[data-slot=separator]");

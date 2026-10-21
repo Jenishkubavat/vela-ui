@@ -1,0 +1,7 @@
+@namespace Vela.UI.Primitives
+
+<span @attributes="AdditionalAttributes"
+      data-state="@Checkbox?.State"
+      data-disabled="@(Checkbox?.Disabled == true ? "" : null)">
+    @ChildContent
+</span>

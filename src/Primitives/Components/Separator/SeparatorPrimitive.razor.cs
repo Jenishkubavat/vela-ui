@@ -19,10 +19,10 @@ namespace Vela.UI.Primitives;
 public partial class SeparatorPrimitive
 {
     /// <summary>
-    /// Which way the line runs. Defaults to <see cref="SeparatorOrientation.Horizontal"/>.
+    /// Which way the line runs. Defaults to <see cref="Orientation.Horizontal"/>.
     /// </summary>
     [Parameter]
-    public SeparatorOrientation Orientation { get; set; } = SeparatorOrientation.Horizontal;
+    public Orientation Orientation { get; set; } = Orientation.Horizontal;
 
     /// <summary>
     /// Hides the line from screen readers. Defaults to <see langword="true"/>.
@@ -37,10 +37,10 @@ public partial class SeparatorPrimitive
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     // Radix's names, so selectors written for Radix and shadcn/ui work unchanged.
-    private static string OrientationName(SeparatorOrientation orientation) => orientation switch
+    private static string OrientationName(Orientation orientation) => orientation switch
     {
-        SeparatorOrientation.Horizontal => "horizontal",
-        SeparatorOrientation.Vertical => "vertical",
+        Orientation.Horizontal => "horizontal",
+        Orientation.Vertical => "vertical",
         _ => throw new ArgumentOutOfRangeException(nameof(orientation), orientation, null),
     };
 }

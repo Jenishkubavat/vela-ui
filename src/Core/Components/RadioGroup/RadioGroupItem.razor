@@ -1,0 +1,61 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    One option in a RadioGroup: a sunken circle that fills with the text colour when
+    selected. data-* attributes and Class style the circle; id and aria-* go on the native
+    radio, so pair it with a label: <RadioGroupItem Value="pro" id="pro" /><Label For="pro">Pro</Label>.
+*@
+
+<RadioGroupPrimitiveItem Value="@Value"
+                         Disabled="Disabled"
+                         class="@ClassNames.Join(LayoutClasses, ColorClasses, FocusClasses, StateClasses, Class)"
+                         data-slot="radio-group-item"
+                         @attributes="AdditionalAttributes">
+    <RadioGroupPrimitiveIndicator class="@IndicatorClasses" data-slot="radio-group-indicator" />
+</RadioGroupPrimitiveItem>
+
+@code {
+    private const string LayoutClasses =
+        "group/radio peer relative inline-grid size-4 shrink-0 cursor-pointer place-items-center rounded-full";
+
+    // Selected fills with the text colour, not the flame: it's a state, not an action.
+    private const string ColorClasses =
+        "bg-surface-sunken shadow-check has-checked:bg-fg has-checked:shadow-none " +
+        "hover:not-has-checked:not-has-disabled:shadow-check-hover " +
+        "transition-[background-color,box-shadow] duration-(--vela-quick) ease-vela motion-reduce:transition-none";
+
+    private const string FocusClasses =
+        "has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-offset-2 " +
+        "has-[input:focus-visible]:outline-focus";
+
+    // aria-invalid sits on the group, so the item reads it from there.
+    private const string StateClasses =
+        "in-aria-invalid:shadow-check-invalid has-disabled:cursor-not-allowed has-disabled:opacity-50";
+
+    private const string IndicatorClasses =
+        "pointer-events-none invisible size-1.5 rounded-full bg-surface group-has-checked/radio:visible";
+
+    /// <summary>
+    /// The value the group takes when this item is selected.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Value { get; set; } = "";
+
+    /// <summary>
+    /// Prevents this item from being focused or selected.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    /// <summary>
+    /// Extra CSS classes for the circle, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// Other attributes. <c>data-*</c> attributes go on the circle; the rest on the native radio.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

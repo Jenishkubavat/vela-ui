@@ -23,10 +23,10 @@ public partial class Separator
         "data-[orientation=vertical]:w-px data-[orientation=vertical]:self-stretch";
 
     /// <summary>
-    /// Which way the line runs. Defaults to <see cref="SeparatorOrientation.Horizontal"/>.
+    /// Which way the line runs. Defaults to <see cref="Orientation.Horizontal"/>.
     /// </summary>
     [Parameter]
-    public SeparatorOrientation Orientation { get; set; } = SeparatorOrientation.Horizontal;
+    public Orientation Orientation { get; set; } = Orientation.Horizontal;
 
     /// <summary>
     /// Hides the line from screen readers. Defaults to <see langword="true"/>.

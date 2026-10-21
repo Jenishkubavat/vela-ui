@@ -1,0 +1,11 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<TogglePrimitive Pressed="Pressed"
+                 PressedChanged="OnPressedChanged"
+                 Disabled="Disabled"
+                 class="@GetClasses(Variant, Size, Class)"
+                 data-slot="toggle"
+                 @attributes="AdditionalAttributes">
+    @ChildContent
+</TogglePrimitive>

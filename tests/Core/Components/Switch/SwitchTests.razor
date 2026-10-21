@@ -1,0 +1,68 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Switch_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Switch aria-label="Daily summary email" />);
+
+        // Assert
+        var track = cut.Find("[data-slot=switch]");
+        Assert.Equal("default", track.GetAttribute("data-size"));
+        Assert.Equal("switch", cut.Find("input").GetAttribute("role"));
+        Assert.Equal("Daily summary email", cut.Find("input").GetAttribute("aria-label"));
+        Assert.NotNull(track.QuerySelector("[data-slot=switch-thumb]"));
+    }
+
+    [Fact]
+    public void Switch_BindValue()
+    {
+        // Arrange
+        var on = false;
+        var cut = Render(@<Switch @bind-Value="on" />);
+
+        // Act
+        cut.Find("input").Change(true);
+
+        // Assert
+        Assert.True(on);
+        Assert.Equal("checked", cut.Find("[data-slot=switch-thumb]").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void Switch_SizeSmall()
+    {
+        // Arrange && Act
+        var cut = Render(@<Switch Size="SwitchSize.Small" />);
+
+        // Assert
+        Assert.Equal("sm", cut.Find("[data-slot=switch]").GetAttribute("data-size"));
+    }
+
+    [Fact]
+    public void Switch_UnboundKeepsItsStateWhenTheParentRerenders()
+    {
+        // Arrange
+        var cut = Render(@<RerenderHost><Switch /></RerenderHost>);
+        cut.Find("input").Change(true);
+
+        // Act
+        cut.Find("#rerender").Click();
+
+        // Assert
+        Assert.Equal("checked", cut.Find("[data-slot=switch]").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void Switch_OnUsesTheTextColourNotTheFlame()
+    {
+        // Arrange && Act
+        var cut = Render(@<Switch />);
+
+        // Assert
+        var classes = cut.Find("[data-slot=switch]").ClassList;
+        Assert.Contains("has-checked:bg-fg", classes);
+        Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+    }
+}

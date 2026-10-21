@@ -1,0 +1,88 @@
+@inherits BunitContext
+@code
+{
+    private sealed class Order
+    {
+        public string? Plan { get; set; }
+    }
+
+    [Fact]
+    public void RadioGroupPrimitive_ItemsShareANameAndSelect()
+    {
+        // Arrange
+        var order = new Order();
+        var cut = Render(
+            @<RadioGroupPrimitive @bind-Value="order.Plan" aria-label="Plan">
+                <RadioGroupPrimitiveItem Value="free" id="free"><RadioGroupPrimitiveIndicator /></RadioGroupPrimitiveItem>
+                <RadioGroupPrimitiveItem Value="pro" id="pro"><RadioGroupPrimitiveIndicator /></RadioGroupPrimitiveItem>
+            </RadioGroupPrimitive>);
+
+        // Act
+        cut.Find("#pro").Change(true);
+
+        // Assert
+        Assert.Equal("pro", order.Plan);
+        var radios = cut.FindAll("input[type=radio]");
+        Assert.Equal(2, radios.Count);
+        Assert.False(string.IsNullOrEmpty(radios[0].GetAttribute("name")));
+        Assert.Equal(radios[0].GetAttribute("name"), radios[1].GetAttribute("name"));
+        Assert.True(cut.Find("#pro").HasAttribute("checked"));
+        Assert.Equal("checked", cut.Find("#pro").ParentElement!.GetAttribute("data-state"));
+        Assert.Equal("unchecked", cut.Find("#free").ParentElement!.GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void RadioGroupPrimitive_IsAnUnstyledRadiogroup()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<RadioGroupPrimitive Orientation="Orientation.Vertical" Required="true" aria-label="Plan">
+                <RadioGroupPrimitiveItem Value="free" />
+            </RadioGroupPrimitive>);
+
+        // Assert
+        var group = cut.Find("[role=radiogroup]");
+        Assert.False(group.HasAttribute("class"));
+        Assert.Equal("vertical", group.GetAttribute("aria-orientation"));
+        Assert.Equal("true", group.GetAttribute("aria-required"));
+        Assert.True(cut.Find("input").HasAttribute("required"));
+    }
+
+    [Fact]
+    public void RadioGroupPrimitive_WorksWithoutABinding()
+    {
+        // Arrange
+        var cut = Render(
+            @<RadioGroupPrimitive>
+                <RadioGroupPrimitiveItem Value="a" id="a" />
+                <RadioGroupPrimitiveItem Value="b" id="b" />
+            </RadioGroupPrimitive>);
+
+        // Act
+        cut.Find("#b").Change(true);
+
+        // Assert
+        Assert.Equal("checked", cut.Find("#b").ParentElement!.GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void RadioGroupPrimitive_DisabledGroupDisablesItsItems()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<RadioGroupPrimitive Disabled="true">
+                <RadioGroupPrimitiveItem Value="a" />
+            </RadioGroupPrimitive>);
+
+        // Assert
+        Assert.True(cut.Find("input").HasAttribute("disabled"));
+        Assert.True(cut.Find("input").ParentElement!.HasAttribute("data-disabled"));
+    }
+
+    [Fact]
+    public void RadioGroupPrimitiveItem_OutsideAGroupThrows()
+    {
+        // Act && Assert
+        Assert.Throws<InvalidOperationException>(() => Render(@<RadioGroupPrimitiveItem Value="a" />));
+    }
+}

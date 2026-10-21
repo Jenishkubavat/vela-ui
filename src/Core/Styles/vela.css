@@ -202,6 +202,10 @@
   --shadow-card: inset 0 1px 0 var(--vela-highlight), 0 0 0 1px var(--vela-border);
   --shadow-card-hover: inset 0 1px 0 var(--vela-highlight), 0 0 0 1px var(--vela-border-control), 0 8px 20px -12px rgba(0, 0, 0, 0.5);
   --shadow-kbd: inset 0 0 0 1px var(--vela-border-strong), inset 0 -1px 0 var(--vela-border-strong);
+  /* Checkbox, radio, and switch outlines are a heavier 1.5px edge. */
+  --shadow-check: inset 0 0 0 1.5px var(--vela-border-control);
+  --shadow-check-hover: inset 0 0 0 1.5px var(--vela-text-muted);
+  --shadow-check-invalid: inset 0 0 0 1.5px var(--vela-danger);
   --shadow-raised: var(--vela-shadow-raised);
   --shadow-overlay: var(--vela-shadow-overlay);
   --shadow-glow: var(--vela-shadow-glow);
@@ -297,6 +301,14 @@
 }
 [data-ember] {
   animation: vela-ember var(--vela-ember) var(--vela-ease) backwards;
+}
+
+/* A checkbox's tick scales in when it's checked. */
+@keyframes vela-tick {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
 }
 
 /* Rolling figures: text inside [data-roll] turns over in place when it changes. */

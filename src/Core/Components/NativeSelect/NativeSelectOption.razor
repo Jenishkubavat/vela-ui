@@ -1,0 +1,34 @@
+@namespace Vela.UI.Components
+@*
+    One choice in a NativeSelect. Set value; the text is what people see. The browser draws
+    the list, so it only takes the system's own colours, which follow the theme through
+    color-scheme.
+*@
+
+<option class="@ClassNames.Join(Classes, Class)"
+        data-slot="native-select-option"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</option>
+
+@code {
+    private const string Classes = "bg-[Canvas] text-[CanvasText]";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The option's text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, most importantly <c>value</c> and <c>disabled</c>, applied to the <c>&lt;option&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

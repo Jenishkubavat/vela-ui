@@ -5,17 +5,18 @@
 namespace Vela.UI.Primitives;
 
 /// <summary>
-/// Which way a <see cref="SeparatorPrimitive"/> runs.
+/// Which way a primitive lays out or runs, for primitives such as
+/// <see cref="SeparatorPrimitive"/> and <see cref="RadioGroupPrimitive"/>.
 /// </summary>
-public enum SeparatorOrientation
+public enum Orientation
 {
     /// <summary>
-    /// A full-width line between stacked content. The default.
+    /// Left to right (right to left in RTL layouts).
     /// </summary>
     Horizontal,
 
     /// <summary>
-    /// A full-height line between items in a row, such as toolbar groups.
+    /// Top to bottom.
     /// </summary>
     Vertical,
 }

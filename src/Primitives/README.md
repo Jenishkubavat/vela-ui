@@ -17,11 +17,20 @@ clash with the styled components in your app (`Label`).
 | `SeparatorPrimitive` | `role` and `aria-orientation`, plus `data-orientation` for styling |
 | `AspectRatioPrimitive` | A culture-safe CSS `aspect-ratio` that keeps your own `style` |
 | `DirectionPrimitive` | Cascades `TextDirection` so keyboard navigation follows right-to-left layouts |
+| `CheckboxPrimitive` | A native checkbox over a box, with `Indeterminate` and an indicator part |
+| `SwitchPrimitive` | A native checkbox with `role="switch"` over a track, with a thumb part |
+| `RadioGroupPrimitive` | Native radios sharing a name, so arrow keys work, with item and indicator parts |
+| `TogglePrimitive` | A `<button>` with `aria-pressed` and `@bind-Pressed` |
+
+Checkbox, Switch, and RadioGroup bind with `@bind-Value` and take part in
+`EditForm` validation, but also work unbound. Because they're native inputs,
+style their checked look with `:has(:checked)` to make it work in static
+server-rendered forms, where `data-state` isn't updated.
 
 ```razor
 @using Vela.UI.Primitives
 
-<SeparatorPrimitive Orientation="SeparatorOrientation.Vertical"
+<SeparatorPrimitive Orientation="Orientation.Vertical"
                     Decorative="false"
                     class="my-divider" />
 ```

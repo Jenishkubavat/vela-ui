@@ -1,0 +1,33 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void SwitchPrimitive_IsANativeSwitch()
+    {
+        // Arrange && Act
+        var cut = Render(@<SwitchPrimitive aria-label="Daily summary email"><SwitchPrimitiveThumb /></SwitchPrimitive>);
+
+        // Assert
+        var input = cut.Find("input");
+        Assert.Equal("checkbox", input.GetAttribute("type"));
+        Assert.Equal("switch", input.GetAttribute("role"));
+        Assert.Equal("Daily summary email", input.GetAttribute("aria-label"));
+        Assert.False(cut.Find("span").HasAttribute("class"));
+    }
+
+    [Fact]
+    public void SwitchPrimitive_ThumbFollowsTheState()
+    {
+        // Arrange
+        var on = false;
+        var cut = Render(@<SwitchPrimitive @bind-Value="on"><SwitchPrimitiveThumb class="thumb" /></SwitchPrimitive>);
+
+        // Act
+        cut.Find("input").Change(true);
+
+        // Assert
+        Assert.True(on);
+        Assert.Equal("checked", cut.Find(".thumb").GetAttribute("data-state"));
+        Assert.Equal("checked", cut.Find("span").GetAttribute("data-state"));
+    }
+}

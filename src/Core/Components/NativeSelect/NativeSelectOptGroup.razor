@@ -1,0 +1,30 @@
+@namespace Vela.UI.Components
+@* A labelled group of options in a NativeSelect. Set label to the group's name. *@
+
+<optgroup class="@ClassNames.Join(Classes, Class)"
+          data-slot="native-select-optgroup"
+          @attributes="AdditionalAttributes">
+    @ChildContent
+</optgroup>
+
+@code {
+    private const string Classes = "bg-[Canvas] text-[CanvasText]";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The options in the group.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes, most importantly <c>label</c>, applied to the <c>&lt;optgroup&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

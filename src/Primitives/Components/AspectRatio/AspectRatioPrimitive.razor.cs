@@ -36,18 +36,7 @@ public partial class AspectRatioPrimitive
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
-    private string StyleValue
-    {
-        get
-        {
-            // Invariant culture: a comma decimal separator (1,7778) would make the CSS value invalid.
-            var ratio = $"aspect-ratio: {Ratio.ToString(CultureInfo.InvariantCulture)}";
-            return AdditionalAttributes is not null
-                && AdditionalAttributes.TryGetValue("style", out var style)
-                && style is string userStyle
-                && !string.IsNullOrWhiteSpace(userStyle)
-                    ? $"{ratio}; {userStyle}"
-                    : ratio;
-        }
-    }
+    // Invariant culture: a comma decimal separator (1,7778) would make the CSS value invalid.
+    private string StyleValue => PrimitiveAttributes.MergeStyle(
+        $"aspect-ratio: {Ratio.ToString(CultureInfo.InvariantCulture)}", AdditionalAttributes);
 }

@@ -16,9 +16,9 @@
     }
 
     [Theory]
-    [InlineData(SeparatorOrientation.Horizontal, "horizontal", null)]
-    [InlineData(SeparatorOrientation.Vertical, "vertical", "vertical")]
-    public void SeparatorPrimitive_Semantic(SeparatorOrientation orientation, string expectedData, string? expectedAria)
+    [InlineData(Orientation.Horizontal, "horizontal", null)]
+    [InlineData(Orientation.Vertical, "vertical", "vertical")]
+    public void SeparatorPrimitive_Semantic(Orientation orientation, string expectedData, string? expectedAria)
     {
         // Arrange && Act
         var cut = Render(@<SeparatorPrimitive Orientation="orientation" Decorative="false" />);
@@ -34,7 +34,7 @@
     public void SeparatorPrimitive_DecorativeVerticalHasNoAriaOrientation()
     {
         // Arrange && Act
-        var cut = Render(@<SeparatorPrimitive Orientation="SeparatorOrientation.Vertical" />);
+        var cut = Render(@<SeparatorPrimitive Orientation="Orientation.Vertical" />);
 
         // Assert
         var separator = cut.Find("div");

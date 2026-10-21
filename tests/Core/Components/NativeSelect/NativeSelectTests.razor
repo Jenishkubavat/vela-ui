@@ -1,0 +1,97 @@
+@inherits BunitContext
+@code
+{
+    private enum Plan
+    {
+        Free,
+        Pro,
+    }
+
+    private sealed class Account
+    {
+        public string? Country { get; set; }
+        public Plan Plan { get; set; }
+        public int Seats { get; set; } = 1;
+    }
+
+    [Fact]
+    public void NativeSelect_BindString()
+    {
+        // Arrange
+        var account = new Account { Country = "nl" };
+        var cut = Render(
+            @<NativeSelect @bind-Value="account.Country" id="country" Class="w-full">
+                <NativeSelectOption value="nl">Netherlands</NativeSelectOption>
+                <NativeSelectOption value="in">India</NativeSelectOption>
+            </NativeSelect>);
+
+        // Act
+        cut.Find("select").Change("in");
+
+        // Assert
+        Assert.Equal("in", account.Country);
+        var select = cut.Find("select");
+        Assert.Equal("country", select.GetAttribute("id"));
+        Assert.Equal("w-full", cut.Find("[data-slot=native-select-wrapper]").ClassList.Last());
+        Assert.Equal("true", cut.Find("[data-slot=native-select-icon]").GetAttribute("aria-hidden"));
+    }
+
+    [Fact]
+    public void NativeSelect_BindEnumAndInt()
+    {
+        // Arrange
+        var account = new Account();
+        var cut = Render(
+            @<div>
+                <NativeSelect @bind-Value="account.Plan" id="plan">
+                    <NativeSelectOption value="Free">Free</NativeSelectOption>
+                    <NativeSelectOption value="Pro">Pro</NativeSelectOption>
+                </NativeSelect>
+                <NativeSelect @bind-Value="account.Seats" id="seats">
+                    <NativeSelectOption value="1">1</NativeSelectOption>
+                    <NativeSelectOption value="5">5</NativeSelectOption>
+                </NativeSelect>
+            </div>);
+
+        // Act
+        cut.Find("#plan").Change("Pro");
+        cut.Find("#seats").Change("5");
+
+        // Assert
+        Assert.Equal(Plan.Pro, account.Plan);
+        Assert.Equal(5, account.Seats);
+    }
+
+    [Fact]
+    public void NativeSelect_SizeSmall()
+    {
+        // Arrange
+        var account = new Account();
+
+        // Act
+        var cut = Render(@<NativeSelect @bind-Value="account.Country" Size="NativeSelectSize.Small" />);
+
+        // Assert
+        Assert.Equal("sm", cut.Find("select").GetAttribute("data-size"));
+        Assert.Equal("sm", cut.Find("[data-slot=native-select-wrapper]").GetAttribute("data-size"));
+    }
+
+    [Fact]
+    public void NativeSelectOptGroup_GroupsOptions()
+    {
+        // Arrange
+        var account = new Account();
+
+        // Act
+        var cut = Render(
+            @<NativeSelect @bind-Value="account.Country">
+                <NativeSelectOptGroup label="Europe"><NativeSelectOption value="nl">Netherlands</NativeSelectOption></NativeSelectOptGroup>
+            </NativeSelect>);
+
+        // Assert
+        var group = cut.Find("optgroup");
+        Assert.Equal("Europe", group.GetAttribute("label"));
+        Assert.Equal("native-select-optgroup", group.GetAttribute("data-slot"));
+        Assert.NotNull(group.QuerySelector("option[value=nl]"));
+    }
+}

@@ -1,0 +1,7 @@
+@namespace Vela.UI.Primitives
+
+<span @attributes="AdditionalAttributes"
+      data-state="@Item?.State"
+      data-disabled="@(Item?.IsDisabled == true ? "" : null)">
+    @ChildContent
+</span>

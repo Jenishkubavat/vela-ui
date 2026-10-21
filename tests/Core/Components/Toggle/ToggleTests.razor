@@ -1,0 +1,65 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void Toggle_BindPressed()
+    {
+        // Arrange
+        var bold = false;
+        var cut = Render(@<Toggle @bind-Pressed="bold" aria-label="Bold">B</Toggle>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        var toggle = cut.Find("[data-slot=toggle]");
+        Assert.True(bold);
+        Assert.Equal("true", toggle.GetAttribute("aria-pressed"));
+        Assert.Equal("on", toggle.GetAttribute("data-state"));
+    }
+
+    [Theory]
+    [InlineData(ToggleVariant.Default, ToggleSize.Default, "h-8")]
+    [InlineData(ToggleVariant.Outline, ToggleSize.Small, "h-7")]
+    [InlineData(ToggleVariant.Default, ToggleSize.Large, "h-10")]
+    public void Toggle_VariantAndSize(ToggleVariant variant, ToggleSize size, string expectedClass)
+    {
+        // Arrange && Act
+        var cut = Render(@<Toggle Variant="variant" Size="size">B</Toggle>);
+
+        // Assert
+        Assert.Contains(expectedClass, cut.Find("[data-slot=toggle]").ClassList);
+    }
+
+    [Fact]
+    public void Toggle_NoVariantOrSizeUsesTheFlameOrConflicts()
+    {
+        foreach (var variant in Enum.GetValues<ToggleVariant>())
+        {
+            foreach (var size in Enum.GetValues<ToggleSize>())
+            {
+                // Arrange && Act
+                var classes = Toggle.GetClasses(variant, size).Split(' ');
+
+                // Assert
+                Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+                Assert.True(classes.Count(c => c.StartsWith("bg-", StringComparison.Ordinal)) <= 1);
+                Assert.True(classes.Count(c => c.StartsWith("shadow-", StringComparison.Ordinal)) <= 1);
+            }
+        }
+    }
+
+    [Fact]
+    public void Toggle_UnboundKeepsItsStateWhenTheParentRerenders()
+    {
+        // Arrange
+        var cut = Render(@<RerenderHost><Toggle aria-label="Bold">B</Toggle></RerenderHost>);
+        cut.Find("[data-slot=toggle]").Click();
+
+        // Act
+        cut.Find("#rerender").Click();
+
+        // Assert
+        Assert.Equal("on", cut.Find("[data-slot=toggle]").GetAttribute("data-state"));
+    }
+}

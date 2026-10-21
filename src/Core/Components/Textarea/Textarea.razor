@@ -1,0 +1,14 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@inherits InputBase<string?>
+
+<textarea name="@NameAttributeValue"
+          class="@GetClasses(Class)"
+          value="@CurrentValueAsString"
+          disabled="@Disabled"
+          data-slot="textarea"
+          @onchange="ChangeHandler"
+          @oninput="InputHandler"
+          @attributes="AdditionalAttributes"
+          @ref="Element"></textarea>

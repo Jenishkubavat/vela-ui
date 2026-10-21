@@ -1,0 +1,10 @@
+@* Test helper: re-renders its content when its button is clicked, the way a page re-renders. *@
+<button id="rerender" @onclick="() => _renders++">Re-render @_renders</button>
+@ChildContent
+
+@code {
+    private int _renders;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

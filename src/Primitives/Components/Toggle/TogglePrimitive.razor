@@ -1,0 +1,11 @@
+@namespace Vela.UI.Primitives
+
+<button @attributes="AdditionalAttributes"
+        type="button"
+        aria-pressed="@(Pressed ? "true" : "false")"
+        data-state="@(Pressed ? "on" : "off")"
+        data-disabled="@(Disabled ? "" : null)"
+        disabled="@Disabled"
+        @onclick="ToggleAsync">
+    @ChildContent
+</button>

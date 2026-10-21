@@ -1,0 +1,103 @@
+@inherits BunitContext
+@code
+{
+    private sealed class Terms
+    {
+        public bool Accepted { get; set; }
+    }
+
+    [Fact]
+    public void Checkbox_Default()
+    {
+        // Arrange && Act
+        var cut = Render(@<Checkbox id="terms" />);
+
+        // Assert
+        var box = cut.Find("[data-slot=checkbox]");
+        Assert.Equal("SPAN", box.TagName);
+        Assert.Equal("unchecked", box.GetAttribute("data-state"));
+        Assert.Contains("shadow-check", box.ClassList);
+        Assert.Equal("terms", cut.Find("input[type=checkbox]").GetAttribute("id"));
+        Assert.NotNull(box.QuerySelector("[data-slot=checkbox-indicator] svg"));
+    }
+
+    [Fact]
+    public void Checkbox_BindValue()
+    {
+        // Arrange
+        var terms = new Terms();
+        var cut = Render(@<Checkbox @bind-Value="terms.Accepted" />);
+
+        // Act
+        cut.Find("input").Change(true);
+
+        // Assert
+        Assert.True(terms.Accepted);
+        Assert.Equal("checked", cut.Find("[data-slot=checkbox]").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void Checkbox_UnboundKeepsItsStateWhenTheParentRerenders()
+    {
+        // Arrange
+        var cut = Render(@<RerenderHost><Checkbox /></RerenderHost>);
+        cut.Find("input").Change(true);
+
+        // Act
+        cut.Find("#rerender").Click();
+
+        // Assert
+        Assert.Equal("checked", cut.Find("[data-slot=checkbox]").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void Checkbox_Indeterminate()
+    {
+        // Arrange && Act
+        var cut = Render(@<Checkbox Indeterminate="true" />);
+
+        // Assert
+        Assert.Equal("indeterminate", cut.Find("[data-slot=checkbox]").GetAttribute("data-state"));
+        Assert.Equal("mixed", cut.Find("input").GetAttribute("aria-checked"));
+    }
+
+    [Fact]
+    public void Checkbox_CheckedUsesTheTextColourNotTheFlame()
+    {
+        // Arrange && Act
+        var cut = Render(@<Checkbox Value="true" />);
+
+        // Assert
+        var classes = cut.Find("[data-slot=checkbox]").ClassList;
+        Assert.Contains("has-checked:bg-fg", classes);
+        Assert.DoesNotContain(classes, c => c.Contains("flame", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Checkbox_ValidationErrorsMarkTheInputInvalid()
+    {
+        // Arrange
+        var terms = new Terms();
+        var editContext = new EditContext(terms);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(@<EditForm EditContext="editContext"><Checkbox @bind-Value="terms.Accepted" /></EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(Terms.Accepted)), "Accept the terms to continue.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Equal("true", cut.Find("input").GetAttribute("aria-invalid"));
+    }
+
+    [Fact]
+    public void Checkbox_DisabledAndClass()
+    {
+        // Arrange && Act
+        var cut = Render(@<Checkbox Disabled="true" Class="mt-1" />);
+
+        // Assert
+        Assert.True(cut.Find("input").HasAttribute("disabled"));
+        Assert.Equal("mt-1", cut.Find("[data-slot=checkbox]").ClassList.Last());
+    }
+}

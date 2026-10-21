@@ -1,0 +1,13 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<SwitchPrimitive Value="@Value"
+                 ValueChanged="OnValueChanged"
+                 ValueExpression="ValueExpression"
+                 Disabled="Disabled"
+                 class="@ClassNames.Join(LayoutClasses, ColorClasses, MotionClasses, FocusClasses, InvalidClasses, DisabledClasses, Class)"
+                 data-slot="switch"
+                 data-size="@(Size == SwitchSize.Small ? "sm" : "default")"
+                 @attributes="AdditionalAttributes">
+    <SwitchPrimitiveThumb class="@ThumbClasses" data-slot="switch-thumb" />
+</SwitchPrimitive>

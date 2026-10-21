@@ -1,0 +1,111 @@
+@inherits BunitContext
+@code
+{
+    private sealed class Task1
+    {
+        public bool Done { get; set; }
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_WorksWithoutABinding()
+    {
+        // Arrange
+        var cut = Render(@<CheckboxPrimitive><CheckboxPrimitiveIndicator /></CheckboxPrimitive>);
+
+        // Act
+        cut.Find("input").Change(true);
+
+        // Assert
+        Assert.Equal("checked", cut.Find("span").GetAttribute("data-state"));
+        Assert.Equal("checked", cut.Find("span > span").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_BindValue()
+    {
+        // Arrange
+        var task = new Task1();
+        var cut = Render(@<CheckboxPrimitive @bind-Value="task.Done" />);
+
+        // Act
+        cut.Find("input").Change(true);
+
+        // Assert
+        Assert.True(task.Done);
+        Assert.True(cut.Find("input").HasAttribute("checked"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_IsANativeCheckboxOverAnUnstyledBox()
+    {
+        // Arrange && Act
+        var cut = Render(@<CheckboxPrimitive />);
+
+        // Assert
+        var box = cut.Find("span");
+        var input = box.QuerySelector("input")!;
+        Assert.False(box.HasAttribute("class"));
+        Assert.Equal("position: relative", box.GetAttribute("style"));
+        Assert.Equal("checkbox", input.GetAttribute("type"));
+        Assert.Contains("opacity: 0", input.GetAttribute("style"));
+        Assert.Equal("unchecked", box.GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_SplitsAttributesBetweenBoxAndInput()
+    {
+        // Arrange && Act
+        var cut = Render(@<CheckboxPrimitive id="terms" aria-describedby="terms-hint" class="box" data-slot="checkbox" style="margin: 4px" />);
+
+        // Assert
+        var box = cut.Find("span");
+        var input = cut.Find("input");
+        Assert.Equal("box", box.GetAttribute("class"));
+        Assert.Equal("checkbox", box.GetAttribute("data-slot"));
+        Assert.Equal("position: relative; margin: 4px", box.GetAttribute("style"));
+        Assert.Equal("terms", input.GetAttribute("id"));
+        Assert.Equal("terms-hint", input.GetAttribute("aria-describedby"));
+        Assert.False(input.HasAttribute("class"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_Indeterminate()
+    {
+        // Arrange && Act
+        var cut = Render(@<CheckboxPrimitive Indeterminate="true"><CheckboxPrimitiveIndicator /></CheckboxPrimitive>);
+
+        // Assert
+        Assert.Equal("indeterminate", cut.Find("span").GetAttribute("data-state"));
+        Assert.Equal("indeterminate", cut.Find("span > span").GetAttribute("data-state"));
+        Assert.Equal("mixed", cut.Find("input").GetAttribute("aria-checked"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_Disabled()
+    {
+        // Arrange && Act
+        var cut = Render(@<CheckboxPrimitive Disabled="true" />);
+
+        // Assert
+        Assert.True(cut.Find("input").HasAttribute("disabled"));
+        Assert.True(cut.Find("span").HasAttribute("data-disabled"));
+    }
+
+    [Fact]
+    public void CheckboxPrimitive_ValidationErrorsMarkTheInputInvalid()
+    {
+        // Arrange
+        var task = new Task1();
+        var editContext = new EditContext(task);
+        var messages = new ValidationMessageStore(editContext);
+        var cut = Render(@<EditForm EditContext="editContext"><CheckboxPrimitive @bind-Value="task.Done" /></EditForm>);
+
+        // Act
+        messages.Add(editContext.Field(nameof(Task1.Done)), "Accept the terms to continue.");
+        cut.InvokeAsync(editContext.NotifyValidationStateChanged);
+
+        // Assert
+        Assert.Equal("true", cut.Find("input").GetAttribute("aria-invalid"));
+        Assert.False(cut.Find("span").HasAttribute("aria-invalid"));
+    }
+}

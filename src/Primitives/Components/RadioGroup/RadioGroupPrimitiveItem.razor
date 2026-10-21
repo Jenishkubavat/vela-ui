@@ -1,0 +1,18 @@
+@namespace Vela.UI.Primitives
+
+<span @attributes="RootAttributes"
+      data-state="@State"
+      data-disabled="@(IsDisabled ? "" : null)">
+    <input @attributes="ControlAttributes"
+           type="radio"
+           name="@Group.GroupName"
+           value="@Value"
+           checked="@IsChecked"
+           disabled="@IsDisabled"
+           required="@Group.Required"
+           style="position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: inherit"
+           @onchange="OnChange" />
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</span>

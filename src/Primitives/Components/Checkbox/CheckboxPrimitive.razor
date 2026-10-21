@@ -1,0 +1,19 @@
+@namespace Vela.UI.Primitives
+@inherits CheckedInputPrimitiveBase
+
+<span @attributes="RootAttributes"
+      data-state="@State"
+      data-disabled="@(Disabled ? "" : null)">
+    <input name="@NameAttributeValue"
+           value="true"
+           @attributes="ControlAttributes"
+           type="checkbox"
+           checked="@CurrentValue"
+           disabled="@Disabled"
+           aria-checked="@(Indeterminate ? "mixed" : null)"
+           style="@HiddenInputStyle"
+           @onchange="OnChange" />
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</span>

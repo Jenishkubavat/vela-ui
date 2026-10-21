@@ -1,0 +1,13 @@
+@namespace Vela.UI.Primitives
+@inherits InputBase<string?>
+
+<div @attributes="AdditionalAttributes"
+     role="radiogroup"
+     aria-orientation="@OrientationName"
+     aria-required="@(Required ? "true" : null)"
+     data-orientation="@OrientationName"
+     data-disabled="@(Disabled ? "" : null)">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>

@@ -1,0 +1,57 @@
+@inherits BunitContext
+@code
+{
+    [Fact]
+    public void TogglePrimitive_DefaultIsOff()
+    {
+        // Arrange && Act
+        var cut = Render(@<TogglePrimitive aria-label="Bold">B</TogglePrimitive>);
+
+        // Assert
+        var button = cut.Find("button");
+        Assert.Equal("button", button.GetAttribute("type"));
+        Assert.Equal("false", button.GetAttribute("aria-pressed"));
+        Assert.Equal("off", button.GetAttribute("data-state"));
+        Assert.False(button.HasAttribute("class"));
+    }
+
+    [Fact]
+    public void TogglePrimitive_BindPressed()
+    {
+        // Arrange
+        var bold = false;
+        var cut = Render(@<TogglePrimitive @bind-Pressed="bold" aria-label="Bold">B</TogglePrimitive>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.True(bold);
+        Assert.Equal("true", cut.Find("button").GetAttribute("aria-pressed"));
+        Assert.Equal("on", cut.Find("button").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void TogglePrimitive_WorksWithoutABinding()
+    {
+        // Arrange
+        var cut = Render(@<TogglePrimitive aria-label="Bold">B</TogglePrimitive>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.Equal("on", cut.Find("button").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void TogglePrimitive_Disabled()
+    {
+        // Arrange && Act
+        var cut = Render(@<TogglePrimitive Disabled="true">B</TogglePrimitive>);
+
+        // Assert
+        Assert.True(cut.Find("button").HasAttribute("disabled"));
+        Assert.True(cut.Find("button").HasAttribute("data-disabled"));
+    }
+}
