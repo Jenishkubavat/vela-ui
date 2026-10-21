@@ -46,6 +46,35 @@ public class VelaCliTests
         Assert.Contains("frobnicate", error);
     }
 
+    [Fact]
+    public void VelaCli_HelpListsTheComponents()
+    {
+        // Arrange && Act
+        var (_, output, _) = Run("--help");
+
+        // Assert
+        Assert.Contains("init", output);
+        Assert.Contains("add <component>", output);
+        Assert.Contains("input-group", output);
+        Assert.All(output.Split('\n'), line => Assert.True(line.TrimEnd().Length <= 100, line));
+    }
+
+    [Theory]
+    [InlineData("add")]
+    [InlineData("init", "button")]
+    [InlineData("add", "button", "--force")]
+    [InlineData("init", "--cwd")]
+    public void VelaCli_BadArgumentsAreAUsageError(params string[] args)
+    {
+        // Arrange && Act
+        var (exitCode, output, error) = Run(args);
+
+        // Assert
+        Assert.Equal(VelaCli.UsageError, exitCode);
+        Assert.Empty(output);
+        Assert.Contains("vela --help", error);
+    }
+
     private static (int ExitCode, string Output, string Error) Run(params string[] args)
     {
         using var output = new StringWriter();

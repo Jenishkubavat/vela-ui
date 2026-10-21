@@ -10,4 +10,18 @@
     <InternalsVisibleTo Include="Vela.UI.Cli.Tests" />
   </ItemGroup>
 
+  <!--
+    The registry ships inside the CLI, so `vela add` works offline. Every file keeps its
+    path under src/Core as its resource name, prefixed with "registry/".
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="..\Core\registry.json" LogicalName="registry/registry.json" />
+    <EmbeddedResource Include="..\Core\Components\**\*.razor;..\Core\Components\**\*.cs"
+                      LogicalName="registry/Components/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Core\Utilities\ClassNames.cs" LogicalName="registry/Utilities/ClassNames.cs" />
+    <EmbeddedResource Include="..\Core\Styles\vela.css" LogicalName="registry/Styles/vela.css" />
+    <EmbeddedResource Include="..\Core\Styles\fonts\*" LogicalName="registry/Styles/fonts/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\Core\Scripts\vela-light.js" LogicalName="registry/Scripts/vela-light.js" />
+  </ItemGroup>
+
 </Project>

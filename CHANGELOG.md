@@ -8,6 +8,13 @@ follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- `vela init`: checks for a Blazor project on .NET 10 or later and installs
+  `vela.json`, the theme, a Tailwind CSS input file, the fonts, the motion
+  layer, and `ClassNames`.
+- `vela add`: copies components and the components they use into the app,
+  in the app's namespace, and adds the `Vela.UI.Primitives` package when a
+  component needs it. It stops instead of replacing a changed file;
+  `--overwrite` replaces it and keeps a backup in `.vela/backups`.
 - `vela` CLI with `--help` and `--version`.
 - Button component with shadcn/ui's API (six variants, eight sizes, icon
   spacing through `data-icon`, `Button.GetClasses` for styling links as

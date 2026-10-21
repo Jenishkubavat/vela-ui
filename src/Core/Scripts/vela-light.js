@@ -90,7 +90,8 @@
       // A toast confirming a completion carries the ember itself; it doesn't send a spark.
       if (m.type === "attributes" && m.attributeName === "data-ember" && m.target.hasAttribute("data-ember") && !m.target.closest("[data-slot='toast']")) flyToWick(m.target);
       if (m.type === "characterData" || m.type === "childList") {
-        const el = (m.target.nodeType === 3 ? m.target.parentElement : m.target)?.closest("[data-roll]");
+        // The target can be text, a comment (Blazor's markers), or the document itself.
+        const el = (m.target.nodeType === Node.ELEMENT_NODE ? m.target : m.target.parentElement)?.closest("[data-roll]");
         if (el && !el.dataset.rolling) roll(el, m.oldValue);
       }
     }

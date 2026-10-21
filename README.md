@@ -48,15 +48,38 @@ are not styled by any of this.
 
 ## Status
 
-Vela UI is in early development and there is nothing to install yet.
-Thirty-three components exist in the component registry
-(`src/Core`) and are covered by tests, but the CLI can't copy them into an
-app yet: it only prints its help and version.
+Vela UI is in early development and isn't published yet. The `vela` CLI
+can set up a Blazor project and copy any of the thirty-three components in
+the registry (`src/Core`) into it, but neither the CLI nor the
+`Vela.UI.Primitives` package is on NuGet yet. Until they are, run the CLI
+from a clone of this repository, and replace the package reference that
+`vela add` adds with a project reference to `src/Primitives`.
 
-The first milestone is `vela init` and `vela add` for Button, Input, Label,
-and Card, with light and dark themes driven by CSS variables. Dialog,
-Dropdown Menu, and Select come after that, once keyboard and focus
+Dialog, Dropdown Menu, and Select come next, once keyboard and focus
 behavior can be tested in a real browser.
+
+## Using the CLI
+
+Run it in your Blazor project's folder (.NET 10 or later):
+
+```bash
+dotnet run --project path/to/vela-ui/src/Cli -- init
+dotnet run --project path/to/vela-ui/src/Cli -- add button card
+```
+
+`vela init` writes `vela.json`, the theme (`Styles/vela.css`), a Tailwind
+input file (`Styles/app.css`), the fonts, `vela-light.js`, and
+`ClassNames.cs`. It then prints the remaining steps: building the CSS with
+Tailwind CSS v4, linking it in `App.razor`, and adding a `@using` for the
+components' namespace.
+
+`vela add` copies each component's folder into `Components/Ui/`, in your
+project's namespace, along with the components it uses. It never replaces
+a file you've changed without being asked: if a file differs, it stops and
+lists it. `--overwrite` replaces it and keeps the old version in
+`.vela/backups/`. Components built on a primitive also add a reference to
+the `Vela.UI.Primitives` package. Paths and the namespace can be changed in
+`vela.json` before adding components.
 
 ## Building from source
 
