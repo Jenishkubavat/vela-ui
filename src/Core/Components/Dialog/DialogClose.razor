@@ -1,0 +1,32 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    A button that closes the Dialog, such as Cancel. It has no styles of its own:
+    Class="@Button.GetClasses(ButtonVariant.Outline)" makes it a button.
+*@
+
+<DialogPrimitiveClose class="@Class"
+                      data-slot="dialog-close"
+                      @attributes="AdditionalAttributes">
+    @ChildContent
+</DialogPrimitiveClose>
+
+@code {
+    /// <summary>
+    /// CSS classes for the <c>&lt;button&gt;</c>, such as <c>@Button.GetClasses(ButtonVariant.Outline)</c>.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The button's label.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;button&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

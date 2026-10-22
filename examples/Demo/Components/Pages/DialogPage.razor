@@ -1,0 +1,91 @@
+@page "/dialog"
+@rendermode InteractiveServer
+
+<PageTitle>Dialog · Vela UI</PageTitle>
+
+@* data-interactive appears once Blazor is running here, so tests know key presses will be handled. *@
+<div class="flex max-w-3xl flex-col gap-10" data-interactive="@RendererInfo.IsInteractive">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Dialog</h1>
+        <p class="text-body text-fg-muted">
+            A modal dialog for a decision. The page behind becomes inert, Escape or a click on the
+            backdrop closes it, and focus returns to the button that opened it. Opening needs an
+            interactive render mode.
+        </p>
+        <div class="flex items-center gap-3">
+            <Button Variant="ButtonVariant.Outline" OnClick="() => pageClicks++">Page button</Button>
+            <span id="page-clicks" class="text-body-sm text-fg-muted">Clicked @pageClicks times</span>
+        </div>
+    </header>
+
+    <Example Title="Minimal">
+        <Dialog>
+            <DialogTrigger Class="@Button.GetClasses(ButtonVariant.Outline)">Edit profile</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit profile</DialogTitle>
+                    <DialogDescription>Change how your name appears to your team.</DialogDescription>
+                </DialogHeader>
+                <Field>
+                    <FieldLabel for="profile-name">Name</FieldLabel>
+                    <Input id="profile-name" @bind-Value="profileName" />
+                </Field>
+            </DialogContent>
+        </Dialog>
+    </Example>
+
+    <Example Title="Realistic" Description="A confirmation that can't be undone in place. Ctrl+Enter confirms, as the footer's keys say.">
+        <div class="flex flex-col items-start gap-3">
+            <Dialog @bind-Open="archiveOpen">
+                <DialogTrigger Class="@Button.GetClasses(ButtonVariant.Outline)">Archive projects</DialogTrigger>
+                <DialogContent OnConfirm="Archive">
+                    <DialogHeader>
+                        <DialogTitle>Archive 3 projects?</DialogTitle>
+                        <DialogDescription>
+                            They move out of your project list and stop syncing. You can restore them from
+                            Settings for 30 days.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <DialogClose Class="@Button.GetClasses(ButtonVariant.Outline)">Cancel</DialogClose>
+                        <Button OnClick="Archive">Archive</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+            <p role="status" class="text-body-sm text-fg-muted">@(archived ? "Archived 3 projects." : "Nothing archived yet.")</p>
+        </div>
+    </Example>
+
+    <Example Title="Long content" Description="A dialog taller than the window scrolls inside itself, and the page behind doesn't.">
+        <Dialog>
+            <DialogTrigger Class="@Button.GetClasses(ButtonVariant.Outline)">Read the terms</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Terms of service</DialogTitle>
+                    <DialogDescription>Last updated in October.</DialogDescription>
+                </DialogHeader>
+                @for (var section = 1; section <= 30; section++)
+                {
+                    <p class="text-body text-fg-muted">
+                        Section @section. You keep ownership of everything you upload. We store it so we can
+                        show it back to you and to the people you share it with, and for no other purpose.
+                    </p>
+                }
+                <DialogFooter ShowCloseButton="true" />
+            </DialogContent>
+        </Dialog>
+    </Example>
+</div>
+
+@code {
+    private int pageClicks;
+    private string? profileName = "Ada Lovelace";
+    private bool archiveOpen;
+    private bool archived;
+
+    private void Archive()
+    {
+        archived = true;
+        archiveOpen = false;
+    }
+}

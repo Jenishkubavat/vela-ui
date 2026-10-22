@@ -23,9 +23,14 @@ public sealed class ExamplesApp : IAsyncLifetime, IDisposable
     /// that from <see cref="BrowserTest"/>.
     /// </summary>
     /// <param name="path">The page's path, such as <c>collapsible</c>.</param>
-    public async Task<IPage> OpenAsync(string path)
+    /// <param name="hasTouch">Gives the page a touch screen, for testing taps.</param>
+    public async Task<IPage> OpenAsync(string path, bool hasTouch = false)
     {
-        var context = await _browser!.NewContextAsync(new() { BaseURL = _factory.ClientOptions.BaseAddress.ToString() });
+        var context = await _browser!.NewContextAsync(new()
+        {
+            BaseURL = _factory.ClientOptions.BaseAddress.ToString(),
+            HasTouch = hasTouch,
+        });
         var page = await context.NewPageAsync();
         await page.GotoAsync(path);
         await page.Locator("[data-interactive]").WaitForAsync();

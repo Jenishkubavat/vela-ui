@@ -1,0 +1,35 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    What will happen, and how to undo it when that's possible. Screen readers read it when
+    the dialog opens.
+*@
+
+<DialogPrimitiveDescription class="@ClassNames.Join(Classes, Class)"
+                            data-slot="dialog-description"
+                            @attributes="AdditionalAttributes">
+    @ChildContent
+</DialogPrimitiveDescription>
+
+@code {
+    private const string Classes =
+        "text-body text-fg-muted [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-fg";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The description text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;p&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

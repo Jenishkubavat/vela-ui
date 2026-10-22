@@ -1,0 +1,22 @@
+@namespace Vela.UI.Components
+@using Microsoft.AspNetCore.Components.Web
+@using Vela.UI.Primitives
+
+<DialogPrimitiveContent CloseOnClickOutside="CloseOnClickOutside"
+                        class="@ClassNames.Join(LayoutClasses, ColorClasses, BackdropClasses, MotionClasses, Class)"
+                        data-slot="dialog-content"
+                        data-confirm="@(OnConfirm.HasDelegate ? "" : null)"
+                        aria-keyshortcuts="@(OnConfirm.HasDelegate ? "Control+Enter Meta+Enter" : null)"
+                        @onkeydown="KeyDownHandler"
+                        @attributes="AdditionalAttributes">
+    @ChildContent
+    @if (ShowCloseButton)
+    {
+        <DialogPrimitiveClose class="@CloseButtonClasses" data-slot="dialog-close" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+        </DialogPrimitiveClose>
+    }
+</DialogPrimitiveContent>

@@ -143,6 +143,7 @@
   --vela-control-md: 2rem;
   --vela-control-lg: 2.5rem;
   --vela-icon: 1rem;
+  --vela-dialog-width: 28rem;
   --vela-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --vela-quick: 120ms;
   --vela-settle: 240ms;
@@ -264,8 +265,15 @@
     border-color: var(--vela-border);
   }
 
+  /* The gutter stays reserved, so the page doesn't shift sideways when a dialog hides the scrollbar. */
   html {
     scrollbar-color: var(--vela-border-control) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  /* A modal dialog doesn't stop the page behind it from scrolling on its own. */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
   }
 
   body {
@@ -326,6 +334,14 @@
   20% {
     transform: scale(2.2);
     box-shadow: 0 0 18px 4px var(--vela-glow);
+  }
+}
+
+/* A dialog rises into place when it opens. */
+@keyframes vela-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
   }
 }
 

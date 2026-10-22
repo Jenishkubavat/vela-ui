@@ -42,6 +42,11 @@ follow [Semantic Versioning](https://semver.org/).
 - Alert, AspectRatio, Badge, Breadcrumb, Bubble, DirectionProvider, Empty,
   Marker, Message, Separator, and Skeleton, completing shadcn/ui's simplest
   components in the Vela look.
+- Dialog, built on a new DialogPrimitive: a native `<dialog>` opened as a
+  modal, so the page behind becomes inert, Escape and a click on the
+  backdrop close it, and focus moves in and back to the trigger. The
+  styled Dialog adds the Vela look and an optional Ctrl+Enter confirm.
+  `Vela.UI.Primitives` now includes a small script, `dialog.js`.
 - Collapsible, Progress, and Avatar, built on new primitives
   (CollapsiblePrimitive, ProgressPrimitive, AvatarPrimitive). Progress is
   drawn as the design system's wick, with a flame at its leading edge.

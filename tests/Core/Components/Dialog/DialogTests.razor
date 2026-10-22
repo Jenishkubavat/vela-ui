@@ -1,0 +1,180 @@
+@inherits BunitContext
+@code
+{
+    private readonly BunitJSModuleInterop module;
+
+    public DialogTests()
+    {
+        SetRendererInfo(new RendererInfo("Server", isInteractive: true));
+        module = JSInterop.SetupModule("./_content/Vela.UI.Primitives/dialog.js");
+        module.SetupVoid("show", _ => true);
+        module.SetupVoid("close", _ => true);
+    }
+
+    private RenderFragment Archive(EventCallback onConfirm = default) =>
+        @<text>
+            <DialogTrigger Class="@Button.GetClasses(ButtonVariant.Outline)">Archive</DialogTrigger>
+            <DialogContent OnConfirm="onConfirm">
+                <DialogHeader>
+                    <DialogTitle>Archive 3 projects?</DialogTitle>
+                    <DialogDescription>You can restore them from Settings.</DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <DialogClose Class="@Button.GetClasses(ButtonVariant.Outline)">Cancel</DialogClose>
+                    <Button>Archive</Button>
+                </DialogFooter>
+            </DialogContent>
+        </text>;
+
+    [Fact]
+    public void Dialog_TriggerOpensTheStyledPanel()
+    {
+        // Arrange
+        var cut = Render(@<Dialog>@Archive()</Dialog>);
+
+        // Act
+        cut.Find("[data-slot=dialog-trigger]").Click();
+
+        // Assert
+        var content = cut.Find("[data-slot=dialog-content]");
+        Assert.Equal("DIALOG", content.TagName);
+        Assert.Equal("open", content.GetAttribute("data-state"));
+        Assert.Contains("shadow-overlay", content.ClassList);
+        Assert.Contains("open:grid", content.ClassList);
+        Assert.DoesNotContain("grid", content.ClassList);
+        Assert.Equal("H2", cut.Find("[data-slot=dialog-title]").TagName);
+        Assert.Single(cut.FindAll("[data-slot=dialog-header]"));
+        Assert.Single(cut.FindAll("[data-slot=dialog-description]"));
+        module.VerifyInvoke("show", calledTimes: 1);
+    }
+
+    [Fact]
+    public void DialogContent_CloseButtonComesLast()
+    {
+        // Arrange && Act
+        var cut = Render(@<Dialog Open="true">@Archive()</Dialog>);
+
+        // Assert: last in the markup, so focus doesn't start on it.
+        var close = cut.Find("[data-slot=dialog-content]").LastElementChild!;
+        Assert.Equal("dialog-close", close.GetAttribute("data-slot"));
+        Assert.Equal("Close", close.GetAttribute("aria-label"));
+    }
+
+    [Fact]
+    public void DialogContent_ShowCloseButtonFalseHidesIt()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Dialog Open="true">
+                <DialogContent ShowCloseButton="false">
+                    <DialogTitle>Title</DialogTitle>
+                </DialogContent>
+            </Dialog>);
+
+        // Assert
+        Assert.Empty(cut.FindAll("[aria-label=Close]"));
+    }
+
+    [Fact]
+    public void DialogContent_CtrlEnterConfirms()
+    {
+        // Arrange
+        var confirmed = 0;
+        var cut = Render(@<Dialog Open="true">@Archive(EventCallback.Factory.Create(this, () => confirmed++))</Dialog>);
+        var content = cut.Find("[data-slot=dialog-content]");
+
+        // Act
+        content.KeyDown(new KeyboardEventArgs { Key = "Enter" });
+        content.KeyDown(new KeyboardEventArgs { Key = "Enter", CtrlKey = true });
+        content.KeyDown(new KeyboardEventArgs { Key = "Enter", MetaKey = true });
+
+        // Assert
+        Assert.Equal(2, confirmed);
+        Assert.True(content.HasAttribute("data-confirm"));
+        Assert.Equal("Control+Enter Meta+Enter", content.GetAttribute("aria-keyshortcuts"));
+    }
+
+    [Fact]
+    public void DialogContent_WithoutOnConfirmListensToNoKeys()
+    {
+        // Arrange && Act
+        var cut = Render(@<Dialog Open="true">@Archive()</Dialog>);
+        var content = cut.Find("[data-slot=dialog-content]");
+
+        // Assert
+        Assert.False(content.HasAttribute("data-confirm"));
+        Assert.False(content.HasAttribute("aria-keyshortcuts"));
+        Assert.Throws<MissingEventHandlerException>(() => content.KeyDown(new KeyboardEventArgs { Key = "Enter", CtrlKey = true }));
+    }
+
+    [Fact]
+    public void DialogContent_CloseOnClickOutsideReachesTheScript()
+    {
+        // Arrange && Act
+        Render(
+            @<Dialog Open="true">
+                <DialogContent CloseOnClickOutside="false"><DialogTitle>Delete?</DialogTitle></DialogContent>
+            </Dialog>);
+
+        // Assert
+        Assert.Equal(false, module.VerifyInvoke("show").Arguments[1]);
+    }
+
+    [Fact]
+    public void DialogFooter_ShowCloseButtonAddsClose()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<Dialog Open="true">
+                <DialogContent ShowCloseButton="false">
+                    <DialogTitle>Title</DialogTitle>
+                    <DialogFooter ShowCloseButton="true" />
+                </DialogContent>
+            </Dialog>);
+
+        // Assert
+        var close = cut.Find("[data-slot=dialog-footer] [data-slot=dialog-close]");
+        Assert.Equal("Close", close.TextContent);
+        Assert.Contains("shadow-hairline-strong", close.ClassList);
+    }
+
+    [Fact]
+    public void Dialog_ClosingThroughCloseUpdatesTheBinding()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(@<Dialog @bind-Open="open">@Archive()</Dialog>);
+
+        // Act
+        cut.FindAll("[data-slot=dialog-close]").Single(button => button.TextContent == "Cancel").Click();
+
+        // Assert
+        Assert.False(open);
+        module.VerifyInvoke("close", calledTimes: 1);
+    }
+
+    [Fact]
+    public void Dialog_UnboundKeepsItsStateWhenTheParentRerenders()
+    {
+        // Arrange
+        var cut = Render(@<RerenderHost><Dialog>@Archive()</Dialog></RerenderHost>);
+        cut.Find("[data-slot=dialog-trigger]").Click();
+
+        // Act
+        cut.Find("#rerender").Click();
+
+        // Assert
+        Assert.Equal("open", cut.Find("[data-slot=dialog-content]").GetAttribute("data-state"));
+    }
+
+    [Fact]
+    public void DialogContent_KeepsTheFlameOffThePanel()
+    {
+        // Arrange && Act
+        var cut = Render(@<Dialog Open="true">@Archive()</Dialog>);
+
+        // Assert: only the footer's primary Button may use the flame.
+        Assert.DoesNotContain(cut.Find("[data-slot=dialog-content]").ClassList, c => c.Contains("flame", StringComparison.Ordinal));
+        Assert.DoesNotContain(cut.Find("[aria-label=Close]").ClassList, c => c.Contains("flame", StringComparison.Ordinal));
+    }
+}

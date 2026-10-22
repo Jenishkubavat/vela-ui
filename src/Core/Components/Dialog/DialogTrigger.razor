@@ -1,0 +1,33 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+@*
+    The button that opens a Dialog; focus returns to it when the dialog closes. It has no
+    styles of its own, so make it look like a button with
+    Class="@Button.GetClasses(ButtonVariant.Outline)".
+*@
+
+<DialogPrimitiveTrigger class="@Class"
+                        data-slot="dialog-trigger"
+                        @attributes="AdditionalAttributes">
+    @ChildContent
+</DialogPrimitiveTrigger>
+
+@code {
+    /// <summary>
+    /// CSS classes for the <c>&lt;button&gt;</c>, such as <c>@Button.GetClasses()</c>.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The button's label.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the <c>&lt;button&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}

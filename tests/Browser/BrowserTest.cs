@@ -19,9 +19,10 @@ public abstract class BrowserTest(ExamplesApp app) : IAsyncLifetime
     /// Opens a page of the examples app and waits until it's interactive.
     /// </summary>
     /// <param name="path">The page's path, such as <c>collapsible</c>.</param>
-    protected async Task<IPage> OpenAsync(string path)
+    /// <param name="hasTouch">Gives the page a touch screen, for testing taps.</param>
+    protected async Task<IPage> OpenAsync(string path, bool hasTouch = false)
     {
-        _page = await app.OpenAsync(path);
+        _page = await app.OpenAsync(path, hasTouch);
         return _page;
     }
 

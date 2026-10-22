@@ -11,6 +11,7 @@
     "button": {},
     "button-group": { "dependencies": ["separator"] },
     "card": {},
+    "dialog": { "dependencies": ["button", "kbd"] },
     "checkbox": {},
     "collapsible": {},
     "direction": {},

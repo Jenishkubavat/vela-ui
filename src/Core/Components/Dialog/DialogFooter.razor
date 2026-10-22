@@ -1,0 +1,18 @@
+@namespace Vela.UI.Components
+@using Vela.UI.Primitives
+
+<div class="@ClassNames.Join(LayoutClasses, ColorClasses, Class)"
+     data-slot="dialog-footer"
+     @attributes="AdditionalAttributes">
+    <div class="@HintClasses">
+        <Kbd>esc</Kbd>
+        <span>to cancel,</span>
+        <KbdGroup><Kbd>Ctrl</Kbd><Kbd>↵</Kbd></KbdGroup>
+        <span>to confirm</span>
+    </div>
+    @ChildContent
+    @if (ShowCloseButton)
+    {
+        <DialogPrimitiveClose class="@Button.GetClasses(ButtonVariant.Outline)" data-slot="dialog-close">Close</DialogPrimitiveClose>
+    }
+</div>

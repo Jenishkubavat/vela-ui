@@ -1,0 +1,34 @@
+@namespace Vela.UI.Components
+@*
+    The top of a DialogContent: the DialogTitle and an optional DialogDescription. It keeps
+    clear of the close button in the corner.
+*@
+
+<div class="@ClassNames.Join(Classes, Class)"
+     data-slot="dialog-header"
+     @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    private const string Classes =
+        "flex flex-col gap-2 group-has-[>[data-slot=dialog-close]]/dialog:pe-8";
+
+    /// <summary>
+    /// Extra CSS classes, added after the defaults.
+    /// </summary>
+    [Parameter]
+    public string? Class { get; set; }
+
+    /// <summary>
+    /// The title and description.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    /// <summary>
+    /// Other attributes applied to the header's <c>&lt;div&gt;</c>.
+    /// </summary>
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+}
