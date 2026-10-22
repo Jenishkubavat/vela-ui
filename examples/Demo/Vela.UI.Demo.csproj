@@ -5,9 +5,9 @@
     references the registry (src/Core) directly instead of copying it with vela add, so the
     examples always show the current source. The browser tests run against it too.
 
-    Styles come from Tailwind CSS v4. Run `npm install` once in this folder, then
-    `npm run css` (or `npm run css:watch`). Without that step the pages still work,
-    unstyled.
+    Styles come from Tailwind CSS v4, built from Styles/app.css into wwwroot/app.css as
+    part of the build, so the app is styled however it's started. That needs Node.js 20 or
+    later. Use `npm run css:watch` in this folder to rebuild the CSS while editing classes.
   -->
 
   <PropertyGroup>
@@ -17,5 +17,33 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Vela.UI.Components.csproj" />
   </ItemGroup>
+
+  <!-- Everything Tailwind reads. A change to any of these rebuilds the CSS. -->
+  <ItemGroup>
+    <TailwindInput Include="Styles\app.css;..\..\src\Core\Styles\vela.css" Visible="false" />
+    <TailwindInput Include="Components\**\*.razor;..\..\src\Core\Components\**\*.razor;..\..\src\Core\Components\**\*.cs" Visible="false" />
+  </ItemGroup>
+
+  <!-- Design-time builds (Visual Studio in the background, dotnet format) skip both steps. -->
+  <Target Name="InstallTailwind"
+          Condition="'$(DesignTimeBuild)' != 'true'"
+          Inputs="package-lock.json"
+          Outputs="node_modules\.package-lock.json">
+    <Exec Command="node --version" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="NodeExitCode" />
+    </Exec>
+    <Error Condition="'$(NodeExitCode)' != '0'"
+           Text="The examples app builds its styles with Tailwind CSS, which needs Node.js 20 or later. Install it from https://nodejs.org and build again." />
+    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreStandardErrorWarningFormat="true" />
+  </Target>
+
+  <Target Name="BuildTailwind"
+          BeforeTargets="Build"
+          DependsOnTargets="InstallTailwind"
+          Condition="'$(DesignTimeBuild)' != 'true'"
+          Inputs="@(TailwindInput)"
+          Outputs="wwwroot\app.css">
+    <Exec Command="npm run css" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreStandardErrorWarningFormat="true" />
+  </Target>
 
 </Project>

@@ -1,5 +1,5 @@
 /*
-  Tailwind CSS input for the examples. Build it with `npm run css` in examples/Demo.
+  Tailwind CSS input for the examples. Building the app builds it into wwwroot/app.css.
   It uses the registry's theme directly, as an app's Styles/app.css would after vela init.
 */
 @import "tailwindcss";
