@@ -23,3 +23,41 @@ jobs:
       - run: dotnet build --no-restore --configuration Release
       - run: dotnet test --no-build --configuration Release
       - run: dotnet pack --no-build --configuration Release --output artifacts
+
+  # Installs every component into a new Blazor app the way a user would, and builds it.
+  # Vela.UI.Primitives isn't on nuget.org yet, so the app restores it from a local feed.
+  install-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Pack Vela.UI.Primitives into a local feed
+        run: dotnet pack src/Primitives --configuration Release --output "$RUNNER_TEMP/feed"
+
+      - name: Create a Blazor app
+        run: |
+          dotnet new blazor --name SampleApp --output "$RUNNER_TEMP/SampleApp"
+          cat > "$RUNNER_TEMP/SampleApp/nuget.config" <<EOF
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="local" value="$RUNNER_TEMP/feed" />
+              <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+            </packageSources>
+          </configuration>
+          EOF
+
+      - name: Install every component with vela
+        run: |
+          dotnet build src/Cli --configuration Release
+          vela="dotnet run --project src/Cli --configuration Release --no-build --"
+          $vela init --cwd "$RUNNER_TEMP/SampleApp"
+          $vela add $(jq -r '.components | keys | join(" ")' src/Core/registry.json) --cwd "$RUNNER_TEMP/SampleApp"
+
+      - name: Build the app
+        run: dotnet build "$RUNNER_TEMP/SampleApp" --warnaserror
