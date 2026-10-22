@@ -4,6 +4,7 @@
 
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Vela.UI.Cli.Project;
 
@@ -18,7 +19,7 @@ namespace Vela.UI.Cli.Project;
 /// <param name="Assets">The web root, where fonts and <c>vela-light.js</c> go.</param>
 /// <param name="Registry">Where components come from: the registry bundled in the CLI.</param>
 /// <param name="Version">The version of the registry the project was set up with.</param>
-internal sealed record VelaConfig(
+internal sealed partial record VelaConfig(
     string Project,
     string Namespace,
     string Components,
@@ -79,6 +80,16 @@ internal sealed record VelaConfig(
                 "delete it and run 'vela init' to recreate it.");
         }
 
+        if (!DottedIdentifier().IsMatch(config.Namespace))
+        {
+            throw new CliException(
+                $"The namespace in {FileName} ('{config.Namespace}') isn't a valid C# namespace. " +
+                "Use names separated by dots, such as MyApp.Components.Ui.");
+        }
+
+        CheckInsideProject(directory, "components", config.Components);
+        CheckInsideProject(directory, "styles", config.Styles);
+        CheckInsideProject(directory, "assets", config.Assets);
         return config;
     }
 
@@ -86,4 +97,22 @@ internal sealed record VelaConfig(
     /// The file's contents, ending with a newline.
     /// </summary>
     public byte[] ToUtf8Bytes() => Encoding.UTF8.GetBytes(JsonSerializer.Serialize(this, JsonOptions) + "\n");
+
+    // The CLI writes into these folders, so a path like "../x" or "C:/x" would let it write
+    // anywhere on the machine.
+    private static void CheckInsideProject(string directory, string setting, string path)
+    {
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(directory)) + Path.DirectorySeparatorChar;
+        var target = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.Combine(root, path))) + Path.DirectorySeparatorChar;
+        if (Path.IsPathRooted(path) || !target.StartsWith(root, comparison))
+        {
+            throw new CliException(
+                $"The {setting} folder in {FileName} ('{path}') is outside the project. " +
+                "Use a path relative to the project folder, such as Components/Ui.");
+        }
+    }
+
+    [GeneratedRegex(@"^[\p{L}_][\p{L}\p{Nd}_]*(\.[\p{L}_][\p{L}\p{Nd}_]*)*$")]
+    private static partial Regex DottedIdentifier();
 }

@@ -204,6 +204,87 @@ public class AddCommandTests
         Assert.StartsWith("@namespace DemoApp.Shared.Vela", project.Read("Shared/Vela/Badge/Badge.razor"));
     }
 
+    [Theory]
+    [InlineData("components", "../escaped")]
+    [InlineData("components", "Components/../../escaped")]
+    [InlineData("styles", "../escaped")]
+    [InlineData("assets", "..")]
+    public void Add_RejectsAFolderOutsideTheProject(string setting, string path)
+    {
+        // Arrange
+        using var project = Initialized();
+        SetInVelaJson(project, setting, path);
+
+        // Act
+        var (exitCode, _, error) = project.Run("add", "badge");
+
+        // Assert
+        Assert.Equal(VelaCli.Failure, exitCode);
+        Assert.Contains($"The {setting} folder", error);
+        Assert.Contains("outside the project", error);
+        Assert.False(Directory.Exists(Path.Combine(project.Directory, "..", "escaped")));
+    }
+
+    [Fact]
+    public void Add_RejectsAnAbsoluteFolder()
+    {
+        // Arrange
+        using var project = Initialized();
+        var elsewhere = Path.Combine(Path.GetTempPath(), "vela-tests", "escaped-" + Guid.NewGuid().ToString("N"));
+        SetInVelaJson(project, "components", elsewhere);
+
+        // Act
+        var (exitCode, _, error) = project.Run("add", "badge");
+
+        // Assert
+        Assert.Equal(VelaCli.Failure, exitCode);
+        Assert.Contains("outside the project", error);
+        Assert.False(Directory.Exists(elsewhere));
+    }
+
+    [Fact]
+    public void Add_AcceptsAFolderThatStaysInsideTheProject()
+    {
+        // Arrange
+        using var project = Initialized();
+        SetInVelaJson(project, "components", "Shared/../Components/Vela");
+
+        // Act
+        var (exitCode, _, _) = project.Run("add", "badge");
+
+        // Assert
+        Assert.Equal(VelaCli.Success, exitCode);
+        Assert.True(project.Exists("Components/Vela/Badge/Badge.razor"));
+    }
+
+    [Theory]
+    [InlineData("My App.Ui")]
+    [InlineData("1App.Ui")]
+    [InlineData("App..Ui")]
+    [InlineData("App.Ui.")]
+    [InlineData("App-Ui")]
+    public void Add_RejectsAnInvalidNamespace(string value)
+    {
+        // Arrange
+        using var project = Initialized();
+        SetInVelaJson(project, "namespace", value);
+
+        // Act
+        var (exitCode, _, error) = project.Run("add", "badge");
+
+        // Assert
+        Assert.Equal(VelaCli.Failure, exitCode);
+        Assert.Contains("isn't a valid C# namespace", error);
+        Assert.False(project.Exists("Components/Ui/Badge/Badge.razor"));
+    }
+
+    private static void SetInVelaJson(TempProject project, string setting, string value)
+    {
+        var json = System.Text.Json.Nodes.JsonNode.Parse(project.Read("vela.json"))!;
+        json[setting] = value;
+        project.Write("vela.json", json.ToJsonString());
+    }
+
     private static TempProject Initialized(string content = TempProject.BlazorProject)
     {
         var project = new TempProject(content: content);
