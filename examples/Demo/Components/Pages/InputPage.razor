@@ -4,7 +4,8 @@
 
 <PageTitle>Input · Vela UI</PageTitle>
 
-<div class="flex max-w-3xl flex-col gap-10">
+@* data-interactive appears once Blazor is running here, so tests know key presses will be handled. *@
+<div class="flex max-w-3xl flex-col gap-10" data-interactive="@RendererInfo.IsInteractive">
     <header class="flex flex-col gap-2">
         <h1 class="text-title text-fg">Input</h1>
         <p class="text-body text-fg-muted">
