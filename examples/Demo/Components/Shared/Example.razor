@@ -1,0 +1,34 @@
+@* One example on a page: a heading, an optional note, and the example in a framed box. *@
+
+<section class="flex flex-col gap-3" aria-labelledby="@HeadingId">
+    <h2 id="@HeadingId" class="text-title-sm text-fg">@Title</h2>
+    @if (Description is not null)
+    {
+        <p class="max-w-prose text-body-sm text-fg-muted">@Description</p>
+    }
+    <div class="rounded-xl bg-surface p-6 shadow-card">
+        @ChildContent
+    </div>
+</section>
+
+@code {
+    /// <summary>
+    /// The example's heading, such as "Minimal". It also names the section for screen readers.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = "";
+
+    /// <summary>
+    /// A sentence on what the example shows.
+    /// </summary>
+    [Parameter]
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// The example itself.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string HeadingId => "example-" + Title.ToLowerInvariant().Replace(' ', '-');
+}

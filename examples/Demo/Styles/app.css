@@ -1,0 +1,10 @@
+/*
+  Tailwind CSS input for the examples. Build it with `npm run css` in examples/Demo.
+  It uses the registry's theme directly, as an app's Styles/app.css would after vela init.
+*/
+@import "tailwindcss";
+@import "../../../src/Core/Styles/vela.css";
+
+/* Tailwind has to read class names from the component source, not the rendered HTML. */
+@source "../../../src/Core/Components";
+@source "../Components";

@@ -9,6 +9,9 @@
     <File Path="global.json" />
     <File Path="NuGet.config" />
   </Folder>
+  <Folder Name="/examples/">
+    <Project Path="examples/Demo/Vela.UI.Demo.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/Cli/Vela.UI.Cli.csproj" />
     <Project Path="src/Core/Vela.UI.Components.csproj" />

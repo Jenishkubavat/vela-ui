@@ -480,3 +480,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Built by Tailwind CSS from examples/Demo/Styles/app.css (npm run css).
+examples/Demo/wwwroot/app.css

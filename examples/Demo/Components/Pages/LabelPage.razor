@@ -1,0 +1,50 @@
+@page "/label"
+
+<PageTitle>Label · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Label</h1>
+        <p class="text-body text-fg-muted">
+            A native label. Point <code>For</code> at a control's <code>id</code>: clicking the label
+            then toggles or focuses the control, and screen readers use it as the control's name.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <div class="flex items-center gap-2">
+            <Checkbox id="terms" />
+            <Label For="terms">Accept the terms</Label>
+        </div>
+    </Example>
+
+    <Example Title="Realistic" Description="Notification settings: each switch is named by its label and described by the hint under it.">
+        <div class="flex max-w-md flex-col gap-4">
+            @foreach (var setting in Settings)
+            {
+                <div class="flex items-start justify-between gap-6">
+                    <div class="flex flex-col gap-1">
+                        <Label For="@setting.Id">@setting.Name</Label>
+                        <p id="@($"{setting.Id}-hint")" class="text-body-sm text-fg-muted">@setting.Hint</p>
+                    </div>
+                    <Switch id="@setting.Id" aria-describedby="@($"{setting.Id}-hint")" Disabled="setting.Disabled" />
+                </div>
+                @if (setting != Settings[^1])
+                {
+                    <Separator />
+                }
+            }
+        </div>
+    </Example>
+</div>
+
+@code {
+    private sealed record Setting(string Id, string Name, string Hint, bool Disabled = false);
+
+    private static readonly Setting[] Settings =
+    [
+        new("digest", "Weekly digest", "A summary of your projects every Monday morning."),
+        new("mentions", "Mentions", "An email when someone mentions you in a comment."),
+        new("security", "Security alerts", "Sign-ins from new devices. These can't be turned off.", Disabled: true),
+    ];
+}

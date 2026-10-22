@@ -1,0 +1,50 @@
+@page "/collapsible"
+@rendermode InteractiveServer
+
+<PageTitle>Collapsible · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Collapsible</h1>
+        <p class="text-body text-fg-muted">
+            A section that its trigger shows and hides. The trigger is a native button, so Enter and
+            Space work, and <code>aria-expanded</code> tells screen readers whether it's open.
+            Opening needs an interactive render mode.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <Collapsible Class="flex flex-col gap-2">
+            <CollapsibleTrigger Class="@Button.GetClasses(ButtonVariant.Outline, ButtonSize.Small, "w-fit")">
+                Show delivery details
+            </CollapsibleTrigger>
+            <CollapsibleContent Class="text-body-sm text-fg-muted">
+                Order 1042 ships on Monday and arrives in two to three working days.
+            </CollapsibleContent>
+        </Collapsible>
+    </Example>
+
+    <Example Title="Realistic" Description="A list that shows its first entry and hides the rest, with an icon-only trigger named by aria-label.">
+        <Collapsible @bind-Open="repositoriesOpen" Class="flex max-w-sm flex-col gap-2">
+            <div class="flex items-center justify-between gap-4 ps-3">
+                <span class="text-label text-fg">Ada starred 3 repositories</span>
+                <CollapsibleTrigger Class="@Button.GetClasses(ButtonVariant.Ghost, ButtonSize.IconSmall)" aria-label="Show all repositories">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m7 15 5 5 5-5M7 9l5-5 5 5" />
+                    </svg>
+                </CollapsibleTrigger>
+            </div>
+            <div class="rounded-md px-3 py-2 font-mono text-code shadow-hairline-strong">blazor/components</div>
+            <CollapsibleContent Class="flex flex-col gap-2">
+                <div class="rounded-md px-3 py-2 font-mono text-code shadow-hairline-strong">blazor/forms</div>
+                <div class="rounded-md px-3 py-2 font-mono text-code shadow-hairline-strong">blazor/routing</div>
+            </CollapsibleContent>
+            <p class="text-caption text-fg-faint">@(repositoriesOpen ? "Showing all 3." : "Showing 1 of 3.")</p>
+        </Collapsible>
+    </Example>
+</div>
+
+@code {
+    private bool repositoriesOpen;
+}
