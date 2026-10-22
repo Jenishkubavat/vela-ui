@@ -7,14 +7,13 @@ using static Microsoft.Playwright.Assertions;
 
 namespace Vela.UI.Browser.Tests;
 
-[Collection(ExamplesAppDefinition.Name)]
-public class RadioGroupTests(ExamplesApp app)
+public class RadioGroupTests(ExamplesApp app) : BrowserTest(app)
 {
     [Fact]
     public async Task RadioGroup_TabLandsOnTheCheckedItem()
     {
         // Arrange: the last link in the navigation comes right before the first group.
-        var page = await app.OpenAsync("radio-group");
+        var page = await OpenAsync("radio-group");
         await page.GetByRole(AriaRole.Link, new() { Name = "Radio Group" }).FocusAsync();
 
         // Act
@@ -28,7 +27,7 @@ public class RadioGroupTests(ExamplesApp app)
     public async Task RadioGroup_ArrowKeysMoveAndSelect()
     {
         // Arrange
-        var page = await app.OpenAsync("radio-group");
+        var page = await OpenAsync("radio-group");
         await page.Locator("#density-comfortable").FocusAsync();
 
         // Act
@@ -44,7 +43,7 @@ public class RadioGroupTests(ExamplesApp app)
     public async Task RadioGroup_ArrowKeysUpdateTheBoundValue()
     {
         // Arrange
-        var page = await app.OpenAsync("radio-group");
+        var page = await OpenAsync("radio-group");
         await page.Locator("#plan-team").FocusAsync();
 
         // Act

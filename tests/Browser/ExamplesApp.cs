@@ -19,7 +19,8 @@ public sealed class ExamplesApp : IAsyncLifetime, IDisposable
 
     /// <summary>
     /// Opens a page of the examples app in a fresh browser context and waits until it's
-    /// interactive, so key presses reach Blazor.
+    /// interactive, so key presses reach Blazor. The caller closes the context; tests get
+    /// that from <see cref="BrowserTest"/>.
     /// </summary>
     /// <param name="path">The page's path, such as <c>collapsible</c>.</param>
     public async Task<IPage> OpenAsync(string path)
