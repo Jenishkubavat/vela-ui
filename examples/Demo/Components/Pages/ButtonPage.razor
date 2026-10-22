@@ -1,0 +1,46 @@
+@page "/button"
+
+<PageTitle>Button · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Button</h1>
+        <p class="text-body text-fg-muted">
+            A native button. Only the default variant uses the flame, so keep one per view for the
+            main action.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <Button>Save</Button>
+    </Example>
+
+    <Example Title="Realistic" Description="An editor's toolbar: one primary action, quieter alternatives, a destructive action set apart, and a save in progress.">
+        <div class="flex flex-col gap-6">
+            <div class="flex flex-wrap items-center gap-2">
+                <Button>Publish</Button>
+                <Button Variant="ButtonVariant.Outline">Preview</Button>
+                <Button Variant="ButtonVariant.Ghost">Discard draft</Button>
+                <Button Variant="ButtonVariant.Destructive" Class="ms-auto">Delete</Button>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <Button Variant="ButtonVariant.Secondary" Disabled="true">
+                    <Spinner data-icon="inline-start" />
+                    Saving
+                </Button>
+                <Button Variant="ButtonVariant.Secondary">
+                    Search
+                    <Kbd>/</Kbd>
+                </Button>
+                <Button Variant="ButtonVariant.Outline" Size="ButtonSize.Icon" aria-label="Add a section">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                </Button>
+                <a href="card" class="@Button.GetClasses(ButtonVariant.Link)">See the card examples</a>
+            </div>
+        </div>
+    </Example>
+</div>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+    Example pages for each component: a minimal and a realistic use, side by side. The app
+    references the registry (src/Core) directly instead of copying it with vela add, so the
+    examples always show the current source. The browser tests run against it too.
+
+    Styles come from Tailwind CSS v4. Run `npm install` once in this folder, then
+    `npm run css` (or `npm run css:watch`). Without that step the pages still work,
+    unstyled.
+  -->
+
+  <PropertyGroup>
+    <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core\Vela.UI.Components.csproj" />
+  </ItemGroup>
+
+</Project>

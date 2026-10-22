@@ -1,0 +1,37 @@
+﻿@page "/"
+
+<PageTitle>Vela UI examples</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-6">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Vela UI examples</h1>
+        <p class="text-body text-fg-muted">
+            Each page shows a component twice: the least you need to use it, and a realistic
+            screen built with it.
+        </p>
+    </header>
+
+    <ItemGroup>
+        @foreach (var (href, name, description) in Pages)
+        {
+            <a href="@href" class="@Item.GetClasses(ItemVariant.Outline)" role="listitem">
+                <ItemContent>
+                    <ItemTitle>@name</ItemTitle>
+                    <ItemDescription>@description</ItemDescription>
+                </ItemContent>
+            </a>
+        }
+    </ItemGroup>
+</div>
+
+@code {
+    private static readonly (string Href, string Name, string Description)[] Pages =
+    [
+        ("button", "Button", "Variants and sizes, a loading state, and a link styled as a button."),
+        ("input", "Input", "A text field on its own, and a sign-up form with validation."),
+        ("label", "Label", "Labels for a checkbox and for switches in a settings list."),
+        ("card", "Card", "A plain card, and a form inside a card with actions."),
+        ("collapsible", "Collapsible", "A section that opens and closes, with Enter and Space."),
+        ("radio-group", "Radio Group", "Options moved through with the arrow keys, and a plan picker."),
+    ];
+}

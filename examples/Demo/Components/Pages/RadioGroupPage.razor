@@ -1,0 +1,67 @@
+@page "/radio-group"
+@rendermode InteractiveServer
+
+<PageTitle>Radio Group · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Radio Group</h1>
+        <p class="text-body text-fg-muted">
+            Native radio buttons that share a name. Tab moves into the group onto the selected
+            option, and the arrow keys move between options and select them.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <RadioGroup @bind-Value="density" aria-label="Density">
+            @foreach (var (value, name) in Densities)
+            {
+                <div class="flex items-center gap-2">
+                    <RadioGroupItem Value="@value" id="@($"density-{value}")" />
+                    <Label For="@($"density-{value}")">@name</Label>
+                </div>
+            }
+        </RadioGroup>
+    </Example>
+
+    <Example Title="Realistic" Description="A plan picker. Each option is a whole clickable card: a FieldLabel wrapping the item, its title, and its description.">
+        <div class="flex max-w-md flex-col gap-3">
+            <RadioGroup @bind-Value="plan" aria-label="Plan">
+                @foreach (var option in Plans)
+                {
+                    <FieldLabel for="@($"plan-{option.Value}")">
+                        <Field Orientation="FieldOrientation.Horizontal">
+                            <FieldContent>
+                                <FieldTitle>@option.Name</FieldTitle>
+                                <FieldDescription>@option.Description</FieldDescription>
+                            </FieldContent>
+                            <RadioGroupItem Value="@option.Value" id="@($"plan-{option.Value}")" />
+                        </Field>
+                    </FieldLabel>
+                }
+            </RadioGroup>
+            <p role="status" class="text-body-sm text-fg-muted">Selected plan: @plan</p>
+        </div>
+    </Example>
+</div>
+
+@code {
+    private sealed record Plan(string Value, string Name, string Description);
+
+    private static readonly (string Value, string Name)[] Densities =
+    [
+        ("default", "Default"),
+        ("comfortable", "Comfortable"),
+        ("compact", "Compact"),
+    ];
+
+    private static readonly Plan[] Plans =
+    [
+        new("starter", "Starter", "For one person. Up to 3 projects."),
+        new("team", "Team", "For small teams. Unlimited projects and shared reviews."),
+        new("enterprise", "Enterprise", "Single sign-on, audit logs, and a support contract."),
+    ];
+
+    private string? density = "comfortable";
+    private string? plan = "team";
+}

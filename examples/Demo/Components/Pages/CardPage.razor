@@ -1,0 +1,66 @@
+@page "/card"
+
+<PageTitle>Card · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Card</h1>
+        <p class="text-body text-fg-muted">
+            A raised surface with optional header, content, and footer parts. Titles render a
+            <code>div</code>; add <code>role="heading"</code> and <code>aria-level</code> where a
+            card title should be a heading.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <Card Class="max-w-sm">
+            <CardHeader>
+                <CardTitle>Storage</CardTitle>
+                <CardDescription>4.2 GB of 10 GB used.</CardDescription>
+            </CardHeader>
+            <CardContent>Old exports are removed after 30 days.</CardContent>
+        </Card>
+    </Example>
+
+    <Example Title="Realistic" Description="A form for a new project, with a status badge in the header and its actions in the footer.">
+        <Card Class="max-w-md">
+            <CardHeader>
+                <CardTitle role="heading" aria-level="3">Create project</CardTitle>
+                <CardDescription>Set up a new project for your team.</CardDescription>
+                <CardAction>
+                    <Badge Variant="BadgeVariant.Outline">Draft</Badge>
+                </CardAction>
+            </CardHeader>
+            <CardContent>
+                <div class="flex flex-col gap-4">
+                    <Field>
+                        <FieldLabel for="project-name">Name</FieldLabel>
+                        <Input id="project-name" placeholder="Name of your project" @bind-Value="projectName" />
+                    </Field>
+                    <Field>
+                        <FieldLabel for="project-description">Description</FieldLabel>
+                        <Textarea id="project-description" placeholder="What is it for?" @bind-Value="projectDescription" />
+                    </Field>
+                </div>
+            </CardContent>
+            <CardFooter Class="justify-between">
+                <Button Variant="ButtonVariant.Outline">Cancel</Button>
+                <Button>Create</Button>
+            </CardFooter>
+        </Card>
+    </Example>
+
+    <Example Title="Small" Description="The small size tightens the spacing for dense layouts, such as a dashboard sidebar.">
+        <Card Size="CardSize.Small" Class="max-w-xs">
+            <CardHeader>
+                <CardTitle>Builds this week</CardTitle>
+                <CardDescription>12 passed, 1 failed.</CardDescription>
+            </CardHeader>
+        </Card>
+    </Example>
+</div>
+
+@code {
+    private string? projectName;
+    private string? projectDescription;
+}

@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+
+<div class="grid min-h-dvh md:grid-cols-[13rem_1fr]">
+    <nav aria-label="Examples" class="flex flex-col gap-4 border-b p-4 md:border-e md:border-b-0">
+        <a href="" class="px-2 text-title-sm text-fg no-underline">Vela UI examples</a>
+        <ul class="flex flex-wrap gap-1 md:flex-col">
+            @foreach (var (href, name) in Pages)
+            {
+                <li>
+                    <NavLink href="@href" class="@LinkClasses">@name</NavLink>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <main class="min-w-0 p-6 md:p-10">
+        @Body
+    </main>
+</div>
+
+@code {
+    private const string LinkClasses =
+        "block rounded-md px-2 py-1 text-body-sm text-fg-muted no-underline hover:bg-hover hover:text-fg " +
+        "[&.active]:bg-hover [&.active]:text-fg";
+
+    private static readonly (string Href, string Name)[] Pages =
+    [
+        ("button", "Button"),
+        ("input", "Input"),
+        ("label", "Label"),
+        ("card", "Card"),
+        ("collapsible", "Collapsible"),
+        ("radio-group", "Radio Group"),
+    ];
+}

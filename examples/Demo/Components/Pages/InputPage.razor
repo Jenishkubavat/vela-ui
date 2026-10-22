@@ -1,0 +1,75 @@
+@page "/input"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>Input · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Input</h1>
+        <p class="text-body text-fg-muted">
+            A text field built on Blazor's InputBase, so it binds with <code>@@bind-Value</code> and
+            shows validation errors from an EditForm.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <div class="flex max-w-sm flex-col gap-2">
+            <Label For="minimal-email">Email</Label>
+            <Input id="minimal-email" type="email" placeholder="ada@example.com" @bind-Value="minimalEmail" />
+        </div>
+    </Example>
+
+    <Example Title="Realistic" Description="A sign-up form. Submit it empty to see the errors; each field points to its error with aria-describedby.">
+        <EditForm Model="signUp" OnValidSubmit="CreateAccount" class="flex max-w-sm flex-col gap-5">
+            <DataAnnotationsValidator />
+
+            <Field>
+                <FieldLabel for="name">Name</FieldLabel>
+                <Input id="name" autocomplete="name" @bind-Value="signUp.Name" />
+            </Field>
+
+            <Field>
+                <FieldLabel for="email">Work email</FieldLabel>
+                <Input id="email" type="email" autocomplete="email" aria-describedby="email-error" @bind-Value="signUp.Email" />
+                <FieldError id="email-error" For="() => signUp.Email" />
+            </Field>
+
+            <Field>
+                <FieldLabel for="password">Password</FieldLabel>
+                <Input id="password" type="password" autocomplete="new-password"
+                       aria-describedby="password-hint password-error" @bind-Value="signUp.Password" />
+                <FieldDescription id="password-hint">At least 8 characters.</FieldDescription>
+                <FieldError id="password-error" For="() => signUp.Password" />
+            </Field>
+
+            <Button Type="submit" Class="w-fit">Create account</Button>
+
+            @if (createdFor is not null)
+            {
+                <p role="status" class="text-body-sm text-fg-muted">Account created for @createdFor.</p>
+            }
+        </EditForm>
+    </Example>
+</div>
+
+@code {
+    private readonly SignUp signUp = new();
+    private string? minimalEmail;
+    private string? createdFor;
+
+    private void CreateAccount() => createdFor = signUp.Email;
+
+    private sealed class SignUp
+    {
+        public string? Name { get; set; }
+
+        [Required(ErrorMessage = "Enter your work email.")]
+        [EmailAddress(ErrorMessage = "Enter an email address like ada@example.com.")]
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "Choose a password.")]
+        [MinLength(8, ErrorMessage = "Use at least 8 characters.")]
+        public string? Password { get; set; }
+    }
+}
