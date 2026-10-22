@@ -7,14 +7,13 @@ using static Microsoft.Playwright.Assertions;
 
 namespace Vela.UI.Browser.Tests;
 
-[Collection(ExamplesAppDefinition.Name)]
-public class CollapsibleTests(ExamplesApp app)
+public class CollapsibleTests(ExamplesApp app) : BrowserTest(app)
 {
     [Fact]
     public async Task Collapsible_EnterOpensIt()
     {
         // Arrange
-        var page = await app.OpenAsync("collapsible");
+        var page = await OpenAsync("collapsible");
         var trigger = page.GetByRole(AriaRole.Button, new() { Name = "Show all repositories" });
         await trigger.FocusAsync();
 
@@ -31,7 +30,7 @@ public class CollapsibleTests(ExamplesApp app)
     public async Task Collapsible_SpaceClosesIt()
     {
         // Arrange
-        var page = await app.OpenAsync("collapsible");
+        var page = await OpenAsync("collapsible");
         var trigger = page.GetByRole(AriaRole.Button, new() { Name = "Show all repositories" });
         await trigger.FocusAsync();
         await page.Keyboard.PressAsync("Enter");
@@ -50,7 +49,7 @@ public class CollapsibleTests(ExamplesApp app)
     public async Task Collapsible_TriggerPointsToTheContent()
     {
         // Arrange
-        var page = await app.OpenAsync("collapsible");
+        var page = await OpenAsync("collapsible");
         var trigger = page.GetByRole(AriaRole.Button, new() { Name = "Show all repositories" });
 
         // Act
