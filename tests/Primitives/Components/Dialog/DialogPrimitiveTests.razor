@@ -1,0 +1,198 @@
+@inherits BunitContext
+@code
+{
+    private const string ModulePath = "./_content/Vela.UI.Primitives/dialog.js";
+
+    private BunitJSModuleInterop module = default!;
+
+    public DialogPrimitiveTests()
+    {
+        // The dialog only talks to the browser once the page is interactive.
+        SetRendererInfo(new RendererInfo("Server", isInteractive: true));
+        module = JSInterop.SetupModule(ModulePath);
+        module.SetupVoid("show", _ => true);
+        module.SetupVoid("close", _ => true);
+    }
+
+    private static RenderFragment Parts(bool withDescription = true) =>
+        @<text>
+            <DialogPrimitiveTrigger>Archive</DialogPrimitiveTrigger>
+            <DialogPrimitiveContent>
+                <DialogPrimitiveTitle>Archive 3 projects?</DialogPrimitiveTitle>
+                @if (withDescription)
+                {
+                    <DialogPrimitiveDescription>You can restore them from Settings.</DialogPrimitiveDescription>
+                }
+                <button id="inside">Inside</button>
+                <DialogPrimitiveClose>Cancel</DialogPrimitiveClose>
+            </DialogPrimitiveContent>
+        </text>;
+
+    [Fact]
+    public void DialogPrimitive_StartsClosedAndWired()
+    {
+        // Arrange && Act
+        var cut = Render(@<DialogPrimitive>@Parts()</DialogPrimitive>);
+
+        // Assert
+        var trigger = cut.Find("button");
+        var dialog = cut.Find("dialog");
+        Assert.Equal("dialog", trigger.GetAttribute("aria-haspopup"));
+        Assert.Equal("false", trigger.GetAttribute("aria-expanded"));
+        Assert.Equal(dialog.Id, trigger.GetAttribute("aria-controls"));
+        Assert.Equal("closed", dialog.GetAttribute("data-state"));
+        Assert.Equal(cut.Find("h2").Id, dialog.GetAttribute("aria-labelledby"));
+        Assert.Equal(cut.Find("p").Id, dialog.GetAttribute("aria-describedby"));
+        Assert.False(dialog.HasAttribute("open"));
+        Assert.Empty(cut.FindAll("[class]"));
+        Assert.Empty(module.Invocations);
+    }
+
+    [Fact]
+    public void DialogPrimitive_TriggerOpensIt()
+    {
+        // Arrange
+        var cut = Render(@<DialogPrimitive>@Parts()</DialogPrimitive>);
+
+        // Act
+        cut.Find("button").Click();
+
+        // Assert
+        Assert.Equal("open", cut.Find("dialog").GetAttribute("data-state"));
+        Assert.Equal("true", cut.Find("button").GetAttribute("aria-expanded"));
+        module.VerifyInvoke("show", calledTimes: 1);
+    }
+
+    [Fact]
+    public void DialogPrimitive_CloseClosesIt()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(@<DialogPrimitive @bind-Open="open">@Parts()</DialogPrimitive>);
+
+        // Act
+        cut.FindAll("button").Single(button => button.TextContent == "Cancel").Click();
+
+        // Assert
+        Assert.False(open);
+        Assert.Equal("closed", cut.Find("dialog").GetAttribute("data-state"));
+        module.VerifyInvoke("show", calledTimes: 1);
+        module.VerifyInvoke("close", calledTimes: 1);
+    }
+
+    [Fact]
+    public void DialogPrimitive_BrowserCloseUpdatesTheState()
+    {
+        // Arrange: Escape closes the dialog in the browser, which then fires close.
+        var open = true;
+        var cut = Render(@<DialogPrimitive @bind-Open="open">@Parts()</DialogPrimitive>);
+
+        // Act
+        cut.Find("dialog").TriggerEvent("onclose", EventArgs.Empty);
+
+        // Assert: the browser already closed it, so Blazor doesn't ask again.
+        Assert.False(open);
+        Assert.Equal("closed", cut.Find("dialog").GetAttribute("data-state"));
+        module.VerifyNotInvoke("close");
+    }
+
+    [Fact]
+    public void DialogPrimitive_ParentCanReopenItAfterTheBrowserClosedIt()
+    {
+        // Arrange
+        var cut = Render<DialogPrimitive>(parameters => parameters
+            .Add(p => p.Open, true)
+            .Add(p => p.ChildContent, Parts()));
+        cut.Find("dialog").TriggerEvent("onclose", EventArgs.Empty);
+
+        // Act
+        cut.Render(parameters => parameters.Add(p => p.Open, true));
+
+        // Assert
+        Assert.Equal("open", cut.Find("dialog").GetAttribute("data-state"));
+        module.VerifyInvoke("show", calledTimes: 2);
+    }
+
+    [Fact]
+    public void DialogPrimitive_PointerDownOnTheBackdropClosesIt()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(@<DialogPrimitive @bind-Open="open">@Parts()</DialogPrimitive>);
+
+        // Act
+        cut.Find("dialog").PointerDown();
+
+        // Assert
+        Assert.False(open);
+    }
+
+    [Fact]
+    public void DialogPrimitiveContent_CloseOnPointerDownOutsideCanBeTurnedOff()
+    {
+        // Arrange
+        var open = true;
+        var cut = Render(
+            @<DialogPrimitive @bind-Open="open">
+                <DialogPrimitiveContent CloseOnPointerDownOutside="false">
+                    <DialogPrimitiveTitle>Delete the workspace?</DialogPrimitiveTitle>
+                </DialogPrimitiveContent>
+            </DialogPrimitive>);
+
+        // Act
+        cut.Find("dialog").PointerDown();
+
+        // Assert
+        Assert.True(open);
+    }
+
+    [Fact]
+    public void DialogPrimitive_NoDescriptionMeansNoDescribedBy()
+    {
+        // Arrange && Act
+        var cut = Render(@<DialogPrimitive>@Parts(withDescription: false)</DialogPrimitive>);
+
+        // Assert
+        Assert.False(cut.Find("dialog").HasAttribute("aria-describedby"));
+    }
+
+    [Fact]
+    public void DialogPrimitive_PassesAttributesThrough()
+    {
+        // Arrange && Act
+        var cut = Render(
+            @<DialogPrimitive>
+                <DialogPrimitiveTrigger class="trigger">Open</DialogPrimitiveTrigger>
+                <DialogPrimitiveContent class="panel" id="mine">
+                    <DialogPrimitiveTitle class="title">Title</DialogPrimitiveTitle>
+                </DialogPrimitiveContent>
+            </DialogPrimitive>);
+
+        // Assert: the generated id wins, so the trigger keeps pointing at the dialog.
+        var dialog = cut.Find("dialog");
+        Assert.Equal("panel", dialog.GetAttribute("class"));
+        Assert.NotEqual("mine", dialog.Id);
+        Assert.Equal("trigger", cut.Find("button").GetAttribute("class"));
+        Assert.Equal("title", cut.Find("h2").GetAttribute("class"));
+    }
+
+    [Fact]
+    public void DialogPrimitive_StaticRenderingNeverCallsTheBrowser()
+    {
+        // Arrange
+        SetRendererInfo(new RendererInfo("Static", isInteractive: false));
+
+        // Act
+        Render(@<DialogPrimitive Open="true">@Parts()</DialogPrimitive>);
+
+        // Assert
+        Assert.Empty(module.Invocations);
+    }
+
+    [Fact]
+    public void DialogPrimitiveContent_OutsideARootThrows()
+    {
+        // Act && Assert
+        Assert.Throws<InvalidOperationException>(() => Render(@<DialogPrimitiveContent>Body</DialogPrimitiveContent>));
+    }
+}

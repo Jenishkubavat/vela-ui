@@ -1,0 +1,11 @@
+@namespace Vela.UI.Primitives
+
+<button type="button"
+        @attributes="AdditionalAttributes"
+        aria-haspopup="dialog"
+        aria-expanded="@(Root.Open ? "true" : "false")"
+        aria-controls="@Root.ContentId"
+        data-state="@Root.State"
+        @onclick="() => Root.SetOpenAsync(true)">
+    @ChildContent
+</button>
