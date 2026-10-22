@@ -10,7 +10,7 @@ namespace Vela.UI.Primitives;
 /// The dialog's title, an <c>&lt;h2&gt;</c> that gives the dialog its accessible name.
 /// Every dialog needs one. Phrase it as the question or the task: "Archive 3 projects?".
 /// </summary>
-public partial class DialogPrimitiveTitle
+public sealed partial class DialogPrimitiveTitle
 {
     [CascadingParameter]
     private DialogPrimitive? CascadedRoot { get; set; }

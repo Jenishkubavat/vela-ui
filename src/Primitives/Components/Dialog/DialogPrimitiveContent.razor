@@ -7,10 +7,6 @@
         aria-labelledby="@Root.TitleId"
         aria-describedby="@(Root.HasDescription ? Root.DescriptionId : null)"
         data-state="@Root.State"
-        @onclose="OnCloseAsync"
-        @onpointerdown="OnPointerDownOutsideAsync">
-    @* A press inside the content stops here, so one that reaches the <dialog> came from its backdrop. *@
-    <div style="display: contents" @onpointerdown:stopPropagation="true">
-        @ChildContent
-    </div>
+        @onclose="OnCloseAsync">
+    @ChildContent
 </dialog>

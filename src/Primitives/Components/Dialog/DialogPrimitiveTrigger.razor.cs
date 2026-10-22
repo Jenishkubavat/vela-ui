@@ -10,7 +10,7 @@ namespace Vela.UI.Primitives;
 /// The native <c>&lt;button&gt;</c> that opens a <see cref="DialogPrimitive"/>. Focus
 /// returns to it when the dialog closes.
 /// </summary>
-public partial class DialogPrimitiveTrigger
+public sealed partial class DialogPrimitiveTrigger
 {
     [CascadingParameter]
     private DialogPrimitive? CascadedRoot { get; set; }

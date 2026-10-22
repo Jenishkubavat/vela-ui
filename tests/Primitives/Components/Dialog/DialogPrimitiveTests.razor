@@ -23,7 +23,6 @@
                 {
                     <DialogPrimitiveDescription>You can restore them from Settings.</DialogPrimitiveDescription>
                 }
-                <button id="inside">Inside</button>
                 <DialogPrimitiveClose>Cancel</DialogPrimitiveClose>
             </DialogPrimitiveContent>
         </text>;
@@ -114,36 +113,30 @@
     }
 
     [Fact]
-    public void DialogPrimitive_PointerDownOnTheBackdropClosesIt()
+    public void DialogPrimitiveContent_ClosesOnOutsideClicksByDefault()
     {
-        // Arrange
-        var open = true;
-        var cut = Render(@<DialogPrimitive @bind-Open="open">@Parts()</DialogPrimitive>);
-
-        // Act
-        cut.Find("dialog").PointerDown();
+        // Arrange && Act: the script handles outside clicks, so it's told whether to.
+        Render(@<DialogPrimitive Open="true">@Parts()</DialogPrimitive>);
 
         // Assert
-        Assert.False(open);
+        var show = module.VerifyInvoke("show");
+        Assert.Equal(true, show.Arguments[1]);
     }
 
     [Fact]
-    public void DialogPrimitiveContent_CloseOnPointerDownOutsideCanBeTurnedOff()
+    public void DialogPrimitiveContent_CloseOnClickOutsideCanBeTurnedOff()
     {
-        // Arrange
-        var open = true;
-        var cut = Render(
-            @<DialogPrimitive @bind-Open="open">
-                <DialogPrimitiveContent CloseOnPointerDownOutside="false">
+        // Arrange && Act
+        Render(
+            @<DialogPrimitive Open="true">
+                <DialogPrimitiveContent CloseOnClickOutside="false">
                     <DialogPrimitiveTitle>Delete the workspace?</DialogPrimitiveTitle>
                 </DialogPrimitiveContent>
             </DialogPrimitive>);
 
-        // Act
-        cut.Find("dialog").PointerDown();
-
         // Assert
-        Assert.True(open);
+        var show = module.VerifyInvoke("show");
+        Assert.Equal(false, show.Arguments[1]);
     }
 
     [Fact]

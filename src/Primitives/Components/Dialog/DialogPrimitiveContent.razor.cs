@@ -14,10 +14,10 @@ namespace Vela.UI.Primitives;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Pressing Escape or pressing the pointer down on the backdrop closes it. A press that
-/// starts inside the dialog never does, even if it ends outside (for example when selecting
-/// text). Presses on the <c>&lt;dialog&gt;</c> element's own padding count as outside, so
-/// give it no padding and pad your content instead; browsers give it padding by default.
+/// Escape closes it, and so does a click on the backdrop: one that both starts and ends
+/// outside the dialog's box, so selecting text and dragging out doesn't close it, and the
+/// click never reaches the page underneath. Clicks on the dialog's padding or scrollbar
+/// count as inside.
 /// </para>
 /// <para>
 /// When it opens, the browser moves focus to the first element marked <c>autofocus</c>, or
@@ -42,11 +42,11 @@ public sealed partial class DialogPrimitiveContent
     private IJSRuntime JS { get; set; } = default!;
 
     /// <summary>
-    /// Closes the dialog when the pointer is pressed on its backdrop. Defaults to
-    /// <see langword="true"/>; an alert dialog that needs an answer turns it off.
+    /// Closes the dialog when its backdrop is clicked. Defaults to <see langword="true"/>;
+    /// an alert dialog that needs an answer turns it off. Read when the dialog opens.
     /// </summary>
     [Parameter]
-    public bool CloseOnPointerDownOutside { get; set; } = true;
+    public bool CloseOnClickOutside { get; set; } = true;
 
     /// <summary>
     /// The dialog's content: a title, an optional description, the body, and its actions.
@@ -78,23 +78,22 @@ public sealed partial class DialogPrimitiveContent
 
         _module ??= await JS.InvokeAsync<IJSObjectReference>("import", ModulePath);
         _shown = Root.Open;
-        await _module.InvokeVoidAsync(Root.Open ? "show" : "close", _dialog);
+        if (Root.Open)
+        {
+            await _module.InvokeVoidAsync("show", _dialog, CloseOnClickOutside);
+        }
+        else
+        {
+            await _module.InvokeVoidAsync("close", _dialog);
+        }
     }
 
-    // Escape closes the dialog in the browser before Blazor hears of it, so the browser's
-    // close event is what sets the state.
+    // Escape and outside clicks close the dialog in the browser before Blazor hears of it,
+    // so the browser's close event is what sets the state.
     private async Task OnCloseAsync()
     {
         _shown = false;
         await Root.SetOpenAsync(false);
-    }
-
-    private async Task OnPointerDownOutsideAsync()
-    {
-        if (CloseOnPointerDownOutside)
-        {
-            await Root.SetOpenAsync(false);
-        }
     }
 
     /// <inheritdoc />

@@ -26,7 +26,7 @@ namespace Vela.UI.Primitives;
 /// scrolling: add <c>html:has(dialog[open]:modal) { overflow: hidden; }</c> to your CSS.
 /// </para>
 /// </remarks>
-public partial class DialogPrimitive
+public sealed partial class DialogPrimitive
 {
     private readonly string _id = $"dialog-{Guid.NewGuid():N}";
 

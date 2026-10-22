@@ -10,7 +10,7 @@ namespace Vela.UI.Primitives;
 /// A native <c>&lt;button&gt;</c> that closes its <see cref="DialogPrimitive"/>, such as
 /// Cancel or an icon-only close button (give that one an <c>aria-label</c>).
 /// </summary>
-public partial class DialogPrimitiveClose
+public sealed partial class DialogPrimitiveClose
 {
     [CascadingParameter]
     private DialogPrimitive? CascadedRoot { get; set; }
