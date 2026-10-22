@@ -13,6 +13,12 @@ updates:
           - Microsoft.NET.Test.Sdk
           - xunit*
 
+  # Tailwind CSS for the examples app.
+  - package-ecosystem: npm
+    directory: /examples/Demo
+    schedule:
+      interval: weekly
+
   - package-ecosystem: github-actions
     directory: /
     schedule:
