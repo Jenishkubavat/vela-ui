@@ -1,110 +1,344 @@
 # Vela UI
 
-Vela UI is a component library for Blazor that you install as source code.
-Instead of referencing a package of sealed components, you run the `vela`
-CLI to copy a component's Razor and C# files into your own project. After
-that, the code is yours. You can read it, restyle it, and change its
-behavior without waiting on a release or working around an API.
+Vela UI is a component library for Blazor that you install as source code. Instead of referencing a package of sealed components, you run the `vela` CLI to copy component source directly into your application. Once installed, the code belongs to you: you can read it, restyle it, and change its behavior without waiting on a release or working around an API.
 
-The idea comes from [shadcn/ui](https://ui.shadcn.com/). This is an
-independent Blazor implementation, not a port.
+The idea comes from [shadcn/ui](https://ui.shadcn.com/). This is an independent Blazor implementation, not a port.
 
-## Two ways to use it
+## Two Ways to Use It
 
 You can pick either layer, or mix them:
 
-- **Styled components.** `vela add dialog` copies a ready-to-use component,
-  styled with Tailwind CSS and the theme tokens in `vela.css`. This is the
-  shadcn/ui experience.
-- **Headless primitives.** The `Vela.UI.Primitives` NuGet package provides
-  the behavior alone: focus management, keyboard navigation, ARIA, and
-  open/close state. It renders no CSS classes, so you style it however you
-  like, with or without Tailwind. This is the Radix experience.
+- **Styled components.** `vela add button card` copies ready-to-use components, styled with Tailwind CSS v4 and the theme tokens in `vela.css`. This is the shadcn/ui experience.
+- **Headless primitives.** The `Vela.UI.Primitives` NuGet package provides behavior alone: focus management, keyboard navigation, ARIA, and open/close state. It renders no CSS classes, so you can style it with or without Tailwind CSS. This is the Radix experience.
 
-The styled components are built on the primitives, so both behave the
-same way. Every component that Radix provides a primitive for has one here
-too, named like shadcn names Radix's (`LabelPrimitive` under the styled
-`Label`). Components with no behaviour of their own, such as Button and
-Card, exist only in the styled layer.
+Styled components are built on the primitives, so both behave the same way. Every component that Radix provides a primitive for has one here too (such as `LabelPrimitive` under styled `Label`). Components with no separate behavioral state (such as `Button`, `Card`, and `Badge`) exist directly in the styled layer.
 
-## The look
+## The Look
 
-The styled components use the Vela design system: one flame on a neutral
-scale. A twelve-step warm-graphite scale carries the surfaces, hairlines,
-and text, and a single orange flame is budgeted to the primary action
-(`Button` with the default variant), keyboard focus, and progress. Night
-(dark) is the default theme; add `data-theme="light"` to `<html>` for Day.
-Text uses Host Grotesk at two weights, and key caps and figures use Spline
-Sans Mono, both bundled.
-
-The component APIs follow shadcn/ui, so the variant, size, and part names
-will be familiar. Only the styling is Vela's.
-
-An optional motion layer, `vela-light.js`, adds a focus ring that travels
-between controls, the ember flare when someone finishes something
-(`data-ember`), and figures that roll in place when they change
-(`data-roll`). Without it, every state still shows. The headless primitives
-are not styled by any of this.
+The styled components use the Vela design system: one flame on a neutral scale.
+- **Graphite scale:** A twelve-step warm-graphite scale carries all surfaces, hairlines, and text.
+- **Budgeted flame:** A single orange flame (`#ff9d3d`) is reserved for the primary action (`Button` with default variant), keyboard focus rings, and progress indicators. Secondary actions, active states, and checked toggles use neutral tones so the primary action stands out.
+- **Hairlines and rings:** Surfaces and controls use subtle box-shadow rings (`shadow-control`, `shadow-hairline`) rather than borders.
+- **Typography:** Bundled Latin subsets of [Host Grotesk](https://github.com/Element-Type/HostGrotesk) for interface text and [Spline Sans Mono](https://github.com/SorkinType/SplineSansMono) for figures, keys, and code.
+- **Themes:** Night (dark mode) is the default. Add `data-theme="light"` to `<html>` for Day.
+- **Optional motion layer:** Including `vela-light.js` adds a focus ring that travels between controls, rolling figures (`data-roll`), and ember flares upon action completion (`data-ember`). If omitted, all controls remain fully functional with standard CSS focus outlines.
 
 ## Status
 
-Vela UI is in early development and isn't published yet. The `vela` CLI
-can set up a Blazor project and copy any of the thirty-three components in
-the registry (`src/Core`) into it, but neither the CLI nor the
-`Vela.UI.Primitives` package is on NuGet yet. Until they are, run the CLI
-from a clone of this repository, and replace the package reference that
-`vela add` adds with a project reference to `src/Primitives`.
+Vela UI is in early development (version 0.1.0) and is not published to NuGet yet. The `vela` CLI can set up a Blazor project and copy components from the registry (`src/Core`) into it.
 
-Dialog, Dropdown Menu, and Select come next, once keyboard and focus
-behavior can be tested in a real browser.
+Because `Vela.UI.Primitives` is not yet on nuget.org, components that depend on primitives add a package reference that cannot be restored from public feeds alone. Until packages are published:
+- Run the CLI from a clone of this repository.
+- Either pack `Vela.UI.Primitives` locally and register the local folder in your `NuGet.config`, or replace the `<PackageReference Include="Vela.UI.Primitives" ... />` that `vela add` adds with a `<ProjectReference Include=".../src/Primitives/Vela.UI.Primitives.csproj" />`.
+
+Dialog, Dropdown Menu, and Select come next, once keyboard and focus behavior can be tested in a real browser.
 
 ## Using the CLI
 
-Run it in your Blazor project's folder (.NET 10 or later):
+Run it in your Blazor project folder (.NET 10 or later):
 
 ```bash
 dotnet run --project path/to/vela-ui/src/Cli -- init
 dotnet run --project path/to/vela-ui/src/Cli -- add button card
 ```
 
-`vela init` writes `vela.json`, the theme (`Styles/vela.css`), a Tailwind
-input file (`Styles/app.css`), the fonts, `vela-light.js`, and
-`ClassNames.cs`. It then prints the remaining steps: building the CSS with
-Tailwind CSS v4, linking it in `App.razor`, and adding a `@using` for the
-components' namespace.
+`vela init` writes `vela.json`, the theme (`Styles/vela.css`), a Tailwind input file (`Styles/app.css`), the fonts, `vela-light.js`, and `ClassNames.cs`. It then prints the remaining steps: building the CSS with Tailwind CSS v4, linking it in `App.razor`, and adding a `@using` for the components' namespace.
 
-`vela add` copies each component's folder into `Components/Ui/`, in your
-project's namespace, along with the components it uses. It never replaces
-a file you've changed without being asked: if a file differs, it stops and
-lists it. `--overwrite` replaces it and keeps the old version in
-`.vela/backups/`. Components built on a primitive also add a reference to
-the `Vela.UI.Primitives` package. Paths and the namespace can be changed in
-`vela.json` before adding components.
+`vela add` copies each component's folder into `Components/Ui/`, in your project's namespace, along with the components it uses. It never replaces a file you have changed without being asked: if a file differs, it stops and lists it. `--overwrite` replaces it and keeps the old version in `.vela/backups/`. Components built on a primitive also add a reference to the `Vela.UI.Primitives` package. Paths and the namespace can be changed in `vela.json` before adding components.
 
-## Building from source
+## Quickstart
 
-You need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
+### Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later.
+- [Node.js](https://nodejs.org/) (version 20 or later) to run the Tailwind CSS v4 CLI.
+
+### 1. Initialize your Blazor project
+
+In your Blazor project folder (where your `.csproj` lives):
 
 ```bash
+dotnet run --project path/to/vela-ui/src/Cli -- init
+```
+
+### 2. Build Tailwind CSS v4
+
+Install Tailwind CSS v4 and the CLI tool in your project folder, then start the watcher:
+
+```bash
+npm install tailwindcss @tailwindcss/cli
+npx @tailwindcss/cli -i Styles/app.css -o wwwroot/tailwind.css --watch
+```
+
+Keep this process running in a terminal while developing.
+
+### 3. Wire your layout and imports
+
+In `Components/App.razor`, add the compiled stylesheet to `<head>` and optionally include `vela-light.js` before `</body>`:
+
+```html
+<head>
+    <!-- ... other tags ... -->
+    <link rel="stylesheet" href="tailwind.css" />
+</head>
+<body>
+    <!-- ... routes ... -->
+    <script src="vela-light.js"></script>
+</body>
+```
+
+In `Components/_Imports.razor`, import the generated UI namespace (replace `MyApp` with your project's root namespace):
+
+```razor
+@using MyApp.Components.Ui
+```
+
+### 4. Add components
+
+Copy the components you need into your project:
+
+```bash
+dotnet run --project path/to/vela-ui/src/Cli -- add button card input field
+```
+
+> **Note on package restore:** Adding components built on primitives (such as `field`, `label`, `checkbox`, or `switch`) adds a package reference to `Vela.UI.Primitives 0.1.0`. Until published to NuGet, build the package locally:
+> ```bash
+> dotnet pack path/to/vela-ui/src/Primitives -o ./packages
+> ```
+> and add `<add key="local" value="./packages" />` under `<packageSources>` in your `NuGet.config`.
+
+### 5. Use components in your Razor pages
+
+```razor
+@page "/profile"
+
+<Card Class="max-w-md">
+    <CardHeader>
+        <CardTitle>Profile Settings</CardTitle>
+        <CardDescription>Manage how your account appears to teammates.</CardDescription>
+    </CardHeader>
+
+    <CardContent Class="space-y-4">
+        <Field>
+            <FieldLabel for="username">Display Name</FieldLabel>
+            <Input id="username" @bind-Value="model.DisplayName" placeholder="e.g. Alex Chen" />
+            <FieldDescription>Visible on your team dashboard and comments.</FieldDescription>
+        </Field>
+
+        <Field>
+            <FieldLabel for="email">Work Email</FieldLabel>
+            <Input id="email" type="email" @bind-Value="model.Email" />
+        </Field>
+
+        <div class="flex items-center space-x-2 pt-2">
+            <Checkbox id="notifications" @bind-Value="model.EmailNotifications" />
+            <Label For="notifications">Receive weekly digest</Label>
+        </div>
+    </CardContent>
+
+    <CardFooter Class="flex justify-end space-x-2">
+        <Button Variant="ButtonVariant.Outline" OnClick="Cancel">Cancel</Button>
+        <Button Variant="ButtonVariant.Default" OnClick="SaveProfile">Save Changes</Button>
+    </CardFooter>
+</Card>
+
+@code {
+    private ProfileModel model = new();
+
+    private void SaveProfile()
+    {
+    }
+
+    private void Cancel()
+    {
+    }
+
+    private class ProfileModel
+    {
+        public string? DisplayName { get; set; }
+        public string? Email { get; set; }
+        public bool EmailNotifications { get; set; } = true;
+    }
+}
+```
+
+## Component Registry
+
+Components available in the registry:
+
+### Actions and Controls
+
+| Component | Description |
+| --- | --- |
+| `button` | Native `<button>` with 6 variants (`Default`, `Destructive`, `Outline`, `Secondary`, `Ghost`, `Link`) and 8 sizes. `Button.GetClasses()` styles navigation links. Only `Default` uses the flame. |
+| `button-group` | Groups connected buttons horizontally or vertically with coordinated borders and rounding. |
+| `toggle` | Two-state pressable button built on `TogglePrimitive`, supporting `@bind-Pressed`. |
+
+### Form and Input Controls
+
+| Component | Description |
+| --- | --- |
+| `input` | Sunken single-line text input inheriting `InputBase<string?>`. Works with `@bind-Value`, `EditForm` validation, and static SSR form posts. `Input.GetClasses()` styles `InputNumber`, `InputDate`, and `InputFile`. |
+| `textarea` | Multi-line text field inheriting `InputBase<string?>` with proportional vertical sizing. |
+| `native-select` | Styled native HTML `<select>` supporting option groups, single selections, and static SSR forms. |
+| `checkbox` | Sunken square checkbox built on `CheckboxPrimitive`. Uses native input under the hood for static SSR compatibility and `:has(:checked)` styling. |
+| `switch` | Animated sliding toggle switch built on `SwitchPrimitive` for settings taking immediate effect. |
+| `radio-group` | Mutually exclusive radio buttons with arrow-key keyboard navigation, built on `RadioGroupPrimitive`. |
+| `input-group` | Compounds inputs with inline button addons, icons, or text prefixes and suffixes. |
+| `field` | Accessible form composition: `Field`, `FieldLabel`, `FieldDescription`, `FieldError`, `FieldContent`, `FieldGroup`, `FieldSet`, `FieldLegend`, and `FieldSeparator`. `FieldError` automatically binds to `EditContext` validation messages via `For="() => Model.Property"`. |
+| `label` | Accessible form label built on `LabelPrimitive`, targeting controls via `For`. |
+
+### Layout and Structure
+
+| Component | Description |
+| --- | --- |
+| `card` | Container surface composed of `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardAction`, `CardContent`, and `CardFooter`. Padding is driven by `--card-spacing`. |
+| `table` | Accessible data tables: `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, and `TableCaption`. |
+| `separator` | Semantic (`role="separator"`) or decorative divider, horizontal or vertical. |
+| `aspect-ratio` | Ratio-preserving box (`16/9`, `4/3`, `1/1`) built on `AspectRatioPrimitive`. |
+| `item` | Structured media item layout: `Item`, `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`, `ItemActions`, and `ItemSeparator`. |
+| `collapsible` | Section that a trigger shows and hides (`Collapsible`, `CollapsibleTrigger`, `CollapsibleContent`), built on `CollapsiblePrimitive`. |
+| `direction` | `DirectionProvider` cascading text direction (`LeftToRight` or `RightToLeft`) to nested components, built on `DirectionPrimitive`. |
+
+### Feedback and Status
+
+| Component | Description |
+| --- | --- |
+| `alert` | Non-modal notification box (`Alert`, `AlertTitle`, `AlertDescription`) with `Default` and `Destructive` variants. |
+| `badge` | Small status label (`Default`, `Secondary`, `Destructive`, `Outline`, `Ghost`, `Link`). Never filled with the flame. |
+| `progress` | Progress indicator styled as a candle wick with a flame leading edge, built on `ProgressPrimitive`. |
+| `spinner` | Animated SVG loading indicator, for buttons and busy states. |
+| `skeleton` | Loading placeholder shape using high-contrast surface fills that render consistently across Day and Night. |
+| `empty` | Empty state layout with icon well, title, description, and action button slots. |
+| `bubble` | Chat message bubble (`Bubble`, `BubbleGroup`, `BubbleContent`, `BubbleReactions`), aligned to either side. |
+| `message` | Conversation or event log message layout. |
+
+### Navigation and Media
+
+| Component | Description |
+| --- | --- |
+| `avatar` | User avatar built on `AvatarPrimitive`. Displays image with automatic fallback initials; fallback renders under static SSR while image loads. |
+| `breadcrumb` | Hierarchical navigation trail: `BreadcrumbList`, `BreadcrumbItem`, `BreadcrumbLink`, `BreadcrumbPage`, `BreadcrumbSeparator`, and `BreadcrumbEllipsis`. |
+| `pagination` | Pagination navigation controls: `PaginationContent`, `PaginationItem`, `PaginationLink`, `PaginationPrevious`, `PaginationNext`, and `PaginationEllipsis`. |
+| `attachment` | File attachment card with name, file size metadata, and removal action. |
+| `kbd` | Keyboard key indicator (`Kbd`, `KbdGroup`) using Spline Sans Mono typography. |
+| `marker` | A quiet line of context in a conversation or feed, such as "Today" or "Ada joined". |
+
+## Headless Primitives Layer
+
+For developers who prefer writing custom CSS or do not use Tailwind CSS, Vela UI provides unstyled headless primitives in the `Vela.UI.Primitives` namespace.
+
+```razor
+@using Vela.UI.Primitives
+
+<TogglePrimitive @bind-Pressed="isMuted" class="custom-mute-btn">
+    @(isMuted ? "Unmute" : "Mute")
+</TogglePrimitive>
+```
+
+- **No CSS dependencies:** Primitives render zero utility classes and include no bundled stylesheets.
+- **State hooks:** Component state is communicated via standard HTML and `data-*` attributes (`data-state="checked|unchecked"`, `data-orientation="horizontal|vertical"`, `data-disabled`).
+- **SSR compatibility for form controls:** Form controls (`CheckboxPrimitive`, `SwitchPrimitive`, `RadioGroupPrimitive`) render hidden native inputs via `CheckedInputPrimitiveBase`. Static server-rendered forms submit values without JavaScript, and can be styled with `:has(:checked)`.
+- **Validation integration:** Form primitives inherit from Blazor's `InputBase<T>` and participate in `EditContext` validation, while remaining functional unbound.
+
+See [`src/Primitives/README.md`](src/Primitives/README.md) for full primitive API documentation.
+
+## CLI Reference
+
+### Commands
+
+#### `vela init`
+
+Initializes Vela UI in the current Blazor project:
+- Verifies the project targets `.NET 10.0` or later.
+- Creates `vela.json`.
+- Installs `Styles/vela.css`, `Styles/app.css`, `ClassNames.cs`, fonts, and `vela-light.js`.
+
+#### `vela add <component>...`
+
+Copies one or more components from the registry into your application:
+- Resolves and copies dependent components automatically (e.g. adding `field` also adds `label`).
+- Skips re-copying existing dependencies if their folders already exist, preserving local edits.
+- If a target component file exists and its content differs, installation stops and lists the conflicting files.
+- Adds a package reference to `Vela.UI.Primitives` in your `.csproj` if any added component requires it.
+
+### Options
+
+| Option | Description |
+| --- | --- |
+| `--cwd <folder>` | Runs the command in the specified folder rather than the current working directory. |
+| `--overwrite` | Replaces differing files. Replaced files are backed up in `.vela/backups/<timestamp>/`. |
+| `-h, --help` | Displays command usage and available components. |
+| `--version` | Displays the current version of the CLI and bundled registry. |
+
+### Configuration (`vela.json`)
+
+`vela init` creates a configuration file in your project root:
+
+```json
+{
+  "project": "MyApp.csproj",
+  "namespace": "MyApp.Components.Ui",
+  "components": "Components/Ui",
+  "styles": "Styles",
+  "assets": "wwwroot",
+  "registry": "bundled",
+  "version": "0.1.0"
+}
+```
+
+You can customize `namespace`, `components`, `styles`, or `assets` paths in `vela.json` prior to running `vela add`.
+
+### Exit Codes
+
+- `0`: Success.
+- `1`: Cannot run (not a Blazor project, missing `vela.json`, or unknown component name).
+- `2`: Bad arguments.
+- `3`: Files would be overwritten (run with `--overwrite` to replace with automatic backup).
+
+## Design System Tokens & Theming
+
+Vela UI's design system tokens are declared in `Styles/vela.css` and mapped to Tailwind utilities.
+
+### Surface and Foreground Tokens
+
+| Token | Utility | Night (Default) | Day (`data-theme="light"`) | Purpose |
+| --- | --- | --- | --- | --- |
+| `--vela-bg` | `bg-room` | `#111010` | `#f6f5f2` | Application background / room |
+| `--vela-surface` | `bg-surface` | `#171615` | `#ffffff` | Primary content panels |
+| `--vela-surface-raised` | `bg-surface-raised` | `#1f1e1c` | `#ffffff` | Raised cards, popovers, keys |
+| `--vela-surface-sunken` | `bg-surface-sunken` | `#0b0a09` | `#eeede8` | Wells, inputs, recessed tracks |
+| `--vela-text` | `text-fg` | `#f0ece5` | `#1b1a18` | Primary body text |
+| `--vela-text-muted` | `text-fg-muted` | `#aba59c` | `#5d5852` | Secondary labels and helper text |
+| `--vela-text-faint` | `text-fg-faint` | `#938d84` | `#6b665f` | Placeholders and disabled text |
+| `--vela-flame` | `bg-flame` | `#ff9d3d` | `#f7922b` | Primary action accent |
+
+### Switching to Day Theme
+
+Add `data-theme="light"` to your `<html>` element in `App.razor`:
+
+```html
+<html lang="en" data-theme="light">
+```
+
+Or toggle the attribute dynamically via JavaScript to support user theme switching.
+
+## Building and Testing the Repository
+
+To build the Vela UI repository itself:
+
+```bash
+# Build all projects
 dotnet build
+
+# Run the test suite
 dotnet test
-dotnet run --project src/Cli -- --help
+
+# Verify code formatting against .editorconfig
+dotnet format --verify-no-changes
 ```
 
-To run one test:
-
-```bash
-dotnet test --filter "FullyQualifiedName~ButtonTests.Button_Disabled"
-```
-
-The build treats warnings as errors and enforces the code style in
-`.editorconfig`, so fix a warning rather than suppressing it.
-
-NuGet package versions are managed centrally in `Directory.Packages.props`.
-To add a package, add a `PackageVersion` entry there and a
-`PackageReference` without a version in the project file.
-
-## Repository layout
+### Repository Layout
 
 | Path | Contents |
 | --- | --- |
@@ -119,49 +353,6 @@ To add a package, add a `PackageVersion` entry there and a
 | `Directory.Packages.props` | NuGet package versions for every project |
 | `NuGet.config` | Restricts package restore to nuget.org |
 
-## Writing a component
-
-Each component lives in its own folder under `src/Core/Components/`, so the
-CLI can copy one folder into an app. `Button` is the reference:
-
-- `Button.razor` holds the markup and `Button.razor.cs` the parameters and
-  logic, as a partial class. Each `.razor` file declares its own `@using`
-  lines; `src/Core` has no shared `_Imports.razor`, because it wouldn't be
-  copied into apps.
-- A component with logic gets a `.razor.cs` file. Simple parts that only wrap
-  an element with classes (such as `CardTitle`) are a single `.razor` file
-  with a short `@code` block.
-- Form controls such as `Input` inherit Blazor's `InputBase<T>` so binding,
-  validation, and static form posts work the way they do for `InputText`.
-- Variant and size enums sit in the same folder, one type per file.
-- Classes stay inline as Tailwind utilities, grouped into named constants by
-  purpose (`LayoutClasses`, `FocusClasses`, `InvalidClasses`, `DisabledClasses`,
-  ...) so you can find the line to change.
-- Classes are combined with `ClassNames.Join`, which is the only shared helper.
-  It appends without resolving conflicts, so each kind of utility (rounding,
-  background, edge, icon size) is set in exactly one place: the base, the
-  variant, or the size. A test enforces this for Button.
-- Components take a `Class` parameter, pass other attributes through to the
-  root element, and set `data-slot` (plus `data-variant`/`data-size` where
-  they apply) with shadcn/ui's names.
-- Components use Tailwind utilities that refer to theme tokens (`bg-surface`,
-  `text-fg-muted`, `shadow-control`, never raw colours), so restyling means
-  editing `vela.css`, not the component. Edges are box-shadow rings, not
-  borders, as the design system asks.
-- The flame (`bg-flame`, `text-flame-text`) belongs only to the primary
-  action, focus, and progress. Checked, active, and selected states use the
-  text colour. A test keeps every Button variant except the default off it.
-- Tests are bUnit tests written in Razor under `tests/Core/Components/`,
-  named `Component_Scenario`.
-
-## Versioning
-
-Vela UI uses [Semantic Versioning](https://semver.org/). The version is set
-once, in `Directory.Build.props`. Until 1.0, a minor release may include
-breaking changes. Every release gets an entry in [CHANGELOG.md](CHANGELOG.md).
-
 ## License
 
-Vela UI is released under the [MIT License](LICENSE). The component APIs are
-adapted from shadcn/ui, and the bundled fonts are under the SIL Open Font
-License; see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Vela UI is open source under the [MIT License](LICENSE). Component APIs are adapted from [shadcn/ui](https://github.com/shadcn-ui/ui) (MIT). Bundled Latin subsets of Host Grotesk and Spline Sans Mono are licensed under the [SIL Open Font License 1.1](THIRD-PARTY-NOTICES.md).
