@@ -12,10 +12,6 @@
             backdrop closes it, and focus returns to the button that opened it. Opening needs an
             interactive render mode.
         </p>
-        <div class="flex items-center gap-3">
-            <Button Variant="ButtonVariant.Outline" OnClick="() => pageClicks++">Page button</Button>
-            <span id="page-clicks" class="text-body-sm text-fg-muted">Clicked @pageClicks times</span>
-        </div>
     </header>
 
     <Example Title="Minimal">
@@ -32,6 +28,13 @@
                 </Field>
             </DialogContent>
         </Dialog>
+    </Example>
+
+    <Example Title="The page behind" Description="While a dialog is open, the rest of the page is inert. Open the profile dialog above, then click where this button is: the click only closes the dialog, and the count stays the same.">
+        <div class="flex items-center gap-3">
+            <Button Variant="ButtonVariant.Outline" OnClick="() => pageClicks++">Count a click</Button>
+            <span id="page-clicks" class="text-body-sm text-fg-muted">Clicked @pageClicks times</span>
+        </div>
     </Example>
 
     <Example Title="Realistic" Description="A confirmation that can't be undone in place. Ctrl+Enter confirms, as the footer's keys say.">

@@ -65,9 +65,9 @@ public class DialogTests(ExamplesApp app) : BrowserTest(app)
     [Fact]
     public async Task Dialog_BackdropClickClosesWithoutClickingThePage()
     {
-        // Arrange: a page button sits under the backdrop once the dialog is open.
+        // Arrange: the counter's button sits under the backdrop once the dialog is open.
         var page = await OpenAsync("dialog");
-        var pageButton = await page.GetByRole(AriaRole.Button, new() { Name = "Page button" }).BoundingBoxAsync();
+        var pageButton = await page.GetByRole(AriaRole.Button, new() { Name = "Count a click" }).BoundingBoxAsync();
         await page.GetByRole(AriaRole.Button, new() { Name = "Edit profile" }).ClickAsync();
         await Expect(page.GetByRole(AriaRole.Dialog)).ToBeVisibleAsync();
 
@@ -104,7 +104,7 @@ public class DialogTests(ExamplesApp app) : BrowserTest(app)
         // Arrange: on touch, a dialog that closed at the start of the tap would let the tap's
         // click land on the button that's now under the finger.
         var page = await OpenAsync("dialog", hasTouch: true);
-        var pageButton = await page.GetByRole(AriaRole.Button, new() { Name = "Page button" }).BoundingBoxAsync();
+        var pageButton = await page.GetByRole(AriaRole.Button, new() { Name = "Count a click" }).BoundingBoxAsync();
         await page.GetByRole(AriaRole.Button, new() { Name = "Edit profile" }).TapAsync();
         await Expect(page.GetByRole(AriaRole.Dialog)).ToBeVisibleAsync();
 
