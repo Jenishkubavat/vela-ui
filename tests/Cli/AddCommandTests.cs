@@ -145,12 +145,14 @@ public class AddCommandTests
         Assert.Contains("<PackageVersion Include=\"Vela.UI.Primitives\"", output);
     }
 
-    [Fact]
-    public void Add_LocalProjectReferenceCountsAsThePackage()
+    [Theory]
+    [InlineData(@"..\Vela.UI.Primitives\Vela.UI.Primitives.csproj")]
+    [InlineData("../Vela.UI.Primitives/Vela.UI.Primitives.csproj")]
+    public void Add_LocalProjectReferenceCountsAsThePackage(string path)
     {
-        // Arrange
+        // Arrange: project files use backslashes even on Linux and macOS.
         using var project = Initialized(TempProject.BlazorProject.Replace(
-            "</Project>", "  <ItemGroup>\n    <ProjectReference Include=\"..\\Vela.UI.Primitives\\Vela.UI.Primitives.csproj\" />\n  </ItemGroup>\n</Project>"));
+            "</Project>", $"  <ItemGroup>\n    <ProjectReference Include=\"{path}\" />\n  </ItemGroup>\n</Project>"));
 
         // Act
         project.Run("add", "toggle");

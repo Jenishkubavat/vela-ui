@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     strategy:
+      # Let each OS finish, so a failure on one doesn't hide the other's result.
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}

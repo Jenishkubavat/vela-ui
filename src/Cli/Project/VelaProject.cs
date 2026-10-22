@@ -96,7 +96,7 @@ internal sealed partial class VelaProject
             (element.Name.LocalName == "PackageReference"
                 && string.Equals((string?)element.Attribute("Include"), package, StringComparison.OrdinalIgnoreCase))
             || (element.Name.LocalName == "ProjectReference"
-                && string.Equals(Path.GetFileNameWithoutExtension((string?)element.Attribute("Include")), package, StringComparison.OrdinalIgnoreCase)));
+                && string.Equals(ProjectName((string?)element.Attribute("Include")), package, StringComparison.OrdinalIgnoreCase)));
         if (hasReference)
         {
             return null;
@@ -122,6 +122,11 @@ internal sealed partial class VelaProject
             : $"Added the {package} package to {ProjectFile}. Your solution manages package versions centrally, " +
               $"so add <PackageVersion Include=\"{package}\" Version=\"{version}\" /> to {centralProps}.";
     }
+
+    // Project files write paths with backslashes on every OS, and Linux doesn't treat a
+    // backslash as a separator.
+    private static string? ProjectName(string? path) =>
+        Path.GetFileNameWithoutExtension(path?.Replace('\\', '/'));
 
     private string? FindCentralPackageProps()
     {
