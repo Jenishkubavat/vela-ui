@@ -40,7 +40,7 @@ internal static class InitCommand
         }
 
         output.WriteLine();
-        output.WriteLine(NextSteps(config));
+        output.WriteLine(NextSteps(config, project));
         return VelaCli.Success;
     }
 
@@ -68,17 +68,57 @@ internal static class InitCommand
             """);
     }
 
-    private static string NextSteps(VelaConfig config) => $$"""
+    private static string NextSteps(VelaConfig config, VelaProject project) => $$"""
         Next steps:
           1. Install Tailwind CSS v4 in this folder, then build the CSS and keep it running while you work:
                npm install tailwindcss @tailwindcss/cli
                npx @tailwindcss/cli -i {{config.Styles}}/app.css -o {{CompiledCss(config)}} --watch
-          2. In App.razor, link it in <head>. Optionally, load the motion layer before </body>:
+          2. {{HostPageStep(project)}}
                <link rel="stylesheet" href="tailwind.css" />
-               <script src="vela-light.js"></script>
-          3. Add this line to Components/_Imports.razor:
+               <script src="vela-light.js"></script>{{ServerNote(project)}}
+          3. {{ImportsStep(project)}}
                @using {{config.Namespace}}
 
         Then add components, for example: vela add button
         """;
+
+    // Each Blazor template puts the page's <head> somewhere else: a Web App in
+    // Components/App.razor, a standalone WebAssembly app in wwwroot/index.html. A .Client
+    // project has neither, because its server project renders the page.
+    private static string HostPageStep(VelaProject project)
+    {
+        const string Links = "link the CSS in <head>. Optionally, load the motion layer before </body>:";
+        // A standalone WebAssembly app also has a root App.razor, but that one is the router.
+        if (FirstExisting(project, "Components/App.razor", "wwwroot/index.html", "App.razor") is { } page)
+        {
+            return $"In {page}, {Links}";
+        }
+
+        var name = Path.GetFileNameWithoutExtension(project.ProjectFile);
+        if (IsClientProject(project))
+        {
+            var server = name[..^".Client".Length];
+            return $"In the server project's Components/App.razor ({server}, next to this {name} project), {Links}";
+        }
+
+        return $"In App.razor (or the page that holds <head>), {Links}";
+    }
+
+    private static string ServerNote(VelaProject project) => IsClientProject(project)
+        ? $"{Environment.NewLine}     The server project serves this project's tailwind.css and vela-light.js, so the paths stay the same."
+        : "";
+
+    private static bool IsClientProject(VelaProject project) =>
+        Path.GetFileNameWithoutExtension(project.ProjectFile).EndsWith(".Client", StringComparison.OrdinalIgnoreCase);
+
+    private static string ImportsStep(VelaProject project)
+    {
+        var imports = FirstExisting(project, "Components/_Imports.razor", "_Imports.razor") ?? "your _Imports.razor";
+        return IsClientProject(project)
+            ? $"Add this line to {imports}, and to the server project's Components/_Imports.razor if its pages use the components:"
+            : $"Add this line to {imports}:";
+    }
+
+    private static string? FirstExisting(VelaProject project, params string[] paths) =>
+        paths.FirstOrDefault(path => File.Exists(Path.Combine(project.Directory, path)));
 }
