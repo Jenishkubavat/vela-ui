@@ -1,0 +1,77 @@
+@page "/static-form"
+
+<PageTitle>Static form · Vela UI</PageTitle>
+
+@* No render mode: this page is rendered on the server and posted as a plain HTML form. *@
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Static form</h1>
+        <p class="text-body text-fg-muted">
+            Checkbox, Switch, and Radio Group are native inputs under their styles, so they work in a
+            form rendered on the server with no interactivity, even with JavaScript turned off.
+            Submitting posts the values like any HTML form.
+        </p>
+    </header>
+
+    <Example Title="Notification preferences" Description="Change the settings and save; the page comes back with what the server received.">
+        <EditForm Model="Preferences" FormName="preferences" OnSubmit="Save" class="flex max-w-md flex-col gap-5">
+            <div class="flex items-center gap-2">
+                <Checkbox id="newsletter" @bind-Value="Preferences!.Newsletter" />
+                <Label For="newsletter">Send me the newsletter</Label>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <Switch id="digest" @bind-Value="Preferences!.Digest" />
+                <Label For="digest">Weekly digest</Label>
+            </div>
+
+            <RadioGroup @bind-Value="Preferences!.Frequency" aria-label="Email frequency">
+                @foreach (var (value, name) in Frequencies)
+                {
+                    <div class="flex items-center gap-2">
+                        <RadioGroupItem Value="@value" id="@($"frequency-{value}")" />
+                        <Label For="@($"frequency-{value}")">@name</Label>
+                    </div>
+                }
+            </RadioGroup>
+
+            <Button Type="submit" Class="w-fit">Save preferences</Button>
+        </EditForm>
+
+        @if (saved)
+        {
+            <p role="status" class="mt-5 text-body-sm text-fg-muted">
+                Saved: newsletter @(Preferences!.Newsletter ? "on" : "off"), digest @(Preferences!.Digest ? "on" : "off"),
+                emails @Preferences!.Frequency.
+            </p>
+        }
+    </Example>
+</div>
+
+@code {
+    private static readonly (string Value, string Name)[] Frequencies =
+    [
+        ("daily", "Daily"),
+        ("weekly", "Weekly"),
+    ];
+
+    private bool saved;
+
+    // Filled from the posted form. Posted names follow the bound expressions
+    // (Preferences.Newsletter, ...), so the markup binds to this property directly.
+    [SupplyParameterFromForm]
+    private PreferencesModel? Preferences { get; set; }
+
+    protected override void OnInitialized() => Preferences ??= new();
+
+    private void Save() => saved = true;
+
+    private sealed class PreferencesModel
+    {
+        public bool Newsletter { get; set; }
+
+        public bool Digest { get; set; }
+
+        public string? Frequency { get; set; } = "daily";
+    }
+}

@@ -24,16 +24,26 @@ public sealed class ExamplesApp : IAsyncLifetime, IDisposable
     /// </summary>
     /// <param name="path">The page's path, such as <c>collapsible</c>.</param>
     /// <param name="hasTouch">Gives the page a touch screen, for testing taps.</param>
-    public async Task<IPage> OpenAsync(string path, bool hasTouch = false)
+    /// <param name="interactive">
+    /// Waits for the page to become interactive. Turn it off for pages rendered statically,
+    /// which never do.
+    /// </param>
+    /// <param name="javaScriptEnabled">Runs the page with JavaScript on; off proves a page works without it.</param>
+    public async Task<IPage> OpenAsync(string path, bool hasTouch = false, bool interactive = true, bool javaScriptEnabled = true)
     {
         var context = await _browser!.NewContextAsync(new()
         {
             BaseURL = _factory.ClientOptions.BaseAddress.ToString(),
             HasTouch = hasTouch,
+            JavaScriptEnabled = javaScriptEnabled,
         });
         var page = await context.NewPageAsync();
         await page.GotoAsync(path);
-        await page.Locator("[data-interactive]").WaitForAsync();
+        if (interactive && javaScriptEnabled)
+        {
+            await page.Locator("[data-interactive]").WaitForAsync();
+        }
+
         return page;
     }
 
