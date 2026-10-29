@@ -2,6 +2,8 @@
 
 Instructions for building, testing, and contributing components to Vela UI.
 
+Everyone taking part follows the [code of conduct](CODE_OF_CONDUCT.md). To report a bug or ask for a component, open an issue and pick the matching form. How versions are numbered is described in the README's [Versioning](README.md#versioning) section.
+
 ## Development Setup
 
 ### Prerequisites
@@ -79,6 +81,7 @@ When adding a new component or introducing a dependency between components:
 - Component tests use [bUnit](https://bunit.dev/) with Razor syntax (`Component_Scenario`), inheriting `BunitContext`.
 - Use explicit assertions (`Assert.Equal`, `Assert.Contains`) rather than snapshot files.
 - Cover all variants, sizes, disabled states, default parameters, event callbacks, and attribute passthrough (`AdditionalAttributes`).
+- Keyboard, focus, and dismissal behavior is tested in a real browser: add a page to `examples/Demo` and Playwright tests to `tests/Browser/`. bUnit can't prove focus or key handling.
 
 ## Git and Commit Workflow
 

@@ -31,7 +31,7 @@ Because `Vela.UI.Primitives` is not yet on nuget.org, components that depend on 
 - Run the CLI from a clone of this repository.
 - Either pack `Vela.UI.Primitives` locally and register the local folder in your `NuGet.config`, or replace the `<PackageReference Include="Vela.UI.Primitives" ... />` that `vela add` adds with a `<ProjectReference Include=".../src/Primitives/Vela.UI.Primitives.csproj" />`.
 
-Dialog, Dropdown Menu, and Select come next, once keyboard and focus behavior can be tested in a real browser.
+Dialog is the first overlay, with its keyboard and focus behavior tested in a real browser. Dropdown Menu and Select come next. To see every MVP component, run the examples app with `dotnet run --project examples/Demo` (Node.js 20 or later builds its styles).
 
 ## Using the CLI
 
@@ -224,6 +224,12 @@ Components available in the registry:
 | `kbd` | Keyboard key indicator (`Kbd`, `KbdGroup`) using Spline Sans Mono typography. |
 | `marker` | A quiet line of context in a conversation or feed, such as "Today" or "Ada joined". |
 
+### Overlays
+
+| Component | Description |
+| --- | --- |
+| `dialog` | Modal dialog (`Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogFooter`, `DialogClose`) built on `DialogPrimitive` and the browser's `<dialog>` element. The page behind becomes inert, Escape and a click on the backdrop close it, and focus returns to the trigger. `OnConfirm` adds Ctrl+Enter (⌘+Enter on a Mac). |
+
 ## Headless Primitives Layer
 
 For developers who prefer writing custom CSS or do not use Tailwind CSS, Vela UI provides unstyled headless primitives in the `Vela.UI.Primitives` namespace.
@@ -242,6 +248,54 @@ For developers who prefer writing custom CSS or do not use Tailwind CSS, Vela UI
 - **Validation integration:** Form primitives inherit from Blazor's `InputBase<T>` and participate in `EditContext` validation, while remaining functional unbound.
 
 See [`src/Primitives/README.md`](src/Primitives/README.md) for full primitive API documentation.
+
+## Render Modes
+
+Components render under every Blazor render mode, but some features need an interactive one (Server, WebAssembly, or Auto). Under static server rendering, nothing runs in the browser after the page loads.
+
+| Works under static server rendering | Needs an interactive render mode |
+| --- | --- |
+| Everything that only displays: Alert, Badge, Card, Table, Progress, Skeleton, and the rest | `OnClick` on `Button`, `InputGroupButton`, and `Attachment` (a `type="submit"` button still submits a static form) |
+| Form posts from `Input`, `Textarea`, `NativeSelect`, `Checkbox`, `Switch`, and `RadioGroup`, which are native inputs | Pressing a `Toggle` |
+| Arrow keys in a `RadioGroup` and Space on a `Checkbox` or `Switch`, which the browser handles | Opening and closing a `Collapsible` or a `Dialog` |
+| Pagination and breadcrumb links | Removing an `Avatar` photo that failed to load (the initials show either way) |
+
+Under static rendering, `data-state` doesn't update when a form control changes, so the styled controls draw their checked look from the native input (`:has(:checked)`).
+
+With the **WebAssembly** or **Auto** render mode, interactive components have to live in the `.Client` project. Run `vela init` and `vela add` there (`--cwd MyApp.Client`). `App.razor` and its stylesheet link stay in the server project; the server serves the client project's `wwwroot`, so the link works as written.
+
+## Accessibility
+
+Each interactive component uses the native element the browser already makes accessible, and adds ARIA only where the element doesn't carry the meaning itself.
+
+| Component | Keyboard and screen readers |
+| --- | --- |
+| `Button`, `Toggle` | Enter and Space activate them. `Toggle` announces "pressed" or "not pressed" through `aria-pressed`. |
+| `Checkbox`, `Switch` | Space toggles them. `Switch` is announced as a switch (`role="switch"`). Clicking a linked `Label` toggles them too. |
+| `RadioGroup` | Tab lands on the selected option, and the arrow keys move between options and select them. |
+| `Collapsible` | Enter and Space on the trigger open and close it; `aria-expanded` and `aria-controls` tell screen readers what it controls. |
+| `Dialog` | Focus moves into the dialog when it opens and can't leave it; the page behind is inert. Escape closes it, and focus returns to the trigger. It's named by its title and described by its description. |
+| `Input`, `Textarea`, `NativeSelect` | Link a `Label` or `FieldLabel` with `for`. With `EditForm` validation, an invalid field gets `aria-invalid`; point `aria-describedby` at its `FieldError`. |
+
+Keyboard and focus behavior for Collapsible, RadioGroup, and Dialog is covered by browser tests in Chromium. Automated tests don't replace testing with a screen reader, and Vela UI doesn't claim WCAG conformance.
+
+## Known Limitations
+
+- `Vela.UI.Primitives` isn't on NuGet yet, and the CLI runs from a clone of this repository (see [Status](#status)).
+- Browser tests run in Chromium only. Firefox and Safari aren't tested automatically yet.
+- There's no manual screen-reader audit yet.
+- There's no `vela update` or diff. To take a newer version of a component you've installed, run `vela add <name> --overwrite`; your previous files go to `.vela/backups/`.
+- `vela init` sets up one project. With WebAssembly or Auto, run it in the `.Client` project (see [Render Modes](#render-modes)).
+- `vela.css` reserves the scrollbar's space on every page (`scrollbar-gutter: stable`), so the page doesn't shift when a dialog hides the scrollbar.
+- The Dialog's exit animation only plays in browsers that support `transition-behavior: allow-discrete`; elsewhere it closes without animating.
+
+## Versioning
+
+Vela UI follows [Semantic Versioning](https://semver.org/). Before 1.0, a minor release (0.2, 0.3) can include breaking changes; [CHANGELOG.md](CHANGELOG.md) lists them under each release.
+
+The CLI, the component registry it bundles, and the `Vela.UI.Primitives` package share one version number. `vela add` references the Primitives version that matches the CLI it was run with.
+
+Components you've installed are your own code: updating the CLI never changes them. Read the changelog, then re-add a component with `--overwrite` if you want its newer version.
 
 ## CLI Reference
 
@@ -338,6 +392,14 @@ dotnet test
 dotnet format --verify-no-changes
 ```
 
+The browser tests in `tests/Browser` drive Chromium with Playwright. After the first build, install it once:
+
+```bash
+pwsh tests/Browser/bin/Debug/net10.0/playwright.ps1 install chromium
+```
+
+Building the examples app (`examples/Demo`) also builds its CSS with Tailwind CSS, which needs Node.js 20 or later.
+
 ### Repository Layout
 
 | Path | Contents |
@@ -349,6 +411,8 @@ dotnet format --verify-no-changes
 | `src/Primitives/` | `Vela.UI.Primitives`, headless behaviour with no styles (like Radix for shadcn/ui), published as a NuGet package |
 | `src/Cli/` | The `vela` command-line tool |
 | `tests/Core/`, `tests/Primitives/`, `tests/Cli/` | Tests, mirroring the `src/` folders; the primitive tests don't reference `src/Core` |
+| `tests/Browser/` | Keyboard and focus tests in Chromium, run with Playwright against the examples app |
+| `examples/Demo/` | The examples app: a minimal and a realistic example for each component, using `src/Core` directly |
 | `Directory.Build.props` | Version number and settings shared by every project |
 | `Directory.Packages.props` | NuGet package versions for every project |
 | `NuGet.config` | Restricts package restore to nuget.org |

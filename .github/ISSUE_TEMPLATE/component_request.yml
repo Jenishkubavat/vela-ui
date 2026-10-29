@@ -1,0 +1,23 @@
+name: Component request
+description: Ask for a component Vela UI doesn't have yet.
+labels: [component request]
+body:
+  - type: input
+    id: component
+    attributes:
+      label: Component
+      description: Its name, and a link to the shadcn/ui or Radix version if there is one.
+    validations:
+      required: true
+  - type: textarea
+    id: use
+    attributes:
+      label: What you'd use it for
+      description: The screen or task in your app. A real use helps decide what it needs to do.
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Anything else
+      description: Keyboard behavior you'd expect, render modes you need it in, or how you work around it today.
