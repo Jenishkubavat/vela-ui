@@ -1,0 +1,55 @@
+@page "/toggle"
+@rendermode InteractiveServer
+
+<PageTitle>Toggle · Vela UI</PageTitle>
+
+@* data-interactive appears once Blazor is running here, so tests know key presses will be handled. *@
+<div class="flex max-w-3xl flex-col gap-10" data-interactive="@RendererInfo.IsInteractive">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Toggle</h1>
+        <p class="text-body text-fg-muted">
+            A button that stays pressed. It sets <code>aria-pressed</code>, so screen readers say whether
+            it's on; keep its label the same in both states.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <Toggle @bind-Pressed="bold" aria-label="Bold">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M7 5h6a3.5 3.5 0 0 1 0 7H7zM7 12h7a3.5 3.5 0 0 1 0 7H7z" />
+            </svg>
+        </Toggle>
+    </Example>
+
+    <Example Title="Realistic" Description="A text toolbar: each toggle changes the preview below it.">
+        <div class="flex flex-col gap-4">
+            <div class="flex gap-1" role="group" aria-label="Text style">
+                <Toggle Variant="ToggleVariant.Outline" @bind-Pressed="italic" aria-label="Italic">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M19 4h-9M14 20H5M15 4 9 20" />
+                    </svg>
+                </Toggle>
+                <Toggle Variant="ToggleVariant.Outline" @bind-Pressed="underline" aria-label="Underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <path d="M6 4v6a6 6 0 0 0 12 0V4M4 20h16" />
+                    </svg>
+                </Toggle>
+            </div>
+            <p id="preview" class="@PreviewClasses">The quick brown fox jumps over the lazy dog.</p>
+        </div>
+    </Example>
+</div>
+
+@code {
+    private bool bold;
+    private bool italic;
+    private bool underline;
+
+    private string PreviewClasses => ClassNames.Join(
+        "text-body text-fg",
+        italic ? "italic" : null,
+        underline ? "underline underline-offset-4" : null);
+}

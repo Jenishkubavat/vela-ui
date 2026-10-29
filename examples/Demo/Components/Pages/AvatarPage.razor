@@ -1,0 +1,42 @@
+@page "/avatar"
+@rendermode InteractiveServer
+
+<PageTitle>Avatar · Vela UI</PageTitle>
+
+@* data-interactive appears once Blazor is running here, so tests know the image events are handled. *@
+<div class="flex max-w-3xl flex-col gap-10" data-interactive="@RendererInfo.IsInteractive">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Avatar</h1>
+        <p class="text-body text-fg-muted">
+            A person, by photo or initials. The initials show while the photo loads, and stay if it
+            fails to load.
+        </p>
+    </header>
+
+    <Example Title="Minimal">
+        <Avatar Size="AvatarSize.Large" role="img" aria-label="Ada Lovelace" id="ada">
+            <AvatarImage Src="images/ada.svg" alt="" />
+            <AvatarFallback>AL</AvatarFallback>
+        </Avatar>
+    </Example>
+
+    <Example Title="Realistic" Description="Owners of a project. One photo is missing, so its initials stay; the ring marks you.">
+        <div class="flex items-center gap-4">
+            <AvatarGroup>
+                <Avatar id="owner-ada" Size="AvatarSize.Large" aria-hidden="true">
+                    <AvatarImage Src="images/ada.svg" alt="" />
+                    <AvatarFallback>AL</AvatarFallback>
+                </Avatar>
+                <Avatar id="owner-grace" Size="AvatarSize.Large" aria-hidden="true">
+                    <AvatarImage Src="images/missing.png" alt="" />
+                    <AvatarFallback>GH</AvatarFallback>
+                </Avatar>
+                <Avatar id="owner-you" Size="AvatarSize.Large" Current="true" aria-hidden="true">
+                    <AvatarFallback>ME</AvatarFallback>
+                </Avatar>
+                <AvatarGroupCount aria-hidden="true">+2</AvatarGroupCount>
+            </AvatarGroup>
+            <span class="text-body-sm text-fg-muted">Ada Lovelace, Grace Hopper, you, and 2 more</span>
+        </div>
+    </Example>
+</div>

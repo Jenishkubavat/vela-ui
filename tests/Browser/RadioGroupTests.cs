@@ -14,7 +14,7 @@ public class RadioGroupTests(ExamplesApp app) : BrowserTest(app)
     {
         // Arrange: the last link in the navigation comes right before the first group.
         var page = await OpenAsync("radio-group");
-        await page.GetByRole(AriaRole.Link, new() { Name = "Radio Group" }).FocusAsync();
+        await page.GetByRole(AriaRole.Navigation).GetByRole(AriaRole.Link).Last.FocusAsync();
 
         // Act
         await page.Keyboard.PressAsync("Tab");
