@@ -194,4 +194,74 @@ public class InitCommandTests
         // Assert
         Assert.Equal(VelaCli.Success, exitCode);
     }
+
+    [Fact]
+    public void Init_NextStepsNameAWebAppsFiles()
+    {
+        // Arrange: the Blazor Web App template.
+        using var project = new TempProject();
+        project.Write("Components/App.razor", "<html></html>");
+        project.Write("Components/_Imports.razor", "@using System.Net.Http");
+
+        // Act
+        var (_, output, _) = project.Run("init");
+
+        // Assert
+        Assert.Contains("In Components/App.razor, link the CSS", output);
+        Assert.Contains("Add this line to Components/_Imports.razor:", output);
+    }
+
+    [Fact]
+    public void Init_NextStepsInAClientProjectPointToTheServerProject()
+    {
+        // Arrange: the .Client project of a Blazor Web App with WebAssembly. It has a root
+        // _Imports.razor, and its App.razor lives in the server project.
+        using var project = new TempProject("Shop.Client.csproj",
+            TempProject.BlazorProject.Replace("Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.BlazorWebAssembly"));
+        project.Write("_Imports.razor", "@using System.Net.Http");
+
+        // Act
+        var (exitCode, output, _) = project.Run("init");
+
+        // Assert
+        Assert.Equal(VelaCli.Success, exitCode);
+        Assert.Contains("In the server project's Components/App.razor (Shop, next to this Shop.Client project)", output);
+        Assert.Contains("The server project serves this project's tailwind.css", output);
+        Assert.Contains("Add this line to _Imports.razor, and to the server project's Components/_Imports.razor", output);
+        Assert.Contains("@using Shop.Client.Components.Ui", output);
+    }
+
+    [Fact]
+    public void Init_NextStepsInAStandaloneWebAssemblyAppUseIndexHtml()
+    {
+        // Arrange: its root App.razor is the router; the <head> is in wwwroot/index.html.
+        using var project = new TempProject(content: TempProject.BlazorProject.Replace(
+            "Microsoft.NET.Sdk.Web", "Microsoft.NET.Sdk.BlazorWebAssembly"));
+        project.Write("App.razor", "<Router />");
+        project.Write("wwwroot/index.html", "<html></html>");
+        project.Write("_Imports.razor", "@using System.Net.Http");
+
+        // Act
+        var (_, output, _) = project.Run("init");
+
+        // Assert
+        Assert.Contains("In wwwroot/index.html, link the CSS", output);
+        Assert.DoesNotContain("In App.razor", output);
+        Assert.Contains("Add this line to _Imports.razor:", output);
+        Assert.DoesNotContain("server project", output);
+    }
+
+    [Fact]
+    public void Init_NextStepsWithoutThoseFilesStayGeneral()
+    {
+        // Arrange
+        using var project = new TempProject();
+
+        // Act
+        var (_, output, _) = project.Run("init");
+
+        // Assert
+        Assert.Contains("In App.razor (or the page that holds <head>)", output);
+        Assert.Contains("Add this line to your _Imports.razor:", output);
+    }
 }
