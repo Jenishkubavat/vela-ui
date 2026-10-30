@@ -1,0 +1,96 @@
+@page "/troubleshooting"
+
+<PageTitle>Troubleshooting · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Troubleshooting</h1>
+        <p class="text-body text-fg-muted">Common problems when setting up Vela UI, and what fixes them.</p>
+    </header>
+
+    <DocSection Title="Restore can't find Vela.UI.Primitives" Id="package">
+        <p>
+            Components built on a primitive, such as Label, Checkbox, and Dialog, add a reference to the
+            <code>Vela.UI.Primitives</code> package, which isn't on NuGet yet. Restore then fails with
+            <code>NU1101</code>. Build the package from your clone and add a local source:
+        </p>
+        <CodeBlock Code="@Pack" />
+        <CodeBlock Code="@NuGetConfig" />
+        <p>
+            Or replace the <code>PackageReference</code> that <code>vela add</code> added with a
+            <code>ProjectReference</code> to <code>src/Primitives/Vela.UI.Primitives.csproj</code> in your clone.
+        </p>
+    </DocSection>
+
+    <DocSection Title="Components have no styles" Id="styles">
+        <ul>
+            <li>Check that the Tailwind watcher is running and writing the file your <code>App.razor</code> links.</li>
+            <li>
+                Tailwind has to read the component source, not the rendered HTML. The
+                <code>@@source</code> line in <code>Styles/app.css</code> must cover your components folder,
+                <code>.razor</code> and <code>.cs</code> files both. <code>vela init</code> writes it; update it
+                if you move the folder.
+            </li>
+            <li>
+                Tailwind doesn't move font files, so <code>fonts/</code> must sit next to the compiled CSS
+                (<code>wwwroot/fonts/</code> by default).
+            </li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="vela add stops with exit code 3" Id="conflicts">
+        <p>
+            A file it would write already exists with different content, usually because you changed it.
+            Nothing was written; the message lists the files. To take the new version anyway, run it
+            again with <code>--overwrite</code>. Your files are copied to <code>.vela/backups/</code> first.
+        </p>
+    </DocSection>
+
+    <DocSection Title="vela can't find your project" Id="project">
+        <p>
+            Run it in the folder that holds exactly one Blazor <code>.csproj</code> targeting .NET 10 or
+            later, or pass that folder with <code>--cwd</code>. The message says which of these it
+            couldn't confirm.
+        </p>
+    </DocSection>
+
+    <DocSection Title="Clicks, toggles, or a dialog do nothing" Id="render-mode">
+        <p>
+            The page is rendered statically, so nothing runs in the browser after it loads. Give the page
+            or the component an interactive render mode, for example
+            <code>@@rendermode InteractiveServer</code>. Each component's page lists what needs one.
+        </p>
+    </DocSection>
+
+    <DocSection Title="WebAssembly or Auto: components aren't found or don't respond" Id="client">
+        <p>
+            Interactive WebAssembly components run from the <code>.Client</code> project, so the components
+            have to be installed there. Run <code>vela init</code> and <code>vela add</code> with
+            <code>--cwd MyApp.Client</code>.
+        </p>
+    </DocSection>
+
+    <DocSection Title="A static form posts, but the values don't come back" Id="static-forms">
+        <p>
+            In a statically rendered <code>EditForm</code>, each field's posted name comes from its
+            <code>@@bind-Value</code> expression. Bind to the property marked
+            <code>[SupplyParameterFromForm]</code> itself, such as <code>@@bind-Value="Model!.Email"</code>,
+            not to a copy of it. The <a href="static-form">static form</a> example shows the pattern.
+        </p>
+    </DocSection>
+</div>
+
+@code {
+    private const string Pack =
+        "dotnet pack path/to/vela-ui/src/Primitives -o ./packages";
+
+    private const string NuGetConfig =
+        """
+        <configuration>
+          <packageSources>
+            <add key="local" value="./packages" />
+            <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+          </packageSources>
+        </configuration>
+        """;
+}

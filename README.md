@@ -31,7 +31,7 @@ Because `Vela.UI.Primitives` is not yet on nuget.org, components that depend on 
 - Run the CLI from a clone of this repository.
 - Either pack `Vela.UI.Primitives` locally and register the local folder in your `NuGet.config`, or replace the `<PackageReference Include="Vela.UI.Primitives" ... />` that `vela add` adds with a `<ProjectReference Include=".../src/Primitives/Vela.UI.Primitives.csproj" />`.
 
-Dialog is the first overlay, with its keyboard and focus behavior tested in a real browser. Dropdown Menu and Select come next. To see every MVP component, run the examples app with `dotnet run --project examples/Demo` (Node.js 20 or later builds its styles).
+Dialog is the first overlay, with its keyboard and focus behavior tested in a real browser. Dropdown Menu and Select come next. The examples app is also the documentation: a getting-started guide, troubleshooting, and for each component its examples, install command, API reference, and keyboard and render-mode notes. Run it with `dotnet run --project examples/Demo` (Node.js 20 or later builds its styles).
 
 ## Using the CLI
 
@@ -287,7 +287,7 @@ Keyboard and focus behavior for Collapsible, RadioGroup, and Dialog is covered b
 - There's no `vela update` or diff. To take a newer version of a component you've installed, run `vela add <name> --overwrite`; your previous files go to `.vela/backups/`.
 - `vela init` sets up one project. With WebAssembly or Auto, run it in the `.Client` project (see [Render Modes](#render-modes)).
 - `vela.css` reserves the scrollbar's space on every page (`scrollbar-gutter: stable`), so the page doesn't shift when a dialog hides the scrollbar.
-- The Dialog's exit animation only plays in browsers that support `transition-behavior: allow-discrete`; elsewhere it closes without animating.
+- The Dialog rises into place as it opens but closes without animating.
 
 ## Versioning
 
@@ -412,7 +412,7 @@ Building the examples app (`examples/Demo`) also builds its CSS with Tailwind CS
 | `src/Cli/` | The `vela` command-line tool |
 | `tests/Core/`, `tests/Primitives/`, `tests/Cli/` | Tests, mirroring the `src/` folders; the primitive tests don't reference `src/Core` |
 | `tests/Browser/` | Keyboard and focus tests in Chromium, run with Playwright against the examples app |
-| `examples/Demo/` | The examples app: a minimal and a realistic example for each component, using `src/Core` directly |
+| `examples/Demo/` | The examples app and documentation: guides, and for each component its examples and docs, using `src/Core` directly. Its API tables come from the components' XML docs |
 | `Directory.Build.props` | Version number and settings shared by every project |
 | `Directory.Packages.props` | NuGet package versions for every project |
 | `NuGet.config` | Restricts package restore to nuget.org |

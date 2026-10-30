@@ -6,6 +6,11 @@
     CLI copies these source files into the user's application instead.
   -->
 
+  <!-- The examples app builds its API reference from these XML docs. -->
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>

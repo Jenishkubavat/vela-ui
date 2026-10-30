@@ -52,9 +52,49 @@
             }
         </EditForm>
     </Example>
+
+    <Install Name="input" />
+
+    <ApiReference Types="@(new[] { typeof(Input) })" />
+
+    <DocSection Title="Match InputNumber, InputDate, and InputFile">
+        <p><code>Input.GetClasses()</code> returns Input's classes, so Blazor's other input components can look the same.</p>
+        <CodeBlock Code="@MatchExample" />
+    </DocSection>
+
+    <DocSection Title="Keyboard and accessibility">
+        <ul>
+            <li>
+                It's a native <code>&lt;input&gt;</code>. Name it with a <code>Label</code> or
+                <code>FieldLabel</code> whose <code>for</code> matches its <code>id</code>.
+            </li>
+            <li>
+                Inside an <code>EditForm</code>, Blazor adds <code>aria-invalid="true"</code> when the field
+                has errors. Give its <code>FieldError</code> an <code>id</code> and point the input's
+                <code>aria-describedby</code> at it, so screen readers read the error with the field.
+            </li>
+            <li>A hint and an error can both describe it: list both ids in <code>aria-describedby</code>, separated by a space.</li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="Render modes">
+        <p>
+            It binds and validates in a static server-rendered form too. There, bind it to the form
+            model property marked <code>[SupplyParameterFromForm]</code> itself, for example
+            <code>@@bind-Value="Model!.Email"</code>: the field's posted name comes from that expression,
+            so binding to a copy posts the form but never binds the value back.
+        </p>
+        <p>
+            By default it updates on <code>change</code>, when the field loses focus.
+            <code>Immediate</code> updates on every keystroke and needs an interactive render mode.
+        </p>
+    </DocSection>
 </div>
 
 @code {
+    private const string MatchExample =
+        """<InputNumber class="@Input.GetClasses()" @bind-Value="order.Quantity" />""";
+
     private readonly SignUp signUp = new();
     private string? minimalEmail;
     private string? createdFor;

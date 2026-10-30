@@ -1,0 +1,109 @@
+@page "/getting-started"
+
+<PageTitle>Getting started · Vela UI</PageTitle>
+
+<div class="flex max-w-3xl flex-col gap-10">
+    <header class="flex flex-col gap-2">
+        <h1 class="text-title text-fg">Getting started</h1>
+        <p class="text-body text-fg-muted">
+            Vela UI copies component source into your Blazor app, where it's yours to change. This
+            sets up an app and adds a first component.
+        </p>
+    </header>
+
+    <DocSection Title="What you need">
+        <ul>
+            <li>The .NET 10 SDK, and a Blazor Web App, Blazor WebAssembly app, or Razor class library on .NET 10 or later.</li>
+            <li>Node.js 20 or later, to build the CSS with Tailwind CSS v4.</li>
+            <li>
+                A clone of the Vela UI repository. Until the <code>vela</code> command is published, you run
+                it from there with <code>dotnet run</code>.
+            </li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="1. Set up your app">
+        <p>In your project's folder, where its <code>.csproj</code> is:</p>
+        <CodeBlock Code="@Init" />
+        <p>
+            This writes <code>vela.json</code>, the theme (<code>Styles/vela.css</code>), a Tailwind input
+            file, the fonts, the optional motion layer (<code>vela-light.js</code>), and
+            <code>ClassNames.cs</code>. Then it prints the steps below, with the file names your
+            project uses.
+        </p>
+    </DocSection>
+
+    <DocSection Title="2. Build the CSS">
+        <CodeBlock Code="@Tailwind" />
+        <p>Leave the watcher running while you work, so new classes are picked up.</p>
+    </DocSection>
+
+    <DocSection Title="3. Link the CSS and import the components">
+        <p>In <code>Components/App.razor</code>, link the CSS in <code>&lt;head&gt;</code>, and optionally load the motion layer before <code>&lt;/body&gt;</code>:</p>
+        <CodeBlock Code="@Links" />
+        <p>Then add the components' namespace to <code>Components/_Imports.razor</code>:</p>
+        <CodeBlock Code="@Using" />
+    </DocSection>
+
+    <DocSection Title="4. Add components">
+        <CodeBlock Code="@Add" />
+        <p>
+            Each component goes to <code>Components/Ui/</code> with the components it uses. Some are
+            built on the <code>Vela.UI.Primitives</code> package; until it's on NuGet, see
+            <a href="troubleshooting#package">Troubleshooting</a>.
+        </p>
+    </DocSection>
+
+    <DocSection Title="5. Use them">
+        <CodeBlock Code="@Usage" />
+        <p>
+            A <code>Button</code> renders under static server rendering, but its <code>OnClick</code>
+            needs an interactive render mode, such as <code>@@rendermode InteractiveServer</code> on the
+            page. Each component's page says what needs one.
+        </p>
+    </DocSection>
+
+    <DocSection Title="WebAssembly and Auto">
+        <p>
+            With the WebAssembly or Auto render mode, interactive components have to live in the
+            <code>.Client</code> project, so run <code>vela init</code> and <code>vela add</code> there with
+            <code>--cwd MyApp.Client</code>. <code>App.razor</code> and its stylesheet link stay in the
+            server project, which serves the client project's files.
+        </p>
+    </DocSection>
+</div>
+
+@code {
+    private const string Init =
+        "dotnet run --project path/to/vela-ui/src/Cli -- init";
+
+    private const string Tailwind =
+        """
+        npm install tailwindcss @tailwindcss/cli
+        npx @tailwindcss/cli -i Styles/app.css -o wwwroot/tailwind.css --watch
+        """;
+
+    private const string Links =
+        """
+        <link rel="stylesheet" href="tailwind.css" />
+        <script src="vela-light.js"></script>
+        """;
+
+    private const string Using = "@using MyApp.Components.Ui";
+
+    private const string Add =
+        "dotnet run --project path/to/vela-ui/src/Cli -- add button card";
+
+    private const string Usage =
+        """
+        <Card Class="max-w-sm">
+            <CardHeader>
+                <CardTitle>Storage</CardTitle>
+                <CardDescription>4.2 GB of 10 GB used.</CardDescription>
+            </CardHeader>
+            <CardFooter>
+                <Button OnClick="ManageStorage">Manage storage</Button>
+            </CardFooter>
+        </Card>
+        """;
+}

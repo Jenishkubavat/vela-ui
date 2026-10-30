@@ -78,6 +78,52 @@
             </DialogContent>
         </Dialog>
     </Example>
+
+    <Install Name="dialog" Uses="Button and Kbd" Primitive="DialogPrimitive" />
+
+    <ApiReference Types="@(new[] { typeof(Dialog), typeof(DialogTrigger), typeof(DialogContent), typeof(DialogHeader), typeof(DialogTitle), typeof(DialogDescription), typeof(DialogFooter), typeof(DialogClose) })" />
+
+    <DocSection Title="Keyboard and accessibility">
+        <ul>
+            <li>
+                When it opens, focus moves to the first element marked <code>autofocus</code>, or else to the
+                first focusable element (some browsers focus the dialog itself). The close button comes last,
+                so focus doesn't start on it.
+            </li>
+            <li>
+                The page behind is inert: it can't be focused, clicked, or read by screen readers. Tab moves
+                through the dialog and never reaches the page.
+            </li>
+            <li>Escape closes it, and focus returns to the trigger.</li>
+            <li>
+                A click on the backdrop closes it, but only when the press started on the backdrop too, so
+                selecting text and dragging out doesn't, and the click never reaches the page underneath.
+                Set <code>CloseOnClickOutside="false"</code> for a dialog that needs an answer.
+            </li>
+            <li>With <code>OnConfirm</code> set, Ctrl+Enter (&#8984;+Enter on a Mac) confirms, and the footer shows the keys.</li>
+            <li>It's named by its <code>DialogTitle</code> and described by its <code>DialogDescription</code>. Always give it a title.</li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="Render modes">
+        <p>
+            Opening and closing need an interactive render mode; under static server rendering it stays
+            closed. The small script it uses, <code>dialog.js</code>, comes with the
+            <code>Vela.UI.Primitives</code> package and loads by itself once the page is interactive.
+        </p>
+    </DocSection>
+
+    <DocSection Title="Notes">
+        <ul>
+            <li>
+                Unlike shadcn/ui, there are no <code>DialogPortal</code> or <code>DialogOverlay</code> parts. The
+                dialog sits in the browser's top layer, and the backdrop is its <code>::backdrop</code>:
+                restyle it with <code>backdrop:</code> utilities in <code>DialogContent</code>'s <code>Class</code>.
+            </li>
+            <li><code>vela.css</code> stops the page behind from scrolling while a dialog is open.</li>
+            <li>It rises into place as it opens, unless the person prefers reduced motion. It closes without animating.</li>
+        </ul>
+    </DocSection>
 </div>
 
 @code {

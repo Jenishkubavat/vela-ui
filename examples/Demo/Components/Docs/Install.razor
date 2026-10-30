@@ -1,0 +1,37 @@
+@* The command that installs a component, and what else it brings with it. *@
+
+<DocSection Title="Install">
+    <CodeBlock Code="@($"vela add {Name}")" />
+    @if (Uses is not null)
+    {
+        <p>It uses @Uses, so <code>vela add</code> copies those too, unless you already have them.</p>
+    }
+    @if (Primitive is not null)
+    {
+        <p>
+            It's built on <code>@Primitive</code>, so <code>vela add</code> also adds the
+            <code>Vela.UI.Primitives</code> package to your project. Until the package is on NuGet, see
+            <a href="troubleshooting#package">Troubleshooting</a>.
+        </p>
+    }
+</DocSection>
+
+@code {
+    /// <summary>
+    /// The component's name on the command line, such as <c>button</c>.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Name { get; set; } = "";
+
+    /// <summary>
+    /// The other components it uses, in words, such as "Button and Kbd".
+    /// </summary>
+    [Parameter]
+    public string? Uses { get; set; }
+
+    /// <summary>
+    /// The headless primitive it's built on, if any.
+    /// </summary>
+    [Parameter]
+    public string? Primitive { get; set; }
+}

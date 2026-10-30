@@ -36,6 +36,28 @@
             }
         </div>
     </Example>
+
+    <Install Name="label" Primitive="LabelPrimitive" />
+
+    <ApiReference Types="@(new[] { typeof(Label) })" />
+
+    <DocSection Title="Keyboard and accessibility">
+        <ul>
+            <li>
+                It's a native <code>&lt;label&gt;</code>. Set <code>For</code> to the control's
+                <code>id</code>: the label then names the control for screen readers, and clicking it
+                focuses or toggles the control.
+            </li>
+            <li>
+                Give each control its own label. Name a group of controls, such as a set of radio buttons,
+                with a <code>FieldSet</code> and <code>FieldLegend</code>, or an <code>aria-label</code> on the group.
+            </li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="Render modes">
+        <p>It works the same in every render mode, including static server rendering: the browser links the label to its control.</p>
+    </DocSection>
 </div>
 
 @code {

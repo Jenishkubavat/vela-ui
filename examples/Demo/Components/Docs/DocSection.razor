@@ -1,0 +1,45 @@
+@* A section of written docs on a page: a heading and prose, with code and lists styled to match. *@
+
+<section class="flex scroll-mt-6 flex-col gap-3" id="@Id" aria-labelledby="@HeadingId">
+    <h2 id="@HeadingId" class="text-title-sm text-fg">@Title</h2>
+    <div class="@ClassNames.Join(Classes, Wide ? null : "max-w-prose")">
+        @ChildContent
+    </div>
+</section>
+
+@code {
+    private const string Classes =
+        "flex flex-col gap-3 text-body text-fg-muted " +
+        "[&_code]:font-mono [&_code]:text-code [&_code]:text-fg " +
+        "[&_ul]:flex [&_ul]:list-disc [&_ul]:flex-col [&_ul]:gap-1.5 [&_ul]:ps-5 " +
+        "[&_ol]:flex [&_ol]:list-decimal [&_ol]:flex-col [&_ol]:gap-1.5 [&_ol]:ps-5 " +
+        "[&_strong]:font-medium [&_strong]:text-fg " +
+        "[&_a]:text-fg [&_a]:underline [&_a]:underline-offset-4";
+
+    /// <summary>
+    /// The section's heading, which also names it for screen readers.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = "";
+
+    /// <summary>
+    /// An id for linking to the section, such as <c>package</c> for <c>#package</c>.
+    /// </summary>
+    [Parameter]
+    public string? Id { get; set; }
+
+    /// <summary>
+    /// Lets the section use the page's full width, for tables. Defaults to <see langword="false"/>,
+    /// which keeps text to a comfortable line length.
+    /// </summary>
+    [Parameter]
+    public bool Wide { get; set; }
+
+    /// <summary>
+    /// The section's text.
+    /// </summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private string HeadingId => "doc-" + Title.ToLowerInvariant().Replace(' ', '-');
+}

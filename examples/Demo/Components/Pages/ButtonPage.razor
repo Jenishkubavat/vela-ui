@@ -43,4 +43,40 @@
             </div>
         </div>
     </Example>
+
+    <Install Name="button" />
+
+    <ApiReference Types="@(new[] { typeof(Button) })" />
+
+    <DocSection Title="Style a link as a button">
+        <p>
+            <code>Button.GetClasses</code> returns the button's classes for an element that has to stay
+            something else, such as a link. It's the Blazor counterpart of shadcn/ui's <code>asChild</code>.
+        </p>
+        <CodeBlock Code="@LinkExample" />
+    </DocSection>
+
+    <DocSection Title="Keyboard and accessibility">
+        <ul>
+            <li>It's a native <code>&lt;button&gt;</code>, so Enter and Space activate it.</li>
+            <li>
+                <code>Type</code> defaults to <code>button</code>, so it doesn't submit a form unless you set
+                <code>Type="submit"</code>.
+            </li>
+            <li><code>Disabled</code> sets the native attribute: the button can't be focused or clicked.</li>
+            <li>An icon-only button needs an <code>aria-label</code>; mark its icon <code>aria-hidden="true"</code>.</li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="Render modes">
+        <p>
+            It renders under static server rendering. <code>OnClick</code> needs an interactive render
+            mode; a <code>Type="submit"</code> button still submits a static form.
+        </p>
+    </DocSection>
 </div>
+
+@code {
+    private const string LinkExample =
+        """<a href="/pricing" class="@Button.GetClasses(ButtonVariant.Outline)">See pricing</a>""";
+}

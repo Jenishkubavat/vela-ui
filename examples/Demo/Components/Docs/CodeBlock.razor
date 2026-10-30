@@ -1,0 +1,12 @@
+@* A block of code or commands, on a sunken surface, scrolling sideways when lines are long. *@
+
+<pre class="overflow-x-auto rounded-lg bg-surface-sunken px-4 py-3 font-mono text-code text-fg shadow-control"><code>@Code</code></pre>
+
+@code {
+    /// <summary>
+    /// The code, exactly as it should appear. It's text rather than markup, so the page's
+    /// own indentation doesn't leak into it.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public string Code { get; set; } = "";
+}

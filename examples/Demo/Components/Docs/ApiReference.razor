@@ -1,0 +1,40 @@
+@* The API tables for a component and its parts, built from their parameters and XML docs. *@
+
+<DocSection Title="API reference" Wide="true">
+    @foreach (var type in Types)
+    {
+        <div class="flex flex-col gap-2">
+            <h3 class="text-label text-fg"><code>@type.Name</code></h3>
+            <Table Class="text-body-sm">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead Class="w-2/5">Parameter</TableHead>
+                        <TableHead>Description</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (var parameter in ApiDocs.GetParameters(type))
+                    {
+                        <TableRow>
+                            <TableCell Class="py-2 align-top! whitespace-normal!">
+                                <code>@parameter.Name</code>@(parameter.Required ? " (required)" : "")
+                                <div class="mt-1 text-caption text-fg-faint">
+                                    <code>@parameter.Type</code>, default <code>@parameter.Default</code>
+                                </div>
+                            </TableCell>
+                            <TableCell Class="py-2 align-top! whitespace-normal!">@parameter.Description</TableCell>
+                        </TableRow>
+                    }
+                </TableBody>
+            </Table>
+        </div>
+    }
+</DocSection>
+
+@code {
+    /// <summary>
+    /// The component and its parts, in the order to show them.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public Type[] Types { get; set; } = [];
+}

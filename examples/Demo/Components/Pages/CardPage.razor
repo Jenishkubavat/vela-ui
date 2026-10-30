@@ -58,6 +58,25 @@
             </CardHeader>
         </Card>
     </Example>
+
+    <Install Name="card" />
+
+    <ApiReference Types="@(new[] { typeof(Card), typeof(CardHeader), typeof(CardTitle), typeof(CardDescription), typeof(CardAction), typeof(CardContent), typeof(CardFooter) })" />
+
+    <DocSection Title="Accessibility">
+        <ul>
+            <li>Card and its parts are plain <code>div</code>s with no role, so screen readers read their content as it is.</li>
+            <li>
+                <code>CardTitle</code> renders a <code>div</code>, because the right heading level depends on
+                your page. When the title should be a heading, add <code>role="heading"</code> and
+                <code>aria-level</code>.
+            </li>
+        </ul>
+    </DocSection>
+
+    <DocSection Title="Render modes">
+        <p>It has no behavior of its own, so it renders the same in every render mode.</p>
+    </DocSection>
 </div>
 
 @code {
